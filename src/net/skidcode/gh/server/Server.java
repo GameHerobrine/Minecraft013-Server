@@ -6,15 +6,17 @@ import net.skidcode.gh.server.network.RakNetHandler;
 import net.skidcode.gh.server.player.Player;
 import net.skidcode.gh.server.raknet.server.RakNetServer;
 import net.skidcode.gh.server.utils.Logger;
+import net.skidcode.gh.server.world.World;
 
 public final class Server {
 	
 	public static boolean running = true;
 	public static final RakNetHandler handler = new RakNetHandler();
-	
+	public static World world;
 	private static HashMap<String, Player> id2Player = new HashMap<>();
 	
 	public static void main(String[] args) {
+		Server.world = new World();
 		run();
 	}
 	
@@ -22,7 +24,13 @@ public final class Server {
 		return id2Player.getOrDefault(id, null);
 	}
 	public static void removePlayer(String id) {
-		if(id2Player.remove(id) != null) Logger.info(id+" closed a session.");
+		Player p = id2Player.remove(id);
+		if(p != null) {
+			p.world.removePlayer(p.eid);
+			
+			p.world = null;
+			Logger.info(id+" closed a session.");
+		}
 		else Logger.info(id+" closed session which doesnt exist?!");
 		
 	}

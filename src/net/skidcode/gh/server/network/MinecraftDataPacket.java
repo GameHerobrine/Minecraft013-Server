@@ -3,7 +3,7 @@ package net.skidcode.gh.server.network;
 import net.skidcode.gh.server.protocol.EncapsulatedPacket;
 import net.skidcode.gh.server.utils.BinaryStream;
 
-public abstract class MinecraftDataPacket extends BinaryStream{
+public abstract class MinecraftDataPacket extends BinaryStream implements Cloneable{
 	public boolean isEncoded = false;
     public int channel = 0;
 
@@ -16,4 +16,13 @@ public abstract class MinecraftDataPacket extends BinaryStream{
     public abstract void decode();
 
     public abstract void encode();
+    
+    @Override
+    public MinecraftDataPacket clone() {
+    	try {
+			return (MinecraftDataPacket) super.clone();
+		} catch (CloneNotSupportedException e) {
+			return null;
+		}
+    }
 }

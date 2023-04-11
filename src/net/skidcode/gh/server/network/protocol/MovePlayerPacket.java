@@ -1,4 +1,4 @@
-package net.skidcode.gh.server.protocol;
+package net.skidcode.gh.server.network.protocol;
 
 import net.skidcode.gh.server.network.MinecraftDataPacket;
 import net.skidcode.gh.server.network.ProtocolInfo;

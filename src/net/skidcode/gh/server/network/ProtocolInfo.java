@@ -2,10 +2,12 @@ package net.skidcode.gh.server.network;
 
 import java.util.HashMap;
 
+import net.skidcode.gh.server.network.protocol.AddPlayerPacket;
 import net.skidcode.gh.server.network.protocol.LoginPacket;
 import net.skidcode.gh.server.network.protocol.MessagePacket;
+import net.skidcode.gh.server.network.protocol.MovePlayerPacket;
+import net.skidcode.gh.server.network.protocol.RemoveEntityPacket;
 import net.skidcode.gh.server.network.protocol.StartGamePacket;
-import net.skidcode.gh.server.protocol.MovePlayerPacket;
 
 /*
 LoginPacket 0x86 (string)
@@ -41,8 +43,8 @@ public final class ProtocolInfo {
 		packets[LOGIN_PACKET & 0xFF] = LoginPacket.class;
 		packets[MESSAGE_PACKET & 0xFF] = MessagePacket.class;
 		packets[START_GAME_PACKET & 0xFF] = StartGamePacket.class;
-		packets[ADD_PLAYER_PACKET & 0xFF] = null;
-		packets[REMOVE_ENTITY_PACKET & 0xFF] = null;
+		packets[ADD_PLAYER_PACKET & 0xFF] = AddPlayerPacket.class;
+		packets[REMOVE_ENTITY_PACKET & 0xFF] = RemoveEntityPacket.class;
 		packets[MOVE_PLAYER_PACKET_PACKET & 0xFF] = MovePlayerPacket.class;
 		packets[PLACE_BLOCK_PACKET & 0xFF] = null;
 		packets[REMOVE_BLOCK_PACKET & 0xFF] = null;
