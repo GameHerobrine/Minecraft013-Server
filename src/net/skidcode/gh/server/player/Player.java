@@ -7,6 +7,7 @@ import net.skidcode.gh.server.network.ProtocolInfo;
 import net.skidcode.gh.server.network.protocol.AddPlayerPacket;
 import net.skidcode.gh.server.network.protocol.LoginPacket;
 import net.skidcode.gh.server.network.protocol.MovePlayerPacket;
+import net.skidcode.gh.server.network.protocol.PlaceBlockPacket;
 import net.skidcode.gh.server.network.protocol.StartGamePacket;
 import net.skidcode.gh.server.utils.Logger;
 
@@ -36,6 +37,8 @@ public class Player extends Entity{
 				this.nickname = loginpacket.nickname;
 				this.world.addPlayer(this);
 				StartGamePacket pk = new StartGamePacket();
+				pk.seed = 0;
+				pk.eid = this.eid;
 				pk.posX = this.posX;
 				pk.posY = this.posY;
 				pk.posZ = this.posZ;
@@ -55,6 +58,10 @@ public class Player extends Entity{
 				}
 				
 				break;
+			case ProtocolInfo.PLACE_BLOCK_PACKET:
+				PlaceBlockPacket pbp = (PlaceBlockPacket) dp;
+				this.world.placeBlock(pbp.posX, pbp.posY, pbp.posZ, pbp.id, this);
+				break;
 			case ProtocolInfo.MOVE_PLAYER_PACKET_PACKET: //TODO send updates
 				MovePlayerPacket moveplayerpacket = (MovePlayerPacket)dp;
 				this.posX = moveplayerpacket.posX;
@@ -62,6 +69,10 @@ public class Player extends Entity{
 				this.posZ = moveplayerpacket.posZ;
 				this.pitch = moveplayerpacket.pitch;
 				this.yaw = moveplayerpacket.yaw;
+				
+				moveplayerpacket.eid = this.eid;
+				moveplayerpacket.setBuffer(new byte[] {});
+				this.world.broadcastPacketFromPlayer(moveplayerpacket, this);
 				
 				break;
 			default:

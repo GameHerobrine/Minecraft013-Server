@@ -183,8 +183,8 @@ public class BinaryStream {
         return this.buffer[this.offset++];
     }
 
-    public int getByte() {
-        return this.buffer[this.offset++] & 0xff;
+    public byte getByte() {
+        return (byte) (this.buffer[this.offset++] & 0xff);
     }
 
     public void putByte(byte b) {

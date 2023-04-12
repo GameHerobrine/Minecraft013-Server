@@ -6,7 +6,8 @@ import net.skidcode.gh.server.network.ProtocolInfo;
 public class StartGamePacket extends MinecraftDataPacket{
 	
 	public float posX, posY, posZ;
-	
+	public int eid;
+	public long seed;
 	@Override
 	public byte pid() {
 		return ProtocolInfo.START_GAME_PACKET;
@@ -20,8 +21,8 @@ public class StartGamePacket extends MinecraftDataPacket{
 	@Override
 	public void encode() {
 		this.putByte(pid());
-		this.putLong(0);
-		this.putInt(0);
+		this.putLong(seed);
+		this.putInt(eid);
 		this.putInt(0);
 		this.putFloat(posX);
 		this.putFloat(posY);

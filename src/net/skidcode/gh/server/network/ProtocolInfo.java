@@ -6,8 +6,10 @@ import net.skidcode.gh.server.network.protocol.AddPlayerPacket;
 import net.skidcode.gh.server.network.protocol.LoginPacket;
 import net.skidcode.gh.server.network.protocol.MessagePacket;
 import net.skidcode.gh.server.network.protocol.MovePlayerPacket;
+import net.skidcode.gh.server.network.protocol.PlaceBlockPacket;
 import net.skidcode.gh.server.network.protocol.RemoveEntityPacket;
 import net.skidcode.gh.server.network.protocol.StartGamePacket;
+import net.skidcode.gh.server.network.protocol.UpdateBlockPacket;
 
 /*
 LoginPacket 0x86 (string)
@@ -16,7 +18,7 @@ StartGamePacket 0x88 (long, int, int, float, float, float)
 AddPlayerPacket 0x89 (guid, string, int, float, float, float)
 RemoveEntityPacket 0x8a (int)
 MovePlayerPacket 0x8b (int, float, float, float, float, float)
-PlaceBlockPacket 0x8c (int, int, int, ubyte, ubyte, ubyte)
+/ 0x8c (int, int, int, ubyte, ubyte, ubyte)
 RemoveBlockPacket 0x8d (int, int, int, ubyte)
 UpdateBlockPacket 0x8e (int, int, ubyte, ubyte, ubyte)
 RequestChunkPacket 0x8f (int, int)
@@ -46,9 +48,9 @@ public final class ProtocolInfo {
 		packets[ADD_PLAYER_PACKET & 0xFF] = AddPlayerPacket.class;
 		packets[REMOVE_ENTITY_PACKET & 0xFF] = RemoveEntityPacket.class;
 		packets[MOVE_PLAYER_PACKET_PACKET & 0xFF] = MovePlayerPacket.class;
-		packets[PLACE_BLOCK_PACKET & 0xFF] = null;
+		packets[PLACE_BLOCK_PACKET & 0xFF] = PlaceBlockPacket.class;
 		packets[REMOVE_BLOCK_PACKET & 0xFF] = null;
-		packets[UPDATE_BLOCK_PACKET & 0xFF] = null;
+		packets[UPDATE_BLOCK_PACKET & 0xFF] = UpdateBlockPacket.class;
 		packets[REQUEST_CHUNK_PACKET & 0xFF] = null;
 		packets[CHUNK_DATA_PACKET & 0xFF] = null;
 		packets[PLAYER_EQUIPMENT_PACKET & 0xFF] = null;
