@@ -15,6 +15,7 @@ public class World {
 	
 	public HashMap<Integer, Player> players = new HashMap<>();
 	private int freeEID = 1;
+	private int worldSeed = 0;
 	
 	public void addPlayer(Player player) {
 		this.players.put(player.eid, player);
@@ -29,7 +30,7 @@ public class World {
 		}
 	}
 	
-	public void placeBlock(int x, int y, int z, byte id, Player p) { //TODO world dataPacket
+	public void placeBlock(int x, int y, int z, byte id, Player p) { //TODO how?
 		UpdateBlockPacket pk = new UpdateBlockPacket();
 		pk.posX = x;
 		pk.posY = (byte) y;
@@ -49,7 +50,6 @@ public class World {
 	public void broadcastPacketFromPlayer(MinecraftDataPacket pk, Player p) {
 		for(Player pl : this.players.values()) {
 			if(p.eid != pl.eid) {
-				Logger.info("Broadcasting "+pk+" to "+pl.eid);
 				pl.dataPacket(pk.clone());
 			}
 		}

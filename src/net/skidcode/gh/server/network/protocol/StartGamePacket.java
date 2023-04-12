@@ -7,7 +7,7 @@ public class StartGamePacket extends MinecraftDataPacket{
 	
 	public float posX, posY, posZ;
 	public int eid;
-	public long seed;
+	public int seed;
 	@Override
 	public byte pid() {
 		return ProtocolInfo.START_GAME_PACKET;
@@ -21,9 +21,9 @@ public class StartGamePacket extends MinecraftDataPacket{
 	@Override
 	public void encode() {
 		this.putByte(pid());
-		this.putLong(seed);
+		this.putInt(seed); //fun fact: mcpe 1.0 RakNet::BitStream::Write<long> actually only writes 32 bits, which is 32/8=4bytes(or int here)
 		this.putInt(eid);
-		this.putInt(0);
+		this.putInt(eid); //i wish to know wth is this
 		this.putFloat(posX);
 		this.putFloat(posY);
 		this.putFloat(posZ);

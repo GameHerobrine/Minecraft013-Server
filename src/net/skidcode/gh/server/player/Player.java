@@ -54,6 +54,15 @@ public class Player extends Entity{
 						pkk.posY = player.posY;
 						pkk.posZ = player.posZ;
 						this.dataPacket(pkk);
+						
+						AddPlayerPacket pkk2 = new AddPlayerPacket();
+						pkk2.clientID = this.clientID;
+						pkk2.eid = this.eid;
+						pkk2.nickname = this.nickname;
+						pkk2.posX = this.posX;
+						pkk2.posY = this.posY;
+						pkk2.posZ = this.posZ;
+						player.dataPacket(pkk2);
 					}
 				}
 				

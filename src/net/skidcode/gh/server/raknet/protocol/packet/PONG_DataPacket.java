@@ -15,16 +15,18 @@ public class PONG_DataPacket extends Packet {
     }
 
     public long pingID;
-
+    public long unknown2 = 0; //TODO try to find out
     @Override
     public void encode() {
         super.encode();
         this.putLong(this.pingID);
+        this.putLong(this.unknown2);
     }
 
     @Override
     public void decode() {
         super.decode();
         this.pingID = this.getLong();
+        this.unknown2 = this.getLong();
     }
 }

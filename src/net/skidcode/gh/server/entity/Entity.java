@@ -11,7 +11,7 @@ public abstract class Entity {
 	public World world;
 	public Entity() { //TODO later
 		this.posX = 64;
-		this.posY = 64;
+		this.posY = 128;
 		this.posZ = 64;
 		this.yaw = 0;
 		this.pitch = 0;

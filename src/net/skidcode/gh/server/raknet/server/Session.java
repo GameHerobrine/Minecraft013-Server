@@ -420,6 +420,7 @@ public class Session {
             } else if (id == CLIENT_DISCONNECT_DataPacket.ID) {
                 disconnect("client disconnect");
             } else if (id == PING_DataPacket.ID) {
+            	Logger.info("ping");
                 PING_DataPacket dataPacket = new PING_DataPacket();
                 dataPacket.buffer = packet.buffer;
                 dataPacket.decode();
