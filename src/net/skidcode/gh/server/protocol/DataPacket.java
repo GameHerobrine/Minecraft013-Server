@@ -55,7 +55,8 @@ public abstract class DataPacket extends Packet {
         return super.clean();
     }
 
-    @Override
+	@Override
+	@SuppressWarnings("unchecked")
     public DataPacket clone() throws CloneNotSupportedException {
         DataPacket packet = (DataPacket) super.clone();
         packet.packets = (ArrayList<Object>) this.packets.clone();

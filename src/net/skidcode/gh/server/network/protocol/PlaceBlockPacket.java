@@ -25,7 +25,13 @@ public class PlaceBlockPacket extends MinecraftDataPacket{
 
 	@Override
 	public void encode() {
-		
+		this.putByte(pid());
+		this.putInt(this.unknown1);
+		this.putInt(this.posX);
+		this.putInt(this.posZ);
+		this.putByte(this.posY);
+		this.putByte(this.unknown5);
+		this.putByte(this.id);
 	}
 
 }

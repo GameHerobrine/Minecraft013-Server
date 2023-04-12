@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import net.skidcode.gh.server.network.RakNetHandler;
 import net.skidcode.gh.server.player.Player;
-import net.skidcode.gh.server.raknet.server.RakNetServer;
 import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.world.World;
 
@@ -35,7 +34,7 @@ public final class Server {
 		
 	}
 	public static void addPlayer(String id, Player player) {
-		Logger.info(id+" has started a new session. Client ID: "+player.clientID);
+		Logger.info(id+" has started a new session. Client ID: "+player.clientID+", EID: "+player.eid);
 		id2Player.put(id, player);
 	}
 	

@@ -1,13 +1,12 @@
 package net.skidcode.gh.server.network;
-
-import java.util.HashMap;
-
 import net.skidcode.gh.server.network.protocol.AddPlayerPacket;
 import net.skidcode.gh.server.network.protocol.LoginPacket;
 import net.skidcode.gh.server.network.protocol.MessagePacket;
 import net.skidcode.gh.server.network.protocol.MovePlayerPacket;
 import net.skidcode.gh.server.network.protocol.PlaceBlockPacket;
+import net.skidcode.gh.server.network.protocol.PlayerEquipmentPacket;
 import net.skidcode.gh.server.network.protocol.RemoveEntityPacket;
+import net.skidcode.gh.server.network.protocol.RequestChunkPacket;
 import net.skidcode.gh.server.network.protocol.StartGamePacket;
 import net.skidcode.gh.server.network.protocol.UpdateBlockPacket;
 
@@ -51,9 +50,9 @@ public final class ProtocolInfo {
 		packets[PLACE_BLOCK_PACKET & 0xFF] = PlaceBlockPacket.class;
 		packets[REMOVE_BLOCK_PACKET & 0xFF] = null;
 		packets[UPDATE_BLOCK_PACKET & 0xFF] = UpdateBlockPacket.class;
-		packets[REQUEST_CHUNK_PACKET & 0xFF] = null;
+		packets[REQUEST_CHUNK_PACKET & 0xFF] = RequestChunkPacket.class;
 		packets[CHUNK_DATA_PACKET & 0xFF] = null;
-		packets[PLAYER_EQUIPMENT_PACKET & 0xFF] = null;
+		packets[PLAYER_EQUIPMENT_PACKET & 0xFF] = PlayerEquipmentPacket.class;
 	}
 	
 	public ProtocolInfo() {throw new IllegalArgumentException("You are not allowed to create instances of ProtocolInfo.(do not use unsafe pwease)");}

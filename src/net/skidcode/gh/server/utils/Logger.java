@@ -1,5 +1,7 @@
 package net.skidcode.gh.server.utils;
 
+import java.util.Arrays;
+
 public class Logger {
 	public static void notice(Object msg) {
 		System.out.println("[NOTICE] "+msg);
@@ -8,7 +10,11 @@ public class Logger {
 	public static void error(Object msg) {
 		System.out.println("[ERROR] "+msg);
 	}
-
+	
+	public static void info(Object... data) {
+		System.out.println("[INFO] "+Arrays.toString(data));
+	}
+	
 	public static void info(Object msg) {
 		System.out.println("[INFO] "+msg);
 	}

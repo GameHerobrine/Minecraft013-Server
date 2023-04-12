@@ -2,20 +2,17 @@ package net.skidcode.gh.server.world;
 
 import java.util.HashMap;
 
-import net.skidcode.gh.server.entity.Entity;
 import net.skidcode.gh.server.network.MinecraftDataPacket;
-import net.skidcode.gh.server.network.protocol.MovePlayerPacket;
 import net.skidcode.gh.server.network.protocol.PlaceBlockPacket;
 import net.skidcode.gh.server.network.protocol.RemoveEntityPacket;
 import net.skidcode.gh.server.network.protocol.UpdateBlockPacket;
 import net.skidcode.gh.server.player.Player;
-import net.skidcode.gh.server.utils.Logger;
 
 public class World {
 	
 	public HashMap<Integer, Player> players = new HashMap<>();
 	private int freeEID = 1;
-	private int worldSeed = 0;
+	public int worldSeed = 0xd34db33f;
 	
 	public void addPlayer(Player player) {
 		this.players.put(player.eid, player);
@@ -43,7 +40,7 @@ public class World {
 		pkk.posY = (byte) y;
 		pkk.posZ = z;
 		pkk.id = (byte) id;
-		pkk.unknown5 = 0; //meta?
+		pkk.unknown5 = 0;
 		this.broadcastPacketFromPlayer(pkk, p);
 	}
 	

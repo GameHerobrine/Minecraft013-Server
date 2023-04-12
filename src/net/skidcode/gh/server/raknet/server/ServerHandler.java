@@ -3,7 +3,6 @@ package net.skidcode.gh.server.raknet.server;
 import net.skidcode.gh.server.protocol.EncapsulatedPacket;
 import net.skidcode.gh.server.raknet.RakNet;
 import net.skidcode.gh.server.utils.Binary;
-import net.skidcode.gh.server.utils.Logger;
 
 import java.nio.charset.StandardCharsets;
 

@@ -8,6 +8,8 @@ import net.skidcode.gh.server.network.protocol.AddPlayerPacket;
 import net.skidcode.gh.server.network.protocol.LoginPacket;
 import net.skidcode.gh.server.network.protocol.MovePlayerPacket;
 import net.skidcode.gh.server.network.protocol.PlaceBlockPacket;
+import net.skidcode.gh.server.network.protocol.PlayerEquipmentPacket;
+import net.skidcode.gh.server.network.protocol.RequestChunkPacket;
 import net.skidcode.gh.server.network.protocol.StartGamePacket;
 import net.skidcode.gh.server.utils.Logger;
 
@@ -15,6 +17,7 @@ public class Player extends Entity{
 	
 	public long clientID;
 	public int port;
+	public byte itemID;
 	public String ip, identifier, nickname;
 	
 	public Player(String identifier, long clientID, String ip, int port) {
@@ -37,7 +40,7 @@ public class Player extends Entity{
 				this.nickname = loginpacket.nickname;
 				this.world.addPlayer(this);
 				StartGamePacket pk = new StartGamePacket();
-				pk.seed = 0;
+				pk.seed = this.world.worldSeed;
 				pk.eid = this.eid;
 				pk.posX = this.posX;
 				pk.posY = this.posY;
@@ -84,6 +87,17 @@ public class Player extends Entity{
 				this.world.broadcastPacketFromPlayer(moveplayerpacket, this);
 				
 				break;
+			case ProtocolInfo.PLAYER_EQUIPMENT_PACKET:
+				PlayerEquipmentPacket pep = (PlayerEquipmentPacket) dp;
+				if(pep.eid == this.eid) {
+					this.itemID = pep.itemID;
+					this.world.broadcastPacketFromPlayer(pep, this);
+				}
+				
+				break;
+			case ProtocolInfo.REQUEST_CHUNK_PACKET:
+				RequestChunkPacket rcp = (RequestChunkPacket) dp;
+				Logger.info("Client Wants: "+ rcp.chunkX+" : "+rcp.chunkZ);
 			default:
 				Logger.warn("Unknown PID: "+dp.pid());
 				break;

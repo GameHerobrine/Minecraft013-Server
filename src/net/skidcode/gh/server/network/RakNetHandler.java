@@ -1,11 +1,7 @@
 package net.skidcode.gh.server.network;
 
-import java.lang.reflect.InvocationTargetException;
 
 import net.skidcode.gh.server.Server;
-import net.skidcode.gh.server.network.protocol.LoginPacket;
-import net.skidcode.gh.server.network.protocol.MessagePacket;
-import net.skidcode.gh.server.network.protocol.StartGamePacket;
 import net.skidcode.gh.server.player.Player;
 import net.skidcode.gh.server.protocol.EncapsulatedPacket;
 import net.skidcode.gh.server.raknet.RakNet;
