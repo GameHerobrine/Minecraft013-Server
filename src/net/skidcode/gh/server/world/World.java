@@ -7,13 +7,18 @@ import net.skidcode.gh.server.network.protocol.PlaceBlockPacket;
 import net.skidcode.gh.server.network.protocol.RemoveEntityPacket;
 import net.skidcode.gh.server.network.protocol.UpdateBlockPacket;
 import net.skidcode.gh.server.player.Player;
+import net.skidcode.gh.server.world.chunk.Chunk;
 
 public class World {
 	
 	public HashMap<Integer, Player> players = new HashMap<>();
 	private int freeEID = 1;
 	public int worldSeed = 0xd34db33f;
+	public Chunk[][] chunks = new Chunk[16][16];
 	
+	public int spawnX, spawnY, spawnZ;
+	public String name;
+	public int worldTime, saveTime;
 	public void addPlayer(Player player) {
 		this.players.put(player.eid, player);
 	}

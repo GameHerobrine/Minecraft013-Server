@@ -1,5 +1,6 @@
 package net.skidcode.gh.server.network;
 import net.skidcode.gh.server.network.protocol.AddPlayerPacket;
+import net.skidcode.gh.server.network.protocol.ChunkDataPacket;
 import net.skidcode.gh.server.network.protocol.LoginPacket;
 import net.skidcode.gh.server.network.protocol.MessagePacket;
 import net.skidcode.gh.server.network.protocol.MovePlayerPacket;
@@ -51,7 +52,7 @@ public final class ProtocolInfo {
 		packets[REMOVE_BLOCK_PACKET & 0xFF] = null;
 		packets[UPDATE_BLOCK_PACKET & 0xFF] = UpdateBlockPacket.class;
 		packets[REQUEST_CHUNK_PACKET & 0xFF] = RequestChunkPacket.class;
-		packets[CHUNK_DATA_PACKET & 0xFF] = null;
+		packets[CHUNK_DATA_PACKET & 0xFF] = ChunkDataPacket.class;
 		packets[PLAYER_EQUIPMENT_PACKET & 0xFF] = PlayerEquipmentPacket.class;
 	}
 	

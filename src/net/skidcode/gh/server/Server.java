@@ -1,11 +1,13 @@
 package net.skidcode.gh.server;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import net.skidcode.gh.server.network.RakNetHandler;
 import net.skidcode.gh.server.player.Player;
 import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.world.World;
+import net.skidcode.gh.server.world.parser.vanilla.VanillaParser;
 
 public final class Server {
 	
@@ -14,8 +16,8 @@ public final class Server {
 	public static World world;
 	private static HashMap<String, Player> id2Player = new HashMap<>();
 	
-	public static void main(String[] args) {
-		Server.world = new World();
+	public static void main(String[] args) throws IOException {
+		Server.world = VanillaParser.parseVanillaWorld();
 		run();
 	}
 	

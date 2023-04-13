@@ -1,16 +1,20 @@
 package net.skidcode.gh.server.player;
 
+import java.util.Arrays;
+
 import net.skidcode.gh.server.Server;
 import net.skidcode.gh.server.entity.Entity;
 import net.skidcode.gh.server.network.MinecraftDataPacket;
 import net.skidcode.gh.server.network.ProtocolInfo;
 import net.skidcode.gh.server.network.protocol.AddPlayerPacket;
+import net.skidcode.gh.server.network.protocol.ChunkDataPacket;
 import net.skidcode.gh.server.network.protocol.LoginPacket;
 import net.skidcode.gh.server.network.protocol.MovePlayerPacket;
 import net.skidcode.gh.server.network.protocol.PlaceBlockPacket;
 import net.skidcode.gh.server.network.protocol.PlayerEquipmentPacket;
 import net.skidcode.gh.server.network.protocol.RequestChunkPacket;
 import net.skidcode.gh.server.network.protocol.StartGamePacket;
+import net.skidcode.gh.server.utils.Binary;
 import net.skidcode.gh.server.utils.Logger;
 
 public class Player extends Entity{
@@ -26,6 +30,9 @@ public class Player extends Entity{
 		this.port = port;
 		this.ip = ip;
 		this.identifier = identifier;
+		this.posX = 0;//this.world.spawnX;
+		this.posY = 128;//this.world.spawnY;
+		this.posZ = 0;//this.world.spawnZ;
 		
 	}
 	
@@ -98,6 +105,33 @@ public class Player extends Entity{
 			case ProtocolInfo.REQUEST_CHUNK_PACKET:
 				RequestChunkPacket rcp = (RequestChunkPacket) dp;
 				Logger.info("Client Wants: "+ rcp.chunkX+" : "+rcp.chunkZ);
+				ChunkDataPacket cdp = new ChunkDataPacket();
+				cdp.chunkX = rcp.chunkX;
+				cdp.chunkZ = rcp.chunkZ;
+				byte[] cd = new byte[16*16*16+(16*16*16/2)+16*16];
+				int l = 0;
+				for (int z = 0; z < 16; ++z) { //TODO figure out what did i make
+					for (int x = 0; x < 16; ++x) {
+						cd[l++] = (byte) ((1 << 7));
+						Arrays.fill(cd, l, l + 16, (byte) (x + z));
+						l += 16;
+						cd[l++] = 1; // MERGE2
+						cd[l++] = 1;
+						cd[l++] = 1;
+						cd[l++] = 1;
+						cd[l++] = 1;
+						cd[l++] = 1;
+						cd[l++] = 1;
+						cd[l++] = 1;
+
+					}
+				}
+				
+				Logger.info(l, cd.length);
+				Logger.info("end fill");
+				cdp.data = cd; 
+				this.dataPacket(cdp);
+				break;
 			default:
 				Logger.warn("Unknown PID: "+dp.pid());
 				break;
