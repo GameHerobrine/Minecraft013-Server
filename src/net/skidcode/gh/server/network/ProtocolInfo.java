@@ -6,6 +6,7 @@ import net.skidcode.gh.server.network.protocol.MessagePacket;
 import net.skidcode.gh.server.network.protocol.MovePlayerPacket;
 import net.skidcode.gh.server.network.protocol.PlaceBlockPacket;
 import net.skidcode.gh.server.network.protocol.PlayerEquipmentPacket;
+import net.skidcode.gh.server.network.protocol.RemoveBlockPacket;
 import net.skidcode.gh.server.network.protocol.RemoveEntityPacket;
 import net.skidcode.gh.server.network.protocol.RequestChunkPacket;
 import net.skidcode.gh.server.network.protocol.StartGamePacket;
@@ -49,7 +50,7 @@ public final class ProtocolInfo {
 		packets[REMOVE_ENTITY_PACKET & 0xFF] = RemoveEntityPacket.class;
 		packets[MOVE_PLAYER_PACKET_PACKET & 0xFF] = MovePlayerPacket.class;
 		packets[PLACE_BLOCK_PACKET & 0xFF] = PlaceBlockPacket.class;
-		packets[REMOVE_BLOCK_PACKET & 0xFF] = null;
+		packets[REMOVE_BLOCK_PACKET & 0xFF] = RemoveBlockPacket.class;
 		packets[UPDATE_BLOCK_PACKET & 0xFF] = UpdateBlockPacket.class;
 		packets[REQUEST_CHUNK_PACKET & 0xFF] = RequestChunkPacket.class;
 		packets[CHUNK_DATA_PACKET & 0xFF] = ChunkDataPacket.class;

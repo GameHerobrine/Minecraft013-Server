@@ -12,10 +12,13 @@ import net.skidcode.gh.server.network.protocol.LoginPacket;
 import net.skidcode.gh.server.network.protocol.MovePlayerPacket;
 import net.skidcode.gh.server.network.protocol.PlaceBlockPacket;
 import net.skidcode.gh.server.network.protocol.PlayerEquipmentPacket;
+import net.skidcode.gh.server.network.protocol.RemoveBlockPacket;
 import net.skidcode.gh.server.network.protocol.RequestChunkPacket;
 import net.skidcode.gh.server.network.protocol.StartGamePacket;
+import net.skidcode.gh.server.network.protocol.UpdateBlockPacket;
 import net.skidcode.gh.server.utils.Binary;
 import net.skidcode.gh.server.utils.Logger;
+import net.skidcode.gh.server.world.chunk.Chunk;
 
 public class Player extends Entity{
 	
@@ -30,9 +33,9 @@ public class Player extends Entity{
 		this.port = port;
 		this.ip = ip;
 		this.identifier = identifier;
-		this.posX = 0;//this.world.spawnX;
-		this.posY = 128;//this.world.spawnY;
-		this.posZ = 0;//this.world.spawnZ;
+		this.posX = this.world.spawnX;
+		this.posY = this.world.spawnY;
+		this.posZ = this.world.spawnZ;
 		
 	}
 	
@@ -77,9 +80,15 @@ public class Player extends Entity{
 				}
 				
 				break;
+			case ProtocolInfo.REMOVE_BLOCK_PACKET:
+				RemoveBlockPacket rbp = (RemoveBlockPacket) dp;
+				this.world.removeBlock(rbp.posX, rbp.posY, rbp.posZ);
+				this.world.broadcastPacketFromPlayer(rbp, this);
+				break;
 			case ProtocolInfo.PLACE_BLOCK_PACKET:
 				PlaceBlockPacket pbp = (PlaceBlockPacket) dp;
-				this.world.placeBlock(pbp.posX, pbp.posY, pbp.posZ, pbp.id, pbp.unknown5, this);
+				this.world.placeBlock(pbp.posX, pbp.posY, pbp.posZ, pbp.id);
+				this.world.broadcastPacketFromPlayer(pbp, this);
 				break;
 			case ProtocolInfo.MOVE_PLAYER_PACKET_PACKET: //TODO send updates
 				MovePlayerPacket moveplayerpacket = (MovePlayerPacket)dp;
@@ -88,7 +97,6 @@ public class Player extends Entity{
 				this.posZ = moveplayerpacket.posZ;
 				this.pitch = moveplayerpacket.pitch;
 				this.yaw = moveplayerpacket.yaw;
-				Logger.info(this.posX, this.posY, this.posZ);
 				moveplayerpacket.eid = this.eid;
 				moveplayerpacket.setBuffer(new byte[] {});
 				this.world.broadcastPacketFromPlayer(moveplayerpacket, this);
@@ -104,36 +112,23 @@ public class Player extends Entity{
 				break;
 			case ProtocolInfo.REQUEST_CHUNK_PACKET:
 				RequestChunkPacket rcp = (RequestChunkPacket) dp;
-				Logger.info("Client Wants: "+ rcp.chunkX+" : "+rcp.chunkZ);
 				ChunkDataPacket cdp = new ChunkDataPacket();
 				cdp.chunkX = rcp.chunkX;
 				cdp.chunkZ = rcp.chunkZ;
 				byte[] cd = new byte[16*16*128+16*16*64+16*16];
 				int l = 0;
+				Chunk c = this.world.chunks[rcp.chunkX][rcp.chunkZ];
 				for (int z = 0; z < 16; ++z) { //TODO figure out what did i make
 					for (int x = 0; x < 16; ++x) {
 						cd[l++] = (byte) 0xff;//(byte) ((1 << 6));
 						for(int y = 0; y < 8; ++y) {
-							Arrays.fill(cd, l, l + 16, x != z ? 0 : (byte) 3);
+							System.arraycopy(c.blockData[x][z], y << 4, cd, l, 16);
 							l += 16;
 							Arrays.fill(cd, l, l + 8, (byte) 0);
 							l += 8;
 						}
-						
-						/*cd[l++] = 1; // MERGE2
-						cd[l++] = 1;
-						cd[l++] = 1;
-						cd[l++] = 1;
-						cd[l++] = 1;
-						cd[l++] = 1;
-						cd[l++] = 1;
-						cd[l++] = 1;*/
-						
 					}
 				}
-				
-				Logger.info(l, cd.length);
-				Logger.info("end fill");
 				cdp.data = cd; 
 				this.dataPacket(cdp);
 				break;

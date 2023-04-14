@@ -32,14 +32,16 @@ public class World {
 		}
 	}
 	
-	public void placeBlock(int x, int y, int z, byte id, byte unk5, Player p) { //TODO how? + rem unk5
-		UpdateBlockPacket pk = new UpdateBlockPacket();
-		pk.posX = x;
-		pk.posY = (byte) y;
-		pk.posZ = z;
-		pk.id = (byte) id;
-		pk.unknown5 = 0; //meta?
-		this.broadcastPacketFromPlayer(pk, p);
+	public void removeBlock(int x, int y, int z) {
+		this.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf][y] = 0;
+		this.chunks[x >> 4][z >> 4].blockMetadata[x & 0xf][z & 0xf][y] = 0;
+	}
+	
+	public void placeBlock(int x, int y, int z, byte id) { //TODO how? + rem unk5
+		
+		this.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf][y] = id;
+		this.chunks[x >> 4][z >> 4].blockMetadata[x & 0xf][z & 0xf][y] = 0;
+
 		/*PlaceBlockPacket pkk = new PlaceBlockPacket(); Looks like not neccessary here, even though vanilla sends it too
 		pkk.posX = x;
 		pkk.posY = (byte) y;

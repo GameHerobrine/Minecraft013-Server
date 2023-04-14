@@ -21,8 +21,8 @@ public class LevelDatParser extends NBTFile{
 	public void parse(World world) {
 		world.worldSeed = this.getInt(); //should be long, but 0.1 write<long> writes int
 		world.spawnX = this.getInt();
-		world.spawnX = this.getInt();
-		world.spawnX = this.getInt();
+		world.spawnY = this.getInt();
+		world.spawnZ = this.getInt();
 		
 		this.getInt(); //somethin idk
 		
