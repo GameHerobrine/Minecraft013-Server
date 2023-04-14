@@ -7,6 +7,10 @@ public class Logger {
 		System.out.println("[NOTICE] "+msg);
 	}
 	
+	public static void raw(Object msg) {
+		System.out.println(msg);
+	}
+	
 	public static void error(Object msg) {
 		System.out.println("[ERROR] "+msg);
 	}
@@ -21,5 +25,9 @@ public class Logger {
 
 	public static void warn(Object msg) {
 		System.out.println("[WARNING] "+msg);
+	}
+	
+	public static void cmd(Object msg) {
+		System.out.println("[CMD] "+msg);
 	}
 }

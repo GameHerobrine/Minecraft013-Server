@@ -1,8 +1,6 @@
 package net.skidcode.gh.server.world.parser.vanilla;
 
 import java.io.IOException;
-
-import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.world.World;
 import net.skidcode.gh.server.world.chunk.Chunk;
 import net.skidcode.gh.server.world.nbt.NBTFile;
@@ -23,6 +21,9 @@ public class ChunkDataParser extends NBTFile{
 				locationTable[x][z] = this.getInt();
 			}
 		}
+		
+		world.locationTable = locationTable;
+		
 		//offset -> 0x1000
 		for(int chunkX = 0; chunkX < 16; ++chunkX) {
 			for(int chunkZ = 0; chunkZ < 16; ++chunkZ) {

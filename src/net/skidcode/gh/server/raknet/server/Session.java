@@ -6,7 +6,6 @@ import net.skidcode.gh.server.protocol.Packet;
 import net.skidcode.gh.server.raknet.RakNet;
 import net.skidcode.gh.server.raknet.protocol.packet.*;
 import net.skidcode.gh.server.utils.Binary;
-import net.skidcode.gh.server.utils.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -3,6 +3,7 @@ package net.skidcode.gh.server.player;
 import java.util.Arrays;
 
 import net.skidcode.gh.server.Server;
+import net.skidcode.gh.server.console.command.CommandIssuer;
 import net.skidcode.gh.server.entity.Entity;
 import net.skidcode.gh.server.network.MinecraftDataPacket;
 import net.skidcode.gh.server.network.ProtocolInfo;
@@ -15,12 +16,10 @@ import net.skidcode.gh.server.network.protocol.PlayerEquipmentPacket;
 import net.skidcode.gh.server.network.protocol.RemoveBlockPacket;
 import net.skidcode.gh.server.network.protocol.RequestChunkPacket;
 import net.skidcode.gh.server.network.protocol.StartGamePacket;
-import net.skidcode.gh.server.network.protocol.UpdateBlockPacket;
-import net.skidcode.gh.server.utils.Binary;
 import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.world.chunk.Chunk;
 
-public class Player extends Entity{
+public class Player extends Entity implements CommandIssuer{
 	
 	public long clientID;
 	public int port;
@@ -45,7 +44,7 @@ public class Player extends Entity{
 	
 	public void handlePacket(MinecraftDataPacket dp) {
 		switch(dp.pid()) {
-			case ProtocolInfo.LOGIN_PACKET:
+			case ProtocolInfo.LOGIN_PACKET: //TODO MessagePacket handle(but how to check..?)
 				LoginPacket loginpacket = (LoginPacket)dp;
 				this.nickname = loginpacket.nickname;
 				this.world.addPlayer(this);
@@ -136,5 +135,15 @@ public class Player extends Entity{
 				Logger.warn("Unknown PID: "+dp.pid());
 				break;
 		}
+	}
+
+	@Override
+	public String getIssuerName() {
+		return this.nickname;
+	}
+
+	@Override
+	public void sendOutput(String s) {
+		// TODO Auto-generated method stub
 	}
 }
