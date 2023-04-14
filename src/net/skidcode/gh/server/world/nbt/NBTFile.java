@@ -20,5 +20,5 @@ public abstract class NBTFile extends BinaryStream{
 	}
 	
 	public abstract void parse(World world);
-	
+	public abstract void save(World world);
 }

@@ -21,11 +21,21 @@ public final class Server {
 	public static World world;
 	private static HashMap<String, Player> id2Player = new HashMap<>();
 	
-	
-	
 	public static void main(String[] args) throws IOException {
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			public void run() {
+				Logger.info("Saving world...");
+				try {
+					VanillaParser.saveVanillaWorld();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				Server.running = false;
+			}
+		});
 		Server.world = VanillaParser.parseVanillaWorld();
 		run();
+		System.exit(0);
 	}
 	
 	public static Collection<Player> getPlayers(){

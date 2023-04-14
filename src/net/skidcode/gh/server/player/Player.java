@@ -107,7 +107,6 @@ public class Player extends Entity implements CommandIssuer{
 					this.itemID = pep.itemID;
 					this.world.broadcastPacketFromPlayer(pep, this);
 				}
-				
 				break;
 			case ProtocolInfo.REQUEST_CHUNK_PACKET:
 				RequestChunkPacket rcp = (RequestChunkPacket) dp;

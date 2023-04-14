@@ -18,6 +18,8 @@ public class World {
 	public String name;
 	public int worldTime, saveTime;
 	public int[][] locationTable;
+	public int unknown5;
+	
 	public void addPlayer(Player player) {
 		this.players.put(player.eid, player);
 	}

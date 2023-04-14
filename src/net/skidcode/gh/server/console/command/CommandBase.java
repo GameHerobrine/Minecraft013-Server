@@ -3,6 +3,7 @@ package net.skidcode.gh.server.console.command;
 import java.util.HashMap;
 
 import net.skidcode.gh.server.console.command.impl.BroadcastCommand;
+import net.skidcode.gh.server.console.command.impl.StopCommand;
 import net.skidcode.gh.server.console.command.impl.TeleportCommand;
 
 public abstract class CommandBase {
@@ -24,6 +25,7 @@ public abstract class CommandBase {
 	static {
 		addCommand(new BroadcastCommand("broadcast"));
 		addCommand(new TeleportCommand("teleport"));
+		addCommand(new StopCommand("stop"));
 	}
 	
 }

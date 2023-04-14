@@ -24,6 +24,10 @@ public class RakNetHandler implements ServerInstance{
         do{}while(this.handler.handlePacket());
     }
     
+    public void notifyShutdown() {
+    	this.raknet.shutdown();
+    }
+    
 	@Override
 	public void openSession(String identifier, String address, int port, long clientID) {
 		Server.addPlayer(identifier, new Player(identifier, clientID, address, port));

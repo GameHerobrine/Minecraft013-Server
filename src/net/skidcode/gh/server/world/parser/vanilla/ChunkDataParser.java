@@ -1,12 +1,18 @@
 package net.skidcode.gh.server.world.parser.vanilla;
 
 import java.io.IOException;
+import java.util.Arrays;
+
+import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.world.World;
 import net.skidcode.gh.server.world.chunk.Chunk;
 import net.skidcode.gh.server.world.nbt.NBTFile;
 
 public class ChunkDataParser extends NBTFile{
 	public Chunk[] chunks = new Chunk[256];
+	
+	public static final int CHUNK_HEADER = 71368960;
+	
 	public ChunkDataParser(String path2World) throws IOException {
 		super(path2World+"/chunks.dat", 0);
 	}
@@ -31,7 +37,7 @@ public class ChunkDataParser extends NBTFile{
 				
 				
 				int ch = this.getInt();
-				assert ch == 71368960; //71368960 - chunk header(04 41 01 20)
+				assert ch == CHUNK_HEADER; //71368960 - chunk header(04 41 01 20)
 				Chunk c = new Chunk();
 				for(int x = 0; x < 16; ++x) {
 					for(int z = 0; z < 16; ++z) {
@@ -59,6 +65,48 @@ public class ChunkDataParser extends NBTFile{
 				world.chunks[chunkX][chunkZ] = c;
 			}
 		}
+	}
+
+	@Override
+	public void save(World world) {
+		byte[] buf = new byte[22024192];
+		Arrays.fill(buf, (byte) 0);
+		this.setBuffer(buf);
+		this.count = 0;
+		
+		for(int[] zloc : world.locationTable) {
+			for(int loc : zloc) {
+				this.putInt(loc);
+			}
+		}
+		
+		for(int chunkX = 0; chunkX < 16; ++chunkX) { //TODO should save 32x32?
+			for(int chunkZ = 0; chunkZ < 16; ++chunkZ) {
+				this.count = 4096+(chunkX*21*4096)+(chunkZ*21*16*4096);
+				Chunk c = world.chunks[chunkX][chunkZ];
+				this.putInt(CHUNK_HEADER);
+				
+				for(int x = 0; x < 16; ++x) {
+					for(int z = 0; z < 16; ++z) {
+						for(int y = 0; y < 128; ++y) {
+							this.putByte(c.blockData[x][z][y]);
+							if(y % 2 == 0) {
+								int prev = this.count;
+								this.count+=4095;
+								this.putByte((byte) (c.blockMetadata[x][z][y] + (c.blockMetadata[x][z][y+1] << 4)));
+								this.count+=2047;
+								this.putByte((byte) (c.blockSkyLight[x][z][y] + (c.blockSkyLight[x][z][y+1] << 4)));
+								this.count+=2047;
+								this.putByte((byte) (c.blockLight[x][z][y] + (c.blockLight[x][z][y+1] << 4)));
+								this.count = prev;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		
 	}
 	
 }

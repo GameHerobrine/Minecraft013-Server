@@ -2,6 +2,7 @@ package net.skidcode.gh.server.world.parser.vanilla;
 
 import java.io.IOException;
 
+import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.world.World;
 import net.skidcode.gh.server.world.nbt.NBTFile;
 
@@ -24,12 +25,24 @@ public class LevelDatParser extends NBTFile{
 		world.spawnY = this.getInt();
 		world.spawnZ = this.getInt();
 		
-		this.getInt(); //somethin idk
+		world.unknown5 = this.getInt(); //somethin idk
 		
 		world.worldTime = this.getInt();
 		world.saveTime = this.getInt();
 		world.name = this.getString();
 		
+	}
+	
+	@Override
+	public void save(World world) {
+		this.putInt(world.worldSeed);
+		this.putInt(world.spawnX);
+		this.putInt(world.spawnY);
+		this.putInt(world.spawnZ);
+		this.putInt(world.unknown5);
+		this.putInt(world.worldTime);
+		this.putInt(world.saveTime);
+		this.putString(world.name);
 	}
 	
 }
