@@ -44,7 +44,7 @@ public class Session {
     private int lastSeqNumber = -1;
 
     private long lastUpdate;
-    private long startTime;
+    //private long startTime;
 
     private boolean isTemporal = true;
 
@@ -78,7 +78,7 @@ public class Session {
         this.port = port;
         this.sendQueue = new DATA_PACKET_4();
         this.lastUpdate = System.currentTimeMillis();
-        this.startTime = System.currentTimeMillis();
+        //this.startTime = System.currentTimeMillis();
         this.isActive = false;
         this.windowStart = -1;
         this.windowEnd = WINDOW_SIZE;

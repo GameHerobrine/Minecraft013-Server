@@ -2,7 +2,6 @@ package net.skidcode.gh.server.world.parser.vanilla;
 
 import java.io.IOException;
 
-import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.world.World;
 import net.skidcode.gh.server.world.nbt.NBTFile;
 

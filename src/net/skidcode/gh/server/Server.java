@@ -11,30 +11,58 @@ import net.skidcode.gh.server.console.command.ConsoleIssuer;
 import net.skidcode.gh.server.network.RakNetHandler;
 import net.skidcode.gh.server.player.Player;
 import net.skidcode.gh.server.utils.Logger;
+import net.skidcode.gh.server.utils.config.PropertiesFile;
 import net.skidcode.gh.server.world.World;
 import net.skidcode.gh.server.world.parser.vanilla.VanillaParser;
 
 public final class Server {
 	
 	public static boolean running = true;
-	public static final RakNetHandler handler = new RakNetHandler();
+	public static RakNetHandler handler;
 	public static World world;
 	private static HashMap<String, Player> id2Player = new HashMap<>();
+	public static PropertiesFile properties;
+	
+	private static int port = 19132;
+	public static boolean saveWorld = true;
 	
 	public static void main(String[] args) throws IOException {
 		Logger.info("Starting Server...");
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			public void run() {
-				Logger.info("Saving world...");
-				try {
-					VanillaParser.saveVanillaWorld();
-					Logger.info("Done saving");
-				} catch (IOException e) {
-					e.printStackTrace();
+				if(Server.saveWorld) {
+					Logger.info("Saving world...");
+					try {
+						VanillaParser.saveVanillaWorld();
+						Logger.info("Done saving");
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					Server.running = false;
 				}
-				Server.running = false;
 			}
 		});
+		Logger.info("Loading properties...");
+		properties = new PropertiesFile("server.properties", new String[][] {
+			{"server-port", "19132"},
+			{"save-world","true"},
+		});
+		
+		try {
+			Server.port = Integer.parseInt(properties.data.get("server-port"));
+		}catch(Exception e) {
+			e.printStackTrace();
+			Logger.warn("Failed to get port from properties. Running on 19132.");
+		}
+		
+		try {
+			Server.saveWorld = Boolean.parseBoolean(properties.data.get("save-world"));
+		}catch(Exception e) {
+			e.printStackTrace();
+			Logger.warn("Failed to get save-world from config. World WILL be saved.");
+		}
+		
+		handler = new RakNetHandler();
 		Logger.info("Loading world...");
 		Server.world = VanillaParser.parseVanillaWorld();
 		Logger.info("Done!");
@@ -113,6 +141,10 @@ public final class Server {
 			if(ignoreCase ? p.nickname.equalsIgnoreCase(nickname) : p.nickname.equals(nickname)) return p;
 		}
 		return null;
+	}
+
+	public static int getPort() {
+		return port;
 	}
 	
 }

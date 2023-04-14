@@ -16,7 +16,7 @@ public class RakNetHandler implements ServerInstance{
 	private ServerHandler handler;
 	
 	public RakNetHandler() {
-		this.raknet = new RakNetServer(19132);
+		this.raknet = new RakNetServer(Server.getPort());
 		this.handler = new ServerHandler(raknet, this);
 	}
 

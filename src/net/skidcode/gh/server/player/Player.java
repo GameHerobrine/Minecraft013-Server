@@ -1,7 +1,5 @@
 package net.skidcode.gh.server.player;
 
-import java.util.Arrays;
-
 import net.skidcode.gh.server.Server;
 import net.skidcode.gh.server.console.command.CommandIssuer;
 import net.skidcode.gh.server.entity.Entity;
@@ -10,6 +8,7 @@ import net.skidcode.gh.server.network.ProtocolInfo;
 import net.skidcode.gh.server.network.protocol.AddPlayerPacket;
 import net.skidcode.gh.server.network.protocol.ChunkDataPacket;
 import net.skidcode.gh.server.network.protocol.LoginPacket;
+import net.skidcode.gh.server.network.protocol.MessagePacket;
 import net.skidcode.gh.server.network.protocol.MovePlayerPacket;
 import net.skidcode.gh.server.network.protocol.PlaceBlockPacket;
 import net.skidcode.gh.server.network.protocol.PlayerEquipmentPacket;
@@ -114,13 +113,18 @@ public class Player extends Entity implements CommandIssuer{
 					this.world.broadcastPacketFromPlayer(pep, this);
 				}
 				break;
+			case ProtocolInfo.MESSAGE_PACKET: //TODO check
+				MessagePacket mp = (MessagePacket) dp;
+				mp.message = "<"+this.nickname+">: "+mp.message;
+				for(Player p : Server.getPlayers()) {
+					p.dataPacket(mp);
+				}
+				break;
 			case ProtocolInfo.REQUEST_CHUNK_PACKET:
-				
 				if(this.firstChunkData) {
 					this.onSpawned();
 					this.firstChunkData = false;
 				}
-				
 				RequestChunkPacket rcp = (RequestChunkPacket) dp;
 				ChunkDataPacket cdp = new ChunkDataPacket();
 				cdp.chunkX = rcp.chunkX;
@@ -128,9 +132,9 @@ public class Player extends Entity implements CommandIssuer{
 				byte[] cd = new byte[16*16*128+16*16*64+16*16];
 				int l = 0;
 				Chunk c = this.world.chunks[rcp.chunkX][rcp.chunkZ];
-				for (int z = 0; z < 16; ++z) { //TODO figure out what did i make
+				for (int z = 0; z < 16; ++z) {
 					for (int x = 0; x < 16; ++x) {
-						cd[l++] = (byte) 0xff;//(byte) ((1 << 6));
+						cd[l++] = (byte) 0xff;
 						for(int y = 0; y < 8; ++y) {
 							System.arraycopy(c.blockData[x][z], y << 4, cd, l, 16);
 							l += 16;

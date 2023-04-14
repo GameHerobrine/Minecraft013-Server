@@ -3,7 +3,6 @@ package net.skidcode.gh.server.console;
 import java.util.Scanner;
 
 import net.skidcode.gh.server.Server;
-import net.skidcode.gh.server.utils.Logger;
 
 public class ThreadConsole extends Thread{
 	public String msg = null;
