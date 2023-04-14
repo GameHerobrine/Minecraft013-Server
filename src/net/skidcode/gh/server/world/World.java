@@ -32,7 +32,7 @@ public class World {
 		}
 	}
 	
-	public void placeBlock(int x, int y, int z, byte id, Player p) { //TODO how?
+	public void placeBlock(int x, int y, int z, byte id, byte unk5, Player p) { //TODO how? + rem unk5
 		UpdateBlockPacket pk = new UpdateBlockPacket();
 		pk.posX = x;
 		pk.posY = (byte) y;
@@ -40,13 +40,14 @@ public class World {
 		pk.id = (byte) id;
 		pk.unknown5 = 0; //meta?
 		this.broadcastPacketFromPlayer(pk, p);
-		PlaceBlockPacket pkk = new PlaceBlockPacket();
+		/*PlaceBlockPacket pkk = new PlaceBlockPacket(); Looks like not neccessary here, even though vanilla sends it too
 		pkk.posX = x;
 		pkk.posY = (byte) y;
 		pkk.posZ = z;
 		pkk.id = (byte) id;
-		pkk.unknown5 = 0;
-		this.broadcastPacketFromPlayer(pkk, p);
+		pkk.unknown5 = unk5;
+		pkk.unknown1 = p.eid;
+		this.broadcastPacketFromPlayer(pkk, p);*/
 	}
 	
 	public void broadcastPacketFromPlayer(MinecraftDataPacket pk, Player p) {

@@ -79,7 +79,7 @@ public class Player extends Entity{
 				break;
 			case ProtocolInfo.PLACE_BLOCK_PACKET:
 				PlaceBlockPacket pbp = (PlaceBlockPacket) dp;
-				this.world.placeBlock(pbp.posX, pbp.posY, pbp.posZ, pbp.id, this);
+				this.world.placeBlock(pbp.posX, pbp.posY, pbp.posZ, pbp.id, pbp.unknown5, this);
 				break;
 			case ProtocolInfo.MOVE_PLAYER_PACKET_PACKET: //TODO send updates
 				MovePlayerPacket moveplayerpacket = (MovePlayerPacket)dp;
@@ -88,7 +88,7 @@ public class Player extends Entity{
 				this.posZ = moveplayerpacket.posZ;
 				this.pitch = moveplayerpacket.pitch;
 				this.yaw = moveplayerpacket.yaw;
-				
+				Logger.info(this.posX, this.posY, this.posZ);
 				moveplayerpacket.eid = this.eid;
 				moveplayerpacket.setBuffer(new byte[] {});
 				this.world.broadcastPacketFromPlayer(moveplayerpacket, this);
@@ -108,22 +108,27 @@ public class Player extends Entity{
 				ChunkDataPacket cdp = new ChunkDataPacket();
 				cdp.chunkX = rcp.chunkX;
 				cdp.chunkZ = rcp.chunkZ;
-				byte[] cd = new byte[16*16*16+(16*16*16/2)+16*16];
+				byte[] cd = new byte[16*16*128+16*16*64+16*16];
 				int l = 0;
 				for (int z = 0; z < 16; ++z) { //TODO figure out what did i make
 					for (int x = 0; x < 16; ++x) {
-						cd[l++] = (byte) ((1 << 7));
-						Arrays.fill(cd, l, l + 16, (byte) (x + z));
-						l += 16;
-						cd[l++] = 1; // MERGE2
+						cd[l++] = (byte) 0xff;//(byte) ((1 << 6));
+						for(int y = 0; y < 8; ++y) {
+							Arrays.fill(cd, l, l + 16, x != z ? 0 : (byte) 3);
+							l += 16;
+							Arrays.fill(cd, l, l + 8, (byte) 0);
+							l += 8;
+						}
+						
+						/*cd[l++] = 1; // MERGE2
 						cd[l++] = 1;
 						cd[l++] = 1;
 						cd[l++] = 1;
 						cd[l++] = 1;
 						cd[l++] = 1;
 						cd[l++] = 1;
-						cd[l++] = 1;
-
+						cd[l++] = 1;*/
+						
 					}
 				}
 				
