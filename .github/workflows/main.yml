@@ -13,12 +13,8 @@ jobs:
       - run: rm -rf src/classes/
       - run: cd src/
       - run: find -name "*.java" > sources.txt
-      - run: mkdir classes/
-      - run: javac -d classes/ @sources.txt 
-      - run: cd classes/
-      - run: pwd
-      - run: jar cvfe build.jar net.skidcode.gh.server.Server *
-      - run: cd ../
+      - run: mkdir classes/ && javac -d classes/ @sources.txt 
+      - run: cd classes/ && jar cvfe build.jar net.skidcode.gh.server.Server *
       - uses: actions/upload-artifact@v3
         with:
           name: build
