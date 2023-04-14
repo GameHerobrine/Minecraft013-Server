@@ -122,8 +122,9 @@ public class Player extends Entity implements CommandIssuer{
 						for(int y = 0; y < 8; ++y) {
 							System.arraycopy(c.blockData[x][z], y << 4, cd, l, 16);
 							l += 16;
-							Arrays.fill(cd, l, l + 8, (byte) 0);
-							l += 8;
+							for(int bY = 0; bY < 8; ++bY) {
+								cd[l++] = (byte) (c.blockMetadata[x][z][(y << 4) + (bY * 2)] + (c.blockMetadata[x][z][(y << 4) + (bY * 2) + 1] << 4));
+							}
 						}
 					}
 				}
