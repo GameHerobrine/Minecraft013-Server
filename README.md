@@ -8,7 +8,6 @@ A Minecraft 0.1.3 server software written on Java. Uses [Old Nukkit's Raknet imp
 * World modifying
 
 # Not Implemented Features
-* World Data Saving
 * World Generating
 * Player chat
 
