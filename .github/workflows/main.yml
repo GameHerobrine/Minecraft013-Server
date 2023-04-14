@@ -1,0 +1,28 @@
+name: Bad Build Action
+run-name: Build
+on: [push]
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '8'
+      - run: rm -rf src/classes/
+      - run: cd src/
+      - run: find -name "*.java" > sources.txt
+      - run: mkdir classes/
+      - run: javac -d classes/ @sources.txt 
+      - run: cd classes/
+      - run: pwd
+      - run: jar cvfe build.jar net.skidcode.gh.server.Server *
+      - run: cd ../
+      - uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: 
+            classes/build.jar
+          
+          
