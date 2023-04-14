@@ -22,18 +22,22 @@ public final class Server {
 	private static HashMap<String, Player> id2Player = new HashMap<>();
 	
 	public static void main(String[] args) throws IOException {
+		Logger.info("Starting Server...");
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			public void run() {
 				Logger.info("Saving world...");
 				try {
 					VanillaParser.saveVanillaWorld();
+					Logger.info("Done saving");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 				Server.running = false;
 			}
 		});
+		Logger.info("Loading world...");
 		Server.world = VanillaParser.parseVanillaWorld();
+		Logger.info("Done!");
 		run();
 		System.exit(0);
 	}

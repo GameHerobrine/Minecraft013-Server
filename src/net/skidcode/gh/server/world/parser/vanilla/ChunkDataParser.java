@@ -43,21 +43,54 @@ public class ChunkDataParser extends NBTFile{
 					for(int z = 0; z < 16; ++z) {
 						for(int y = 0; y < 128; ++y) {
 							c.blockData[x][z][y] = this.getByte();
-							if(y % 2 == 0) {
+							/*if(y % 2 == 0) {
 								int prev = this.offset;
 								this.offset+=4095;
 								byte dd = this.getByte();
-								c.blockMetadata[x][z][y] = (byte) (dd & 0xf);
-								c.blockMetadata[x][z][y+1] = (byte) (dd >> 0xf);
+								c.blockMetadata[x][z][y+1] = (byte) (dd & 0xf);
+								c.blockMetadata[x][z][y] = (byte) (dd >> 0x4);
 								this.offset+=2047;
 								dd = this.getByte();
-								c.blockSkyLight[x][z][y] = (byte) (dd & 0xf);
-								c.blockSkyLight[x][z][y+1] = (byte) (dd >> 0xf);
+								c.blockSkyLight[x][z][y+1] = (byte) (dd & 0xf);
+								c.blockSkyLight[x][z][y] = (byte) (dd >> 0x4);
 								this.offset+=2047;
 								dd = this.getByte();
-								c.blockLight[x][z][y] = (byte) (dd & 0xf);
-								c.blockLight[x][z][y+1] = (byte) (dd >> 0xf);
+								c.blockLight[x][z][y+1] = (byte) (dd & 0xf);
+								c.blockLight[x][z][y] = (byte) (dd >> 0x4);
 								this.offset = prev;
+							}*/
+						}
+					}
+				}
+				for(int x = 0; x < 16; ++x) { //TODO make more beautiful
+					for(int z = 0; z < 16; ++z) {
+						for(int y = 0; y < 128; ++y) {
+							if(y % 2 == 0) {
+								byte dd = this.getByte();
+								c.blockMetadata[x][z][y] = (byte) (dd & 0xf);
+								c.blockMetadata[x][z][y+1] = (byte) (dd >> 0x4);
+							}
+						}
+					}
+				}
+				for(int x = 0; x < 16; ++x) { //TODO make more beautiful
+					for(int z = 0; z < 16; ++z) {
+						for(int y = 0; y < 128; ++y) {
+							if(y % 2 == 0) {
+								byte dd = this.getByte();
+								c.blockSkyLight[x][z][y] = (byte) (dd & 0xf);
+								c.blockSkyLight[x][z][y+1] = (byte) (dd >> 0x4);
+							}
+						}
+					}
+				}
+				for(int x = 0; x < 16; ++x) { //TODO make more beautiful
+					for(int z = 0; z < 16; ++z) {
+						for(int y = 0; y < 128; ++y) {
+							if(y % 2 == 0) {
+								byte dd = this.getByte();
+								c.blockLight[x][z][y] = (byte) (dd & 0xf);
+								c.blockLight[x][z][y+1] = (byte) (dd >> 0x4);
 							}
 						}
 					}
@@ -90,15 +123,32 @@ public class ChunkDataParser extends NBTFile{
 					for(int z = 0; z < 16; ++z) {
 						for(int y = 0; y < 128; ++y) {
 							this.putByte(c.blockData[x][z][y]);
+						}
+					}
+				}
+				for(int x = 0; x < 16; ++x) {
+					for(int z = 0; z < 16; ++z) {
+						for(int y = 0; y < 128; ++y) {
 							if(y % 2 == 0) {
-								int prev = this.count;
-								this.count+=4095;
 								this.putByte((byte) (c.blockMetadata[x][z][y] + (c.blockMetadata[x][z][y+1] << 4)));
-								this.count+=2047;
+							}
+						}
+					}
+				}
+				for(int x = 0; x < 16; ++x) {
+					for(int z = 0; z < 16; ++z) {
+						for(int y = 0; y < 128; ++y) {
+							if(y % 2 == 0) {
 								this.putByte((byte) (c.blockSkyLight[x][z][y] + (c.blockSkyLight[x][z][y+1] << 4)));
-								this.count+=2047;
+							}
+						}
+					}
+				}
+				for(int x = 0; x < 16; ++x) { //TODO make more beautiful
+					for(int z = 0; z < 16; ++z) {
+						for(int y = 0; y < 128; ++y) {
+							if(y % 2 == 0) {
 								this.putByte((byte) (c.blockLight[x][z][y] + (c.blockLight[x][z][y+1] << 4)));
-								this.count = prev;
 							}
 						}
 					}

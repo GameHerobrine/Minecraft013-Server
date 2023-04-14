@@ -35,7 +35,7 @@ public class RakNetServer extends Thread {
     }
     
     public void start() {
-    	Logger.info("Starting server...");
+    	Logger.info("Starting RakNet...");
     	super.start();
     }
     

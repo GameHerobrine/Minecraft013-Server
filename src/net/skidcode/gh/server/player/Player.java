@@ -25,7 +25,7 @@ public class Player extends Entity implements CommandIssuer{
 	public int port;
 	public byte itemID;
 	public String ip, identifier, nickname;
-	
+	public boolean firstChunkData = true;
 	public Player(String identifier, long clientID, String ip, int port) {
 		super();
 		this.clientID = clientID;
@@ -75,6 +75,7 @@ public class Player extends Entity implements CommandIssuer{
 						pkk2.posY = this.posY;
 						pkk2.posZ = this.posZ;
 						player.dataPacket(pkk2);
+						
 					}
 				}
 				
@@ -86,7 +87,12 @@ public class Player extends Entity implements CommandIssuer{
 				break;
 			case ProtocolInfo.PLACE_BLOCK_PACKET:
 				PlaceBlockPacket pbp = (PlaceBlockPacket) dp;
-				this.world.placeBlock(pbp.posX, pbp.posY, pbp.posZ, pbp.id);
+				if(this.world.getBlockIDAt(pbp.posX, pbp.posY-1, pbp.posZ) == 44) { //44 - Stone slab, TODO block ids, Block::onPlace
+					this.world.placeBlock(pbp.posX, pbp.posY-1, pbp.posZ, (byte) 43);
+				}else {
+					this.world.placeBlock(pbp.posX, pbp.posY, pbp.posZ, pbp.id);
+				}
+				
 				this.world.broadcastPacketFromPlayer(pbp, this);
 				break;
 			case ProtocolInfo.MOVE_PLAYER_PACKET_PACKET: //TODO send updates
@@ -109,6 +115,12 @@ public class Player extends Entity implements CommandIssuer{
 				}
 				break;
 			case ProtocolInfo.REQUEST_CHUNK_PACKET:
+				
+				if(this.firstChunkData) {
+					this.onSpawned();
+					this.firstChunkData = false;
+				}
+				
 				RequestChunkPacket rcp = (RequestChunkPacket) dp;
 				ChunkDataPacket cdp = new ChunkDataPacket();
 				cdp.chunkX = rcp.chunkX;
@@ -136,7 +148,18 @@ public class Player extends Entity implements CommandIssuer{
 				break;
 		}
 	}
-
+	
+	public void onSpawned() {
+		for(Player p : Server.getPlayers()) { //Fix of Vanilla's not sending other player items on connect, TODO make toggleable in config?
+			if(p.eid != this.eid) {
+				PlayerEquipmentPacket pep = new PlayerEquipmentPacket();
+				pep.eid = p.eid;
+				pep.itemID = p.itemID;
+				this.dataPacket(pep);
+			}
+		}
+	}
+	
 	@Override
 	public String getIssuerName() {
 		return this.nickname;

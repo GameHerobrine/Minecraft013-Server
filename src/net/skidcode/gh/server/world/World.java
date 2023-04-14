@@ -38,11 +38,18 @@ public class World {
 		this.chunks[x >> 4][z >> 4].blockMetadata[x & 0xf][z & 0xf][y] = 0;
 	}
 	
+	public int getBlockIDAt(int x, int y, int z) {
+		return this.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf][y];
+	}
+	
 	public void placeBlock(int x, int y, int z, byte id) {
 		this.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf][y] = id;
 		this.chunks[x >> 4][z >> 4].blockMetadata[x & 0xf][z & 0xf][y] = 0;
 	}
-	
+	public void placeBlock(int x, int y, int z, byte id, byte meta) {
+		this.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf][y] = id;
+		this.chunks[x >> 4][z >> 4].blockMetadata[x & 0xf][z & 0xf][y] = meta;
+	}
 	public void broadcastPacketFromPlayer(MinecraftDataPacket pk, Player p) {
 		for(Player pl : this.players.values()) {
 			if(p.eid != pl.eid) {
