@@ -1,6 +1,8 @@
 package net.skidcode.gh.server;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,6 +15,7 @@ import net.skidcode.gh.server.player.Player;
 import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.utils.config.PropertiesFile;
 import net.skidcode.gh.server.world.World;
+import net.skidcode.gh.server.world.format.PlayerData;
 import net.skidcode.gh.server.world.parser.vanilla.VanillaParser;
 
 public final class Server {
@@ -25,7 +28,7 @@ public final class Server {
 	
 	private static int port = 19132;
 	public static boolean saveWorld = true;
-	
+	public static boolean savePlayerData = true;
 	public static void main(String[] args) throws IOException {
 		Logger.info("Starting Server...");
 		Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -42,10 +45,14 @@ public final class Server {
 				}
 			}
 		});
+		Logger.info("Creating directories...");
+		Files.createDirectories(Paths.get("world/players"));
+		Files.createDirectories(Paths.get("world"));
 		Logger.info("Loading properties...");
 		properties = new PropertiesFile("server.properties", new String[][] {
 			{"server-port", "19132"},
-			{"save-world","true"},
+			{"save-world", "true"},
+			{"save-player-data", "true"},
 		});
 		
 		try {
@@ -59,7 +66,13 @@ public final class Server {
 			Server.saveWorld = Boolean.parseBoolean(properties.data.get("save-world"));
 		}catch(Exception e) {
 			e.printStackTrace();
-			Logger.warn("Failed to get save-world from config. World WILL be saved.");
+			Logger.warn("Failed to get save-world from properties. World WILL be saved.");
+		}
+		try { //TODO make something with those try{}catch, theres too much of them
+			Server.savePlayerData = Boolean.parseBoolean(properties.data.get("save-player-data"));
+		}catch(Exception e) {
+			e.printStackTrace();
+			Logger.warn("Failed to get save-player-data from properties. Player Data WILL be saved.");
 		}
 		
 		handler = new RakNetHandler();
@@ -78,15 +91,22 @@ public final class Server {
 		
 		return id2Player.getOrDefault(id, null);
 	}
+	
+	public static void broadcastMessage(String message) {
+		for(Player p : Server.getPlayers()) {
+			p.sendMessage(message);
+		}
+	}
+	
 	public static void removePlayer(String id) {
 		Player p = id2Player.remove(id);
 		if(p != null) {
+			p.onPlayerExit();
 			p.world.removePlayer(p.eid);
-			
 			p.world = null;
 			Logger.info(id+" closed a session.");
 		}
-		else Logger.info(id+" closed session which doesnt exist?!");
+		//else Logger.info(id+" closed session which doesnt exist?!");
 		
 	}
 	public static void addPlayer(String id, Player player) {

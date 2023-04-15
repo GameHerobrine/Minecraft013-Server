@@ -1,5 +1,7 @@
 package net.skidcode.gh.server.player;
 
+import java.io.IOException;
+
 import net.skidcode.gh.server.Server;
 import net.skidcode.gh.server.console.command.CommandIssuer;
 import net.skidcode.gh.server.entity.Entity;
@@ -17,6 +19,7 @@ import net.skidcode.gh.server.network.protocol.RequestChunkPacket;
 import net.skidcode.gh.server.network.protocol.StartGamePacket;
 import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.world.chunk.Chunk;
+import net.skidcode.gh.server.world.format.PlayerData;
 
 public class Player extends Entity implements CommandIssuer{
 	
@@ -25,6 +28,9 @@ public class Player extends Entity implements CommandIssuer{
 	public byte itemID;
 	public String ip, identifier, nickname;
 	public boolean firstChunkData = true;
+	public PlayerData playerdata;
+	
+	
 	public Player(String identifier, long clientID, String ip, int port) {
 		super();
 		this.clientID = clientID;
@@ -34,11 +40,27 @@ public class Player extends Entity implements CommandIssuer{
 		this.posX = this.world.spawnX;
 		this.posY = this.world.spawnY;
 		this.posZ = this.world.spawnZ;
-		
+	}
+	
+	public void sendMessage(String message) {
+		MessagePacket pk = new MessagePacket();
+		pk.message = message;
+		this.dataPacket(pk);
 	}
 	
 	public void dataPacket(MinecraftDataPacket pk) {
 		Server.handler.sendPacket(this, pk);
+	}
+	
+	public void onPlayerExit() {
+		try {
+			this.playerdata.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			Logger.error("Failed to save playerdata!");
+		}
+		
+		Server.broadcastMessage(this.nickname+" left the game.");
 	}
 	
 	public void handlePacket(MinecraftDataPacket dp) {
@@ -46,6 +68,18 @@ public class Player extends Entity implements CommandIssuer{
 			case ProtocolInfo.LOGIN_PACKET: //TODO MessagePacket handle(but how to check..?)
 				LoginPacket loginpacket = (LoginPacket)dp;
 				this.nickname = loginpacket.nickname;
+				try {
+					this.playerdata = new PlayerData(this);
+				} catch (IOException e) {
+					e.printStackTrace();
+					Logger.error("Failed to create "+this.nickname+"'s playerdata!");
+				}
+				try {
+					this.playerdata.parse();
+				} catch (IOException e) {
+					e.printStackTrace();
+					Logger.error("Failed to parse playerdata!");
+				}
 				this.world.addPlayer(this);
 				StartGamePacket pk = new StartGamePacket();
 				pk.seed = this.world.worldSeed;
@@ -65,16 +99,6 @@ public class Player extends Entity implements CommandIssuer{
 						pkk.posY = player.posY;
 						pkk.posZ = player.posZ;
 						this.dataPacket(pkk);
-						
-						AddPlayerPacket pkk2 = new AddPlayerPacket();
-						pkk2.clientID = this.clientID;
-						pkk2.eid = this.eid;
-						pkk2.nickname = this.nickname;
-						pkk2.posX = this.posX;
-						pkk2.posY = this.posY;
-						pkk2.posZ = this.posZ;
-						player.dataPacket(pkk2);
-						
 					}
 				}
 				
@@ -160,6 +184,15 @@ public class Player extends Entity implements CommandIssuer{
 				pep.eid = p.eid;
 				pep.itemID = p.itemID;
 				this.dataPacket(pep);
+				
+				AddPlayerPacket pkk2 = new AddPlayerPacket();
+				pkk2.clientID = this.clientID;
+				pkk2.eid = this.eid;
+				pkk2.nickname = this.nickname;
+				pkk2.posX = this.posX;
+				pkk2.posY = this.posY;
+				pkk2.posZ = this.posZ;
+				p.dataPacket(pkk2);
 			}
 		}
 	}

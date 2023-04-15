@@ -5,9 +5,9 @@ import java.util.Arrays;
 
 import net.skidcode.gh.server.world.World;
 import net.skidcode.gh.server.world.chunk.Chunk;
-import net.skidcode.gh.server.world.nbt.NBTFile;
+import net.skidcode.gh.server.world.nbt.WorldNBTFile;
 
-public class ChunkDataParser extends NBTFile{
+public class ChunkDataParser extends WorldNBTFile{
 	public Chunk[] chunks = new Chunk[256];
 	
 	public static final int CHUNK_HEADER = 71368960;

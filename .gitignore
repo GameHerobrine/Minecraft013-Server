@@ -1,4 +1,8 @@
 bin/*
+build/*
+.github/*
 .settings/*
+world/*
 .classpath
 .project
+server.properties

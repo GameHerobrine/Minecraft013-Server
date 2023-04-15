@@ -3,9 +3,9 @@ package net.skidcode.gh.server.world.parser.vanilla;
 import java.io.IOException;
 
 import net.skidcode.gh.server.world.World;
-import net.skidcode.gh.server.world.nbt.NBTFile;
+import net.skidcode.gh.server.world.nbt.WorldNBTFile;
 
-public class LevelDatParser extends NBTFile{
+public class LevelDatParser extends WorldNBTFile{
 	
 	public int seed;
 	public int spawnX, spawnY, spawnZ;

@@ -21,15 +21,11 @@ public abstract class ConfigFile {
 		this.path2File = path2file;
 		if(Files.exists(Paths.get(path2file))) {
 			this.read();
-			for(String[] s : def) {
-				this.data.putIfAbsent(s[0], s[1]);
-			}
-		}else {
-			for(String[] s : def) {
-				this.data.putIfAbsent(s[0], s[1]);
-			}
-			this.write();
 		}
+		for(String[] s : def) {
+			this.data.putIfAbsent(s[0], s[1]);
+		}
+		this.write();
 	}
 	public abstract void read() throws IOException;
 	public abstract void write() throws IOException;
