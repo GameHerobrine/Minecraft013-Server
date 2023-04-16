@@ -30,6 +30,11 @@ public final class Server {
 	private static int port = 19132;
 	public static boolean saveWorld = true;
 	public static boolean savePlayerData = true;
+	public static long nextTick = 0;
+	public static int tps = 0;
+	public static int stableTPS = 0;
+	public static long lastSecondRecorded = 0;
+	
 	public static void main(String[] args) throws IOException {
 		Logger.info("Starting Server...");
 		Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -121,34 +126,45 @@ public final class Server {
 		ThreadConsole tc = new ThreadConsole();
 		tc.start();
 		while(Server.running) {
-			Server.handler.process();
-			if(tc.msg != null) {
-				try {
-					String[] cmdsplt = tc.msg.split(" ");
-					if(cmdsplt.length > 0) {
-						CommandBase cmd = CommandBase.commands.get(cmdsplt[0]);
+			long tickTime = System.currentTimeMillis();
+			if(Server.nextTick - tickTime <= 0) {
+				Server.handler.process();
+				if(tc.msg != null) {
+					try {
+						String[] cmdsplt = tc.msg.split(" ");
+						if(cmdsplt.length > 0) {
+							CommandBase cmd = CommandBase.commands.get(cmdsplt[0]);
+							
+							if(cmd == null) {
+								ConsoleIssuer.INSTANCE.sendOutput("Unknown command.");
+							}else {
+								String out = cmd.processCommand(ConsoleIssuer.INSTANCE, Arrays.copyOfRange(cmdsplt, 1, cmdsplt.length));
+								if(out.length() > 0) ConsoleIssuer.INSTANCE.sendOutput(out);
+							}
+						}
 						
-						if(cmd == null) {
-							ConsoleIssuer.INSTANCE.sendOutput("Unknown command.");
-						}else {
-							String out = cmd.processCommand(ConsoleIssuer.INSTANCE, Arrays.copyOfRange(cmdsplt, 1, cmdsplt.length));
-							if(out.length() > 0) ConsoleIssuer.INSTANCE.sendOutput(out);
+					}catch(Exception e) {
+						e.printStackTrace();
+					}finally {
+						synchronized(tc) {
+							tc.msg = null;
+							tc.notify();
 						}
 					}
-					
-				}catch(Exception e) {
-					e.printStackTrace();
-				}finally {
-					synchronized(tc) {
-						tc.msg = null;
-						tc.notify();
-					}
 				}
-			}
-			try {
-				Thread.sleep(1);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+				try {
+					Thread.sleep(1);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				++Server.tps;
+				if(tickTime - lastSecondRecorded >= 1000) { //maybe make it better?
+					lastSecondRecorded = tickTime;
+					Server.stableTPS = Server.tps;
+					Server.tps = 0;
+				}
+				if(Server.nextTick - tickTime < -1000) Server.nextTick = tickTime;
+				else Server.nextTick += 50;
 			}
 		}
 	}

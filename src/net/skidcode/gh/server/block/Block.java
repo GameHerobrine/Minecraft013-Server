@@ -28,7 +28,7 @@ public abstract class Block {
 	public static LeavesBlock leaves = new LeavesBlock(18);
 	public static GlassBlock glass = new GlassBlock(20);
 	public static LapisOreBlock lapisOre = new LapisOreBlock(21);
-	public static SandstoneBlock sandStone = new SandstoneBlock(22);
+	public static SandstoneBlock sandStone = new SandstoneBlock(24);
 	public static YellowFlowerBlock yellowFlowerBlock = new YellowFlowerBlock(37);
 	public static RoseBlock rose = new RoseBlock(38);
 	public static BrownMushroomBlock brownMushroom = new BrownMushroomBlock(39);

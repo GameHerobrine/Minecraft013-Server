@@ -106,11 +106,11 @@ public class Session {
     public void update(long time) throws Exception {
         if (!this.isActive && (this.lastUpdate + 10000) < time) { //10 second timeout
             this.disconnect("timeout");
-
+            
             return;
         }
         this.isActive = false;
-
+        
         if (!this.ACKQueue.isEmpty()) {
             ACK pk = new ACK();
             pk.packets = this.ACKQueue.stream().toArray(Integer[]::new);

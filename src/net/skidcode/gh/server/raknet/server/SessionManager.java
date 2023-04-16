@@ -95,13 +95,13 @@ public class SessionManager {
             session.update(time);
         }
 
-        for (Map.Entry<String, Integer> entry : this.ipSec.entrySet()) {
+        /*for (Map.Entry<String, Integer> entry : this.ipSec.entrySet()) {
             String address = entry.getKey();
             int count = entry.getValue();
             if (count >= this.packetLimit) {
                 this.blockAddress(address);
             }
-        }
+        }*/
         this.ipSec.clear();
 
         if ((this.ticks & 0b1111) == 0) {
@@ -273,8 +273,7 @@ public class SessionManager {
                 Session s = this.sessions.get(i);
                 if (s.isTemporal()) {
                     keyToRemove.add(i);
-                    size--;
-                    if (size <= 4096) {
+                    if (--size <= 4096) {
                         break;
                     }
                 }
@@ -288,9 +287,11 @@ public class SessionManager {
 
     public boolean receiveStream() throws Exception {
         byte[] packet = this.server.readMainToThreadPacket();
+        
         if (packet != null && packet.length > 0) {
             byte id = packet[0];
             int offset = 1;
+            
             switch (id) {
                 case RakNet.PACKET_ENCAPSULATED:
                     int len = packet[offset++];

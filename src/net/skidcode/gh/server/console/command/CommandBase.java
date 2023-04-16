@@ -7,6 +7,7 @@ import net.skidcode.gh.server.console.command.impl.FillChunkCommand;
 import net.skidcode.gh.server.console.command.impl.HelpCommand;
 import net.skidcode.gh.server.console.command.impl.StopCommand;
 import net.skidcode.gh.server.console.command.impl.TeleportCommand;
+import net.skidcode.gh.server.console.command.impl.TpsCommand;
 
 public abstract class CommandBase {
 	
@@ -30,6 +31,7 @@ public abstract class CommandBase {
 		addCommand(new TeleportCommand("teleport"));
 		addCommand(new StopCommand("stop"));
 		addCommand(new FillChunkCommand("fillchunk"));
+		addCommand(new TpsCommand("tps"));
 	}
 	
 }
