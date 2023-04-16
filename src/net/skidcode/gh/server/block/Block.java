@@ -2,6 +2,8 @@ package net.skidcode.gh.server.block;
 
 import net.skidcode.gh.server.block.impl.*;
 import net.skidcode.gh.server.block.material.Material;
+import net.skidcode.gh.server.network.protocol.RemoveBlockPacket;
+import net.skidcode.gh.server.network.protocol.UpdateBlockPacket;
 import net.skidcode.gh.server.player.Player;
 import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.world.World;
@@ -76,6 +78,21 @@ public abstract class Block {
 	public static InfoUpdateBlock updateGame = new InfoUpdateBlock(248);
 	public static InfoUpdate2Block updateGame2 = new InfoUpdate2Block(249);
 	public static FireBlock fire = new FireBlock(51);
+	
+	public void onNeighborBlockChanged(World world, int x, int y, int z, int meta) {}
+	public void onBlockRemoved(World world, int x, int y, int z) {
+		world.removeBlock(x, y, z);
+		UpdateBlockPacket pk = new UpdateBlockPacket();
+		pk.posX = x;
+		pk.posY = (byte) y;
+		pk.posZ = z;
+		pk.id = 0;
+		pk.metadata = 0;
+		world.broadcastPacket(pk);
+	}
+	public void onBlockRemovedByPlayer(World world, int x, int y, int z, Player player) {
+		world.removeBlock(x, y, z);
+	}
 	
 	public void onBlockPlacedByPlayer(World world, int x, int y, int z, int face, Player player) {
 		world.placeBlock(x, y, z, (byte) this.blockID);

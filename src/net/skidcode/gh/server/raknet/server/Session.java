@@ -503,8 +503,9 @@ public class Session {
             if (packet instanceof UNCONNECTED_PING) {
                 UNCONNECTED_PONG pk = new UNCONNECTED_PONG();
                 pk.serverID = this.sessionManager.getID();
+                
                 pk.pingID = ((UNCONNECTED_PING) packet).pingID;
-                pk.serverName = "MCCPP;Demo;Minecraft 0.1.3 Server";//this.sessionManager.getName();
+                pk.serverName = "MCCPP;Demo;Minecraft 0.1.3 Server";//this.sessionManager.getName(); TODO custom server info
                 this.sendPacket(pk);
             }else if (packet instanceof OPEN_CONNECTION_REQUEST_1) {
                 //TODO: check protocol number and refuse connections

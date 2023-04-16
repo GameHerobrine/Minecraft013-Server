@@ -2,6 +2,7 @@ package net.skidcode.gh.server.world;
 
 import java.util.HashMap;
 
+import net.skidcode.gh.server.block.Block;
 import net.skidcode.gh.server.network.MinecraftDataPacket;
 import net.skidcode.gh.server.network.protocol.RemoveEntityPacket;
 import net.skidcode.gh.server.player.Player;
@@ -36,19 +37,48 @@ public class World {
 	public void removeBlock(int x, int y, int z) {
 		this.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf][y] = 0;
 		this.chunks[x >> 4][z >> 4].blockMetadata[x & 0xf][z & 0xf][y] = 0;
+		
+		this.notifyNeighbor(x - 1, y, z);
+		this.notifyNeighbor(x + 1, y, z);
+		this.notifyNeighbor(x, y - 1, z);
+		this.notifyNeighbor(x, y + 1, z);
+		this.notifyNeighbor(x, y, z - 1);
+		this.notifyNeighbor(x, y, z + 1);
+	}
+	
+	public void notifyNeighbor(int x, int y, int z) {
+		int id = this.getBlockIDAt(x, y, z);
+		if(Block.blocks[id] instanceof Block) {
+			Block.blocks[id].onNeighborBlockChanged(this, x, y, z, this.getBlockMetaAt(x, y, z));
+		}
 	}
 	
 	public int getBlockIDAt(int x, int y, int z) {
 		return this.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf][y];
 	}
 	
+	public int getBlockMetaAt(int x, int y, int z) {
+		return this.chunks[x >> 4][z >> 4].blockMetadata[x & 0xf][z & 0xf][y];
+	}
+	
 	public void placeBlock(int x, int y, int z, byte id) {
 		this.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf][y] = id;
 		this.chunks[x >> 4][z >> 4].blockMetadata[x & 0xf][z & 0xf][y] = 0;
 	}
+	
+	public boolean isBlockSolid(int x, int y, int z) {
+		Block b = Block.blocks[this.getBlockIDAt(x, y, z)];
+		return b instanceof Block ? b.material.isSolid : false;
+	}
+	
 	public void placeBlock(int x, int y, int z, byte id, byte meta) {
 		this.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf][y] = id;
 		this.chunks[x >> 4][z >> 4].blockMetadata[x & 0xf][z & 0xf][y] = meta;
+	}
+	public void broadcastPacket(MinecraftDataPacket pk) {
+		for(Player pl : this.players.values()) {
+			pl.dataPacket(pk);
+		}
 	}
 	public void broadcastPacketFromPlayer(MinecraftDataPacket pk, Player p) {
 		for(Player pl : this.players.values()) {

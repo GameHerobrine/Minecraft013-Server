@@ -6,7 +6,7 @@ import net.skidcode.gh.server.network.ProtocolInfo;
 public class UpdateBlockPacket extends MinecraftDataPacket{
 	
 	public int posX, posZ;
-	public byte posY, id, unknown5;
+	public byte posY, id, metadata;
 	
 	@Override
 	public byte pid() {
@@ -19,7 +19,7 @@ public class UpdateBlockPacket extends MinecraftDataPacket{
 		this.posZ = this.getInt();
 		this.posY = this.getByte();
 		this.id = this.getByte();
-		this.unknown5 = this.getByte();
+		this.metadata = this.getByte();
 	}
 
 	@Override
@@ -29,7 +29,7 @@ public class UpdateBlockPacket extends MinecraftDataPacket{
 		this.putInt(this.posZ);
 		this.putByte(this.posY);
 		this.putByte(this.id);
-		this.putByte(this.unknown5);
+		this.putByte(this.metadata);
 	}
 
 }
