@@ -2,7 +2,9 @@ package net.skidcode.gh.server.block;
 
 import net.skidcode.gh.server.block.impl.*;
 import net.skidcode.gh.server.block.material.Material;
+import net.skidcode.gh.server.player.Player;
 import net.skidcode.gh.server.utils.Logger;
+import net.skidcode.gh.server.world.World;
 //TODO block properties
 public abstract class Block {
 	public static Block[] blocks = new Block[256];
@@ -27,9 +29,9 @@ public abstract class Block {
 	public static GlassBlock glass = new GlassBlock(20);
 	public static LapisOreBlock lapisOre = new LapisOreBlock(21);
 	public static SandstoneBlock sandStone = new SandstoneBlock(22);
-	public static UnknownFlowerBlock unknownFlowerBlock = new UnknownFlowerBlock(37); //TODO check the id 37
+	public static YellowFlowerBlock yellowFlowerBlock = new YellowFlowerBlock(37);
 	public static RoseBlock rose = new RoseBlock(38);
-	public static BrownMushroomBlock brownMushroom = new BrownMushroomBlock(39); //TODO check 39 & 40
+	public static BrownMushroomBlock brownMushroom = new BrownMushroomBlock(39);
 	public static RedMushroomBlock redMushroom = new RedMushroomBlock(40);
 	public static GoldBlock goldBlock = new GoldBlock(41);
 	public static IronBlock ironBlock = new IronBlock(42);
@@ -55,7 +57,7 @@ public abstract class Block {
 	public static ClayBlock clay = new ClayBlock(82);
 	public static ReedsBlock reeds = new ReedsBlock(83);
 	public static InvisibleBedrockBlock invisibleBedrock = new InvisibleBedrockBlock(95); //TODO destructible/indestructible
-	public static WoolBlock wool = new WoolBlock(35, -1); //no color???
+	public static WoolBlock wool = new WoolBlock(35, -1);
 	public static WoolBlock wool_f = new WoolBlock(101, 0xf); //using ids instead of meta =/
 	public static WoolBlock wool_e = new WoolBlock(102, 0xe);
 	public static WoolBlock wool_d = new WoolBlock(103, 0xd);
@@ -75,6 +77,9 @@ public abstract class Block {
 	public static InfoUpdate2Block updateGame2 = new InfoUpdate2Block(249);
 	public static FireBlock fire = new FireBlock(51);
 	
+	public void onBlockPlacedByPlayer(World world, int x, int y, int z, int face, Player player) {
+		world.placeBlock(x, y, z, (byte) this.blockID);
+	}
 	
 	public static void init() {}
 	

@@ -3,6 +3,7 @@ package net.skidcode.gh.server.player;
 import java.io.IOException;
 
 import net.skidcode.gh.server.Server;
+import net.skidcode.gh.server.block.Block;
 import net.skidcode.gh.server.console.command.CommandIssuer;
 import net.skidcode.gh.server.entity.Entity;
 import net.skidcode.gh.server.network.MinecraftDataPacket;
@@ -110,13 +111,14 @@ public class Player extends Entity implements CommandIssuer{
 				break;
 			case ProtocolInfo.PLACE_BLOCK_PACKET:
 				PlaceBlockPacket pbp = (PlaceBlockPacket) dp;
-				if(this.world.getBlockIDAt(pbp.posX, pbp.posY-1, pbp.posZ) == 44) { //44 - Stone slab, TODO block ids, Block::onPlace
-					this.world.placeBlock(pbp.posX, pbp.posY-1, pbp.posZ, (byte) 43);
+				Block b = Block.blocks[pbp.id & 0xff];
+				if(b instanceof Block) {
+					b.onBlockPlacedByPlayer(this.world, pbp.posX, pbp.posY, pbp.posZ, pbp.face, this);
+					this.world.broadcastPacketFromPlayer(pbp, this);
 				}else {
-					this.world.placeBlock(pbp.posX, pbp.posY, pbp.posZ, pbp.id);
+					Logger.info(this.nickname+" tried to place invalid block id("+(pbp.id & 0xff)+")!");
 				}
 				
-				this.world.broadcastPacketFromPlayer(pbp, this);
 				break;
 			case ProtocolInfo.MOVE_PLAYER_PACKET_PACKET:
 				MovePlayerPacket moveplayerpacket = (MovePlayerPacket)dp;

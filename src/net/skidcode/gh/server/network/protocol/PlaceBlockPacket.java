@@ -5,8 +5,8 @@ import net.skidcode.gh.server.network.ProtocolInfo;
 
 public class PlaceBlockPacket extends MinecraftDataPacket{
 
-	public byte posY, unknown5, id;
-	public int unknown1, posX, posZ;
+	public byte posY, face, id;
+	public int eid, posX, posZ;
 	@Override
 	public byte pid() {
 		return ProtocolInfo.PLACE_BLOCK_PACKET;
@@ -14,23 +14,23 @@ public class PlaceBlockPacket extends MinecraftDataPacket{
 
 	@Override
 	public void decode() {
-		this.unknown1 = this.getInt();
+		this.eid = this.getInt();
 		this.posX = this.getInt();
 		this.posZ = this.getInt();
 		
 		this.posY = this.getByte();
-		this.unknown5 = this.getByte();
+		this.face = this.getByte();
 		this.id = this.getByte();
 	}
 
 	@Override
 	public void encode() {
 		this.putByte(pid());
-		this.putInt(this.unknown1);
+		this.putInt(this.eid);
 		this.putInt(this.posX);
 		this.putInt(this.posZ);
 		this.putByte(this.posY);
-		this.putByte(this.unknown5);
+		this.putByte(this.face);
 		this.putByte(this.id);
 	}
 
