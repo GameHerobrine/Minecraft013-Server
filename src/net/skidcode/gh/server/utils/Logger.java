@@ -15,6 +15,11 @@ public class Logger {
 		System.out.println("[ERROR] "+msg);
 	}
 	
+	public static void critical(Object msg) {
+		System.err.println("[CRITICAL] "+msg);
+		System.exit(-1);
+	}
+	
 	public static void info(Object... data) {
 		System.out.println("[INFO] "+Arrays.toString(data));
 	}

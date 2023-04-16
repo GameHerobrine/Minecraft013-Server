@@ -9,7 +9,6 @@ public class NBTTest {
 		try {
 			VanillaParser.parseVanillaWorld();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

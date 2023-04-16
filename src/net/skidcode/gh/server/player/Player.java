@@ -65,7 +65,7 @@ public class Player extends Entity implements CommandIssuer{
 	
 	public void handlePacket(MinecraftDataPacket dp) {
 		switch(dp.pid()) {
-			case ProtocolInfo.LOGIN_PACKET: //TODO MessagePacket handle(but how to check..?)
+			case ProtocolInfo.LOGIN_PACKET:
 				LoginPacket loginpacket = (LoginPacket)dp;
 				this.nickname = loginpacket.nickname;
 				try {
@@ -118,7 +118,7 @@ public class Player extends Entity implements CommandIssuer{
 				
 				this.world.broadcastPacketFromPlayer(pbp, this);
 				break;
-			case ProtocolInfo.MOVE_PLAYER_PACKET_PACKET: //TODO send updates
+			case ProtocolInfo.MOVE_PLAYER_PACKET_PACKET:
 				MovePlayerPacket moveplayerpacket = (MovePlayerPacket)dp;
 				this.posX = moveplayerpacket.posX;
 				this.posY = moveplayerpacket.posY;

@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 
+import net.skidcode.gh.server.block.Block;
 import net.skidcode.gh.server.console.ThreadConsole;
 import net.skidcode.gh.server.console.command.CommandBase;
 import net.skidcode.gh.server.console.command.ConsoleIssuer;
@@ -45,6 +46,7 @@ public final class Server {
 				}
 			}
 		});
+		Block.init();
 		Logger.info("Creating directories...");
 		Files.createDirectories(Paths.get("world/players"));
 		Files.createDirectories(Paths.get("world"));
@@ -79,6 +81,7 @@ public final class Server {
 		Logger.info("Loading world...");
 		Server.world = VanillaParser.parseVanillaWorld();
 		Logger.info("Done!");
+		
 		run();
 		System.exit(0);
 	}

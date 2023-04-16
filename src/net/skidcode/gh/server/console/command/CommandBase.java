@@ -4,13 +4,14 @@ import java.util.HashMap;
 
 import net.skidcode.gh.server.console.command.impl.BroadcastCommand;
 import net.skidcode.gh.server.console.command.impl.FillChunkCommand;
+import net.skidcode.gh.server.console.command.impl.HelpCommand;
 import net.skidcode.gh.server.console.command.impl.StopCommand;
 import net.skidcode.gh.server.console.command.impl.TeleportCommand;
 
 public abstract class CommandBase {
 	
 	public final String name;
-	public CommandBase(String name) {
+	public CommandBase(String name) { //TODO help
 		this.name = name;
 	}
 	public abstract String processCommand(CommandIssuer issuer, String... parameters);
@@ -24,6 +25,7 @@ public abstract class CommandBase {
 	
 	
 	static {
+		addCommand(new HelpCommand("help"));
 		addCommand(new BroadcastCommand("broadcast"));
 		addCommand(new TeleportCommand("teleport"));
 		addCommand(new StopCommand("stop"));

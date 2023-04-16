@@ -12,8 +12,8 @@ import net.skidcode.gh.server.world.format.PlayerData;
 public class VanillaParser {
 	
 	public static World parseVanillaWorld() throws IOException {
-		LevelDatParser levelDat = new LevelDatParser("world/"); //TODO custom world folders..?
-		ChunkDataParser chunkDat = new ChunkDataParser("world/"); //TODO custom world folders..?
+		LevelDatParser levelDat = new LevelDatParser("world/");
+		ChunkDataParser chunkDat = new ChunkDataParser("world/");
 		World w = new World();
 		levelDat.parse(w);
 		chunkDat.parse(w);
@@ -21,8 +21,8 @@ public class VanillaParser {
 	}
 
 	public static void saveVanillaWorld() throws IOException {
-		LevelDatParser levelDat = new LevelDatParser("world/"); //TODO custom world folders..?
-		ChunkDataParser chunkDat = new ChunkDataParser("world/"); //TODO custom world folders..?
+		LevelDatParser levelDat = new LevelDatParser("world/");
+		ChunkDataParser chunkDat = new ChunkDataParser("world/");
 		
 		levelDat.save(Server.world);
 		chunkDat.save(Server.world);

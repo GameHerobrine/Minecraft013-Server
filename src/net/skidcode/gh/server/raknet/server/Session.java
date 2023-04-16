@@ -517,7 +517,6 @@ public class Session {
                 this.sendPacket(pk);
             } else
             if (packet instanceof OPEN_CONNECTION_REQUEST_1) {
-                //TODO: check protocol number and refuse connections
                 OPEN_CONNECTION_REPLY_1 pk = new OPEN_CONNECTION_REPLY_1();
                 pk.mtuSize = ((OPEN_CONNECTION_REQUEST_1) packet).mtuSize;
                 pk.serverID = sessionManager.getID();
