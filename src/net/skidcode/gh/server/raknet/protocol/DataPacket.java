@@ -1,4 +1,5 @@
-package net.skidcode.gh.server.protocol;
+package net.skidcode.gh.server.raknet.protocol;
+
 
 import java.util.ArrayList;
 
@@ -55,11 +56,10 @@ public abstract class DataPacket extends Packet {
         return super.clean();
     }
 
-	@Override
-	@SuppressWarnings("unchecked")
+    @Override
     public DataPacket clone() throws CloneNotSupportedException {
         DataPacket packet = (DataPacket) super.clone();
-        packet.packets = (ArrayList<Object>) this.packets.clone();
+        packet.packets = new ArrayList<>(this.packets);
         return packet;
     }
 

@@ -1,10 +1,9 @@
 package net.skidcode.gh.server.network;
 
-
 import net.skidcode.gh.server.Server;
 import net.skidcode.gh.server.player.Player;
-import net.skidcode.gh.server.protocol.EncapsulatedPacket;
 import net.skidcode.gh.server.raknet.RakNet;
+import net.skidcode.gh.server.raknet.protocol.EncapsulatedPacket;
 import net.skidcode.gh.server.raknet.server.RakNetServer;
 import net.skidcode.gh.server.raknet.server.ServerHandler;
 import net.skidcode.gh.server.raknet.server.ServerInstance;

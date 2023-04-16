@@ -1,12 +1,5 @@
 package net.skidcode.gh.server.raknet.server;
 
-import net.skidcode.gh.server.protocol.EncapsulatedPacket;
-import net.skidcode.gh.server.protocol.Packet;
-import net.skidcode.gh.server.raknet.RakNet;
-import net.skidcode.gh.server.raknet.protocol.packet.*;
-import net.skidcode.gh.server.utils.Binary;
-import net.skidcode.gh.server.utils.Logger;
-
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetSocketAddress;
@@ -16,6 +9,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
+
+import net.skidcode.gh.server.raknet.RakNet;
+import net.skidcode.gh.server.raknet.protocol.EncapsulatedPacket;
+import net.skidcode.gh.server.raknet.protocol.Packet;
+import net.skidcode.gh.server.raknet.protocol.packet.*;
+import net.skidcode.gh.server.utils.Binary;
+import net.skidcode.gh.server.utils.Logger;
 
 /**
  * author: MagicDroidX
@@ -95,13 +95,13 @@ public class SessionManager {
             session.update(time);
         }
 
-        /*for (Map.Entry<String, Integer> entry : this.ipSec.entrySet()) {
+        for (Map.Entry<String, Integer> entry : this.ipSec.entrySet()) {
             String address = entry.getKey();
             int count = entry.getValue();
             if (count >= this.packetLimit) {
                 this.blockAddress(address);
             }
-        }*/
+        }
         this.ipSec.clear();
 
         if ((this.ticks & 0b1111) == 0) {
@@ -157,6 +157,7 @@ public class SessionManager {
                     packet = new UNCONNECTED_PING();
                     packet.buffer = buffer;
                     packet.decode();
+
                     UNCONNECTED_PONG pk = new UNCONNECTED_PONG();
                     pk.serverID = this.getID();
                     pk.pingID = ((UNCONNECTED_PING) packet).pingID;
@@ -273,7 +274,8 @@ public class SessionManager {
                 Session s = this.sessions.get(i);
                 if (s.isTemporal()) {
                     keyToRemove.add(i);
-                    if (--size <= 4096) {
+                    size--;
+                    if (size <= 4096) {
                         break;
                     }
                 }
@@ -287,11 +289,9 @@ public class SessionManager {
 
     public boolean receiveStream() throws Exception {
         byte[] packet = this.server.readMainToThreadPacket();
-        
         if (packet != null && packet.length > 0) {
             byte id = packet[0];
             int offset = 1;
-            
             switch (id) {
                 case RakNet.PACKET_ENCAPSULATED:
                     int len = packet[offset++];

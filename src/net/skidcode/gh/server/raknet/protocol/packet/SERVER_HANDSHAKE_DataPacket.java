@@ -2,7 +2,7 @@ package net.skidcode.gh.server.raknet.protocol.packet;
 
 import java.net.InetSocketAddress;
 
-import net.skidcode.gh.server.protocol.Packet;
+import net.skidcode.gh.server.raknet.protocol.Packet;
 
 /**
  * author: MagicDroidX

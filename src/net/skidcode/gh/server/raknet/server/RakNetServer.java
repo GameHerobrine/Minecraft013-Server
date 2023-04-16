@@ -3,6 +3,7 @@ package net.skidcode.gh.server.raknet.server;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.skidcode.gh.server.utils.Logger;
+
 /**
  * author: MagicDroidX
  * Nukkit Project
@@ -23,22 +24,18 @@ public class RakNetServer extends Thread {
 
     public RakNetServer(int port, String interfaz) {
         this.port = port;
-        if (port < 1 || port > 65535) {
+        if (port < 1 || port > 65536) {
             throw new IllegalArgumentException("Invalid port range");
         }
 
         this.interfaz = interfaz;
+
         this.externalQueue = new ConcurrentLinkedQueue<>();
         this.internalQueue = new ConcurrentLinkedQueue<>();
 
         this.start();
     }
-    
-    public void start() {
-    	Logger.info("Starting RakNet server on port "+this.port+"...");
-    	super.start();
-    }
-    
+
     public boolean isShutdown() {
         return shutdown;
     }

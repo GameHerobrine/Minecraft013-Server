@@ -1,6 +1,6 @@
 package net.skidcode.gh.server.network;
 
-import net.skidcode.gh.server.protocol.EncapsulatedPacket;
+import net.skidcode.gh.server.raknet.protocol.EncapsulatedPacket;
 import net.skidcode.gh.server.utils.BinaryStream;
 
 public abstract class MinecraftDataPacket extends BinaryStream implements Cloneable{

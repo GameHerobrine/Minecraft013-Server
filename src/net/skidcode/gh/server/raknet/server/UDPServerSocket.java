@@ -1,5 +1,6 @@
 package net.skidcode.gh.server.raknet.server;
 
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -63,7 +64,13 @@ public class UDPServerSocket {
         packet.setPort(socketAddress.getPort());
         packet.setLength(buffer.position());
         packet.setData(Arrays.copyOf(buffer.array(), packet.getLength()));
+        //MainLogger.getLogger().debug(TextFormat.YELLOW + "In: " + Binary.bytesToHexString(packet.getData(), true));
         return packet;
+        /*DatagramPacket packet = new DatagramPacket(new byte[65536], 65536);
+
+        this.socket.receive(packet);
+        packet.setData(Arrays.copyOf(packet.getData(), packet.getLength()));
+        return packet;*/
     }
 
     public int writePacket(byte[] data, String dest, int port) throws IOException {
@@ -71,7 +78,12 @@ public class UDPServerSocket {
     }
 
     public int writePacket(byte[] data, InetSocketAddress dest) throws IOException {
+        //MainLogger.getLogger().debug(TextFormat.AQUA + "Out: " + Binary.bytesToHexString(data, true));
         return this.channel.send(ByteBuffer.wrap(data), dest);
+
+        /*DatagramPacket packet = new DatagramPacket(data, data.length, dest);
+        this.socket.send(packet);
+        return packet.getLength();*/
     }
 
     public UDPServerSocket setSendBuffer(int size) throws SocketException {

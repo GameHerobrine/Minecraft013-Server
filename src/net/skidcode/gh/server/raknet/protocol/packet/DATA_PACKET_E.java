@@ -1,6 +1,6 @@
 package net.skidcode.gh.server.raknet.protocol.packet;
 
-import net.skidcode.gh.server.protocol.DataPacket;
+import net.skidcode.gh.server.raknet.protocol.DataPacket;
 
 /**
  * author: MagicDroidX

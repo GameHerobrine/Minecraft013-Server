@@ -1,4 +1,4 @@
-package net.skidcode.gh.server.protocol;
+package net.skidcode.gh.server.raknet.protocol;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;

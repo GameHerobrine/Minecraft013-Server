@@ -1,6 +1,6 @@
 package net.skidcode.gh.server.raknet.server;
 
-import net.skidcode.gh.server.protocol.EncapsulatedPacket;
+import net.skidcode.gh.server.raknet.protocol.EncapsulatedPacket;
 
 /**
  * author: MagicDroidX

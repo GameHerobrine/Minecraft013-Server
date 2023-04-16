@@ -1,6 +1,6 @@
 package net.skidcode.gh.server.raknet.protocol.packet;
 
-import net.skidcode.gh.server.protocol.AcknowledgePacket;
+import net.skidcode.gh.server.raknet.protocol.AcknowledgePacket;
 
 /**
  * author: MagicDroidX

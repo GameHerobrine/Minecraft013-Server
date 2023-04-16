@@ -1,4 +1,5 @@
-package net.skidcode.gh.server.protocol;
+package net.skidcode.gh.server.raknet.protocol;
+
 
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;

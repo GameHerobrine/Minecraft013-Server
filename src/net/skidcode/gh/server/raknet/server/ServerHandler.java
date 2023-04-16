@@ -1,10 +1,10 @@
 package net.skidcode.gh.server.raknet.server;
 
-import net.skidcode.gh.server.protocol.EncapsulatedPacket;
-import net.skidcode.gh.server.raknet.RakNet;
-import net.skidcode.gh.server.utils.Binary;
-
 import java.nio.charset.StandardCharsets;
+
+import net.skidcode.gh.server.raknet.RakNet;
+import net.skidcode.gh.server.raknet.protocol.EncapsulatedPacket;
+import net.skidcode.gh.server.utils.Binary;
 
 /**
  * author: MagicDroidX
