@@ -37,7 +37,7 @@ public class ChunkDataParser extends WorldNBTFile{
 				
 				int ch = this.getInt();
 				assert ch == CHUNK_HEADER; //71368960 - chunk header(04 41 01 20)
-				Chunk c = new Chunk();
+				Chunk c = new Chunk(chunkX, chunkZ);
 				for(int x = 0; x < 16; ++x) {
 					for(int z = 0; z < 16; ++z) {
 						for(int y = 0; y < 128; ++y) {

@@ -17,19 +17,24 @@ public class TorchBlock extends DecorationBlock{
 		byte meta2Place = 0;
 		switch(face) {
 			case BlockFace.DOWN:
-				if(Block.blocks[world.getBlockIDAt(x, y - 1, z)].material.isSolid) meta2Place = 5;
+				Block bd = Block.blocks[world.getBlockIDAt(x, y - 1, z)];
+				if(bd != null && bd.material.isSolid) meta2Place = 5;
 				break;
 			case BlockFace.NORTH:
-				if(Block.blocks[world.getBlockIDAt(x, y, z + 1)].material.isSolid) meta2Place = 4;
+				Block bn = Block.blocks[world.getBlockIDAt(x, y, z + 1)];
+				if(bn != null && bn.material.isSolid) meta2Place = 4;
 				break;
 			case BlockFace.SOUTH:
-				if(Block.blocks[world.getBlockIDAt(x, y, z - 1)].material.isSolid) meta2Place = 3;
+				Block bs = Block.blocks[world.getBlockIDAt(x, y, z - 1)];
+				if(bs != null && bs.material.isSolid) meta2Place = 3;
 				break;
 			case BlockFace.EAST:
-				if(Block.blocks[world.getBlockIDAt(x + 1, y, z)].material.isSolid) meta2Place = 2;
+				Block be =  Block.blocks[world.getBlockIDAt(x + 1, y, z)];
+				if(be != null && be.material.isSolid) meta2Place = 2;
 				break;
 			default:
-				if(Block.blocks[world.getBlockIDAt(x - 1, y, z)].material.isSolid) meta2Place = 1;
+				Block b = Block.blocks[world.getBlockIDAt(x - 1, y, z)];
+				if(b != null && b.material.isSolid) meta2Place = 1;
 		}
 		world.placeBlock(x, y, z, (byte) this.blockID, meta2Place);
 	}

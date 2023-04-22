@@ -17,6 +17,7 @@ import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.utils.config.PropertiesFile;
 import net.skidcode.gh.server.world.World;
 import net.skidcode.gh.server.world.format.PlayerData;
+import net.skidcode.gh.server.world.generator.FlatWorldGenerator;
 import net.skidcode.gh.server.world.parser.vanilla.VanillaParser;
 
 public final class Server {
@@ -60,6 +61,8 @@ public final class Server {
 			{"server-port", "19132"},
 			{"save-world", "true"},
 			{"save-player-data", "true"},
+			{"generate-world", "false"},
+			{"world-generator", "DEFAULT"},
 		});
 		
 		try {
@@ -83,9 +86,23 @@ public final class Server {
 		}
 		
 		handler = new RakNetHandler();
-		Logger.info("Loading world...");
-		Server.world = VanillaParser.parseVanillaWorld();
-		Logger.info("Done!");
+		
+		
+		if(Files.exists(Paths.get("world/level.dat"))){
+			Logger.info("Loading world...");
+			Server.world = VanillaParser.parseVanillaWorld();
+			Logger.info("Done!");
+		}else if(Boolean.parseBoolean(properties.data.get("generate-world"))) {
+			Logger.info("Generating flat world...");
+			Server.world = new World();
+			FlatWorldGenerator.generateChunks(Server.world);
+			Server.world.setSaveSpawn(127, 127);
+		}else {
+			Logger.error("No world is found.");
+			System.exit(0);
+		}
+		
+		
 		
 		run();
 		System.exit(0);

@@ -34,6 +34,30 @@ public class World {
 		}
 	}
 	
+	public void setSaveSpawn(int x, int z) {
+		this.spawnX = x;
+		this.spawnZ = z;
+		Chunk c = this.chunks[x >> 4][z >> 4];
+		int cBX = x & 0xf;
+		int cBZ = z & 0xf;
+		for(int y = 127; y >= 0; --y) {
+			int id = c.blockData[cBX][cBZ][y];
+			if(id > 0) {
+				Block b = Block.blocks[id];
+				if(b.material.isSolid) {
+					int idup = c.blockData[cBX][cBZ][y+1];
+					int idupper = c.blockData[cBX][cBZ][y+2];
+					if(idup == 0 && idupper == 0) { //TODO isSolid & isLiquid checks
+						this.spawnY = y+2;
+						return;
+					}
+					
+				}
+			}
+		}
+		this.spawnY = 127;
+	}
+	
 	public void removeBlock(int x, int y, int z) {
 		this.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf][y] = 0;
 		this.chunks[x >> 4][z >> 4].blockMetadata[x & 0xf][z & 0xf][y] = 0;
@@ -75,15 +99,17 @@ public class World {
 		this.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf][y] = id;
 		this.chunks[x >> 4][z >> 4].blockMetadata[x & 0xf][z & 0xf][y] = meta;
 	}
+	
 	public void broadcastPacket(MinecraftDataPacket pk) {
 		for(Player pl : this.players.values()) {
 			pl.dataPacket(pk);
 		}
 	}
+	
 	public void broadcastPacketFromPlayer(MinecraftDataPacket pk, Player p) {
 		for(Player pl : this.players.values()) {
 			if(p.eid != pl.eid) {
-				pl.dataPacket(pk.clone());
+				pl.dataPacket(pk);
 			}
 		}
 	}
