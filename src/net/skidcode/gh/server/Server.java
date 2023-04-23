@@ -91,17 +91,15 @@ public final class Server {
 		if(Files.exists(Paths.get("world/level.dat"))){
 			Logger.info("Loading world...");
 			Server.world = VanillaParser.parseVanillaWorld();
-			Logger.info("Done!");
 		}else if(Boolean.parseBoolean(properties.data.get("generate-world"))) {
 			Logger.info("Generating flat world...");
 			Server.world = new World();
 			FlatWorldGenerator.generateChunks(Server.world);
-			Server.world.setSaveSpawn(127, 127);
 		}else {
 			Logger.error("No world is found.");
 			System.exit(0);
 		}
-		
+		Logger.info("Done!");
 		
 		
 		run();
@@ -169,11 +167,6 @@ public final class Server {
 						}
 					}
 				}
-				try {
-					Thread.sleep(1);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
 				++Server.tps;
 				if(tickTime - lastSecondRecorded >= 1000) { //maybe make it better?
 					lastSecondRecorded = tickTime;
@@ -182,6 +175,12 @@ public final class Server {
 				}
 				if(Server.nextTick - tickTime < -1000) Server.nextTick = tickTime;
 				else Server.nextTick += 50;
+			}else {
+				try {
+					Thread.sleep(Server.nextTick - tickTime);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
