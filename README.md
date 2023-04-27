@@ -6,10 +6,11 @@ A Minecraft 0.1.3 server core written on Java. Uses [Old Nukkit's Raknet impleme
 * World Data Loading
 * Chunk Data sending
 * World modifying
-* Player chat (might not work)
-
-# Not Implemented Features
-* World Generating
+* World Generating (Only flat for now)
 * Player data saving/loading
+
+
+# Compability
+* The server works correctly with 0.1.2 - 0.1.3. 0.1.1 works, but chunks do not load correctly.
 
 
