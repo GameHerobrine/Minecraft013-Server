@@ -102,7 +102,7 @@ public class Player extends Entity implements CommandIssuer{
 						this.dataPacket(pkk);
 					}
 				}
-				
+				Logger.info("Player "+this.nickname+" joined the game. Position: "+this.posX+", "+this.posY+", "+this.posZ);
 				break;
 			case ProtocolInfo.REMOVE_BLOCK_PACKET:
 				RemoveBlockPacket rbp = (RemoveBlockPacket) dp;

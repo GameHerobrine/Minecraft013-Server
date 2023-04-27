@@ -1,6 +1,7 @@
 package net.skidcode.gh.server.world.parser.vanilla;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Arrays;
 
 import net.skidcode.gh.server.world.World;
@@ -12,8 +13,12 @@ public class ChunkDataParser extends WorldNBTFile{
 	
 	public static final int CHUNK_HEADER = 71368960;
 	
-	public ChunkDataParser(String path2World) throws IOException {
-		super(path2World+"/chunks.dat", 0);
+	public ChunkDataParser(Path p) throws IOException {
+		super(p, 0);
+	}
+
+	public ChunkDataParser(String string) throws IOException {
+		super(string+"/chunks.dat", 0);
 	}
 
 	@Override

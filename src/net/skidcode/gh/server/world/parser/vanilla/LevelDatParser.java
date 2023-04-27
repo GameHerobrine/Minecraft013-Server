@@ -1,6 +1,7 @@
 package net.skidcode.gh.server.world.parser.vanilla;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
 import net.skidcode.gh.server.world.World;
 import net.skidcode.gh.server.world.nbt.WorldNBTFile;
@@ -13,8 +14,12 @@ public class LevelDatParser extends WorldNBTFile{
 	public int saveTime;
 	public String worldName;
 	
-	public LevelDatParser(String path2World) throws IOException {
-		super(path2World+"/level.dat", 8);
+	public LevelDatParser(Path p) throws IOException {
+		super(p, 8);
+	}
+
+	public LevelDatParser(String string) throws IOException {
+		super(string+"/level.dat", 8);
 	}
 
 	@Override
@@ -39,8 +44,8 @@ public class LevelDatParser extends WorldNBTFile{
 		this.putInt(world.spawnY);
 		this.putInt(world.spawnZ);
 		this.putInt(world.unknown5);
-		this.putInt(world.worldTime);
-		this.putInt(world.saveTime);
+		this.putInt(world.worldTime); 
+		this.putInt(world.saveTime); //TODO generate a new one
 		this.putString(world.name);
 	}
 	

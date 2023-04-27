@@ -2,6 +2,7 @@ package net.skidcode.gh.server.world.parser.vanilla;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import net.skidcode.gh.server.Server;
@@ -21,8 +22,16 @@ public class VanillaParser {
 	}
 
 	public static void saveVanillaWorld() throws IOException {
-		LevelDatParser levelDat = new LevelDatParser("world/");
-		ChunkDataParser chunkDat = new ChunkDataParser("world/");
+		Path p = Paths.get("world/level.dat");
+		if(!Files.exists(p)) {
+			Files.createFile(p);
+		}
+		LevelDatParser levelDat = new LevelDatParser(p);
+		p = Paths.get("world/chunks.dat");
+		if(!Files.exists(p)) {
+			Files.createFile(p);
+		}
+		ChunkDataParser chunkDat = new ChunkDataParser(p);
 		
 		levelDat.save(Server.world);
 		chunkDat.save(Server.world);

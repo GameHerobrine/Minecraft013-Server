@@ -16,10 +16,10 @@ public class World {
 	public Chunk[][] chunks = new Chunk[16][16];
 	
 	public int spawnX, spawnY, spawnZ;
-	public String name;
-	public int worldTime, saveTime;
+	public String name = "world";
+	public int worldTime = 0, saveTime = 0;
 	public int[][] locationTable;
-	public int unknown5;
+	public int unknown5 = 0;
 	
 	public void addPlayer(Player player) {
 		this.players.put(player.eid, player);

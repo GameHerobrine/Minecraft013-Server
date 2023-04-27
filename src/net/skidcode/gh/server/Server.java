@@ -22,7 +22,7 @@ import net.skidcode.gh.server.world.parser.vanilla.VanillaParser;
 
 public final class Server {
 	
-	public static boolean running = true;
+	public static volatile boolean running = true;
 	public static RakNetHandler handler;
 	public static World world;
 	private static HashMap<String, Player> id2Player = new HashMap<>();
@@ -95,6 +95,7 @@ public final class Server {
 			Logger.info("Generating flat world...");
 			Server.world = new World();
 			FlatWorldGenerator.generateChunks(Server.world);
+			Server.world.setSaveSpawn(127, 127);
 		}else {
 			Logger.error("No world is found.");
 			System.exit(0);
