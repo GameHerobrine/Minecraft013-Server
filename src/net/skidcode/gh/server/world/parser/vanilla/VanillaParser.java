@@ -15,7 +15,7 @@ public class VanillaParser {
 	public static World parseVanillaWorld() throws IOException {
 		LevelDatParser levelDat = new LevelDatParser("world/");
 		ChunkDataParser chunkDat = new ChunkDataParser("world/");
-		World w = new World();
+		World w = new World(0xdeadbeef);
 		levelDat.parse(w);
 		chunkDat.parse(w);
 		return w;

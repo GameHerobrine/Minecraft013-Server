@@ -1,6 +1,7 @@
 package net.skidcode.gh.server.world;
 
 import java.util.HashMap;
+import java.util.Random;
 
 import net.skidcode.gh.server.block.Block;
 import net.skidcode.gh.server.network.MinecraftDataPacket;
@@ -13,6 +14,7 @@ public class World {
 	public HashMap<Integer, Player> players = new HashMap<>();
 	private int freeEID = 1;
 	public int worldSeed = 0xd34db33f;
+	public Random random;
 	public Chunk[][] chunks = new Chunk[16][16];
 	
 	public int spawnX, spawnY, spawnZ;
@@ -20,6 +22,12 @@ public class World {
 	public int worldTime = 0, saveTime = 0;
 	public int[][] locationTable;
 	public int unknown5 = 0;
+	
+	
+	public World(int seed) {
+		this.worldSeed = seed;
+		this.random = new Random(worldSeed);
+	}
 	
 	public void addPlayer(Player player) {
 		this.players.put(player.eid, player);
@@ -40,7 +48,7 @@ public class World {
 		Chunk c = this.chunks[x >> 4][z >> 4];
 		int cBX = x & 0xf;
 		int cBZ = z & 0xf;
-		for(int y = 127; y >= 0; --y) {
+		for(int y = 125; y >= 0; --y) {
 			int id = c.blockData[cBX][cBZ][y];
 			if(id > 0) {
 				Block b = Block.blocks[id];

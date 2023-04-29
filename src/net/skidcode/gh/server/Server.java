@@ -18,6 +18,7 @@ import net.skidcode.gh.server.utils.config.PropertiesFile;
 import net.skidcode.gh.server.world.World;
 import net.skidcode.gh.server.world.format.PlayerData;
 import net.skidcode.gh.server.world.generator.FlatWorldGenerator;
+import net.skidcode.gh.server.world.generator.NormalWorldGenerator;
 import net.skidcode.gh.server.world.parser.vanilla.VanillaParser;
 
 public final class Server {
@@ -35,6 +36,11 @@ public final class Server {
 	public static int tps = 0;
 	public static int stableTPS = 0;
 	public static long lastSecondRecorded = 0;
+	
+	public static void stop() {
+		running = false;
+		handler.notifyShutdown();
+	}
 	
 	public static void main(String[] args) throws IOException {
 		Logger.info("Starting Server...");
@@ -62,7 +68,7 @@ public final class Server {
 			{"save-world", "true"},
 			{"save-player-data", "true"},
 			{"generate-world", "false"},
-			{"world-generator", "DEFAULT"},
+			{"world-generator", "NORMAL"},
 		});
 		
 		try {
@@ -91,11 +97,26 @@ public final class Server {
 		if(Files.exists(Paths.get("world/level.dat"))){
 			Logger.info("Loading world...");
 			Server.world = VanillaParser.parseVanillaWorld();
-		}else if(Boolean.parseBoolean(properties.data.get("generate-world"))) {
-			Logger.info("Generating flat world...");
-			Server.world = new World();
-			FlatWorldGenerator.generateChunks(Server.world);
-			Server.world.setSaveSpawn(127, 127);
+		}else if(properties.getNullsafe("generate-world").equals("true")) {
+			String type = properties.getNullsafe("world-generator");
+			if(type.equalsIgnoreCase("flat")) {
+				Logger.info("Generating flat world...");
+				Server.world = new World(0xabeef);
+				FlatWorldGenerator.generateChunks(Server.world);
+				Server.world.setSaveSpawn(127, 127);
+			}else
+			if(type.equalsIgnoreCase("normal")) {
+				Logger.info("Generating normal world...");
+				Server.world = new World(0xabeef);
+				NormalWorldGenerator.generateChunks(Server.world);
+				Server.world.setSaveSpawn(127, 127);
+			}else {
+				Server.saveWorld = false;
+				Logger.critical("Type '"+type+"' is not found!");
+				Server.stop();
+				System.exit(0);
+			}
+			
 		}else {
 			Logger.error("No world is found.");
 			System.exit(0);

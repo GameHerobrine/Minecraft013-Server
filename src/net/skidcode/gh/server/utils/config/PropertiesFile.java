@@ -25,7 +25,11 @@ public class PropertiesFile extends ConfigFile{
 		}
 		
 	}
-
+	
+	public String getNullsafe(String key) {
+		return this.data.getOrDefault(key, "");
+	}
+	
 	@Override
 	public void write() throws IOException{
 		List<String> strl = new ArrayList<>();
