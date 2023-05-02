@@ -1,6 +1,8 @@
 package net.skidcode.gh.server.network;
 
 import net.skidcode.gh.server.Server;
+import net.skidcode.gh.server.event.EventRegistry;
+import net.skidcode.gh.server.event.packet.DataPacketSend;
 import net.skidcode.gh.server.player.Player;
 import net.skidcode.gh.server.raknet.RakNet;
 import net.skidcode.gh.server.raknet.protocol.EncapsulatedPacket;
@@ -68,6 +70,9 @@ public class RakNetHandler implements ServerInstance{
 			pk.identifierACK = iACK;
 			this.identifiersACK.put(identifier, iACK);
 		}*/ //TODO and check is neccessary
+		
+		EventRegistry.handleEvent(new DataPacketSend(player, packet));
+		
 		this.handler.sendEncapsulated(player.identifier, pk, 0 | RakNet.PRIORITY_NORMAL);
 	}
 	

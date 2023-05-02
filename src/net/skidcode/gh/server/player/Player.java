@@ -6,6 +6,8 @@ import net.skidcode.gh.server.Server;
 import net.skidcode.gh.server.block.Block;
 import net.skidcode.gh.server.console.command.CommandIssuer;
 import net.skidcode.gh.server.entity.Entity;
+import net.skidcode.gh.server.event.EventRegistry;
+import net.skidcode.gh.server.event.packet.DataPacketReceive;
 import net.skidcode.gh.server.network.MinecraftDataPacket;
 import net.skidcode.gh.server.network.ProtocolInfo;
 import net.skidcode.gh.server.network.protocol.AddPlayerPacket;
@@ -65,6 +67,9 @@ public class Player extends Entity implements CommandIssuer{
 	}
 	
 	public void handlePacket(MinecraftDataPacket dp) {
+		
+		EventRegistry.handleEvent(new DataPacketReceive(this, dp));
+		
 		switch(dp.pid()) {
 			case ProtocolInfo.LOGIN_PACKET:
 				LoginPacket loginpacket = (LoginPacket)dp;

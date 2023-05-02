@@ -8,6 +8,7 @@ import net.skidcode.gh.server.network.MinecraftDataPacket;
 import net.skidcode.gh.server.network.protocol.RemoveEntityPacket;
 import net.skidcode.gh.server.player.Player;
 import net.skidcode.gh.server.world.chunk.Chunk;
+import net.skidcode.gh.server.world.generator.BiomeSource;
 
 public class World {
 	
@@ -22,11 +23,12 @@ public class World {
 	public int worldTime = 0, saveTime = 0;
 	public int[][] locationTable;
 	public int unknown5 = 0;
-	
+	public BiomeSource biomeSource;
 	
 	public World(int seed) {
 		this.worldSeed = seed;
 		this.random = new Random(worldSeed);
+		this.biomeSource = new BiomeSource(this);
 	}
 	
 	public void addPlayer(Player player) {
