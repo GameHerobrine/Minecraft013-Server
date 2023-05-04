@@ -1,24 +1,33 @@
 package net.skidcode.gh.server;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Scanner;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import net.skidcode.gh.server.block.Block;
 import net.skidcode.gh.server.console.ThreadConsole;
 import net.skidcode.gh.server.console.command.CommandBase;
 import net.skidcode.gh.server.console.command.ConsoleIssuer;
-import net.skidcode.gh.server.event.packet.DataPacketReceive;
-import net.skidcode.gh.server.event.packet.DataPacketSend;
 import net.skidcode.gh.server.network.RakNetHandler;
 import net.skidcode.gh.server.player.Player;
+import net.skidcode.gh.server.plugin.Plugin;
+import net.skidcode.gh.server.plugin.PluginInfo;
 import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.utils.config.PropertiesFile;
 import net.skidcode.gh.server.world.World;
-import net.skidcode.gh.server.world.format.PlayerData;
 import net.skidcode.gh.server.world.generator.FlatWorldGenerator;
 import net.skidcode.gh.server.world.generator.NormalWorldGenerator;
 import net.skidcode.gh.server.world.parser.vanilla.VanillaParser;
@@ -28,9 +37,10 @@ public final class Server {
 	public static volatile boolean running = true;
 	public static RakNetHandler handler;
 	public static World world;
+	private static HashMap<String, Plugin> plugins = new HashMap<>();
 	private static HashMap<String, Player> id2Player = new HashMap<>();
 	public static PropertiesFile properties;
-	
+	public static final File pluginsPath = new File("plugins/");
 	private static int port = 19132;
 	public static boolean saveWorld = true;
 	public static boolean savePlayerData = true;
@@ -56,14 +66,18 @@ public final class Server {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-					Server.running = false;
 				}
+				for(Plugin p : Server.plugins.values()) {
+					p.onDisable();
+				}
+				Server.running = false;
 			}
 		});
 		Block.init();
 		Logger.info("Creating directories...");
 		Files.createDirectories(Paths.get("world/players"));
 		Files.createDirectories(Paths.get("world"));
+		if(!pluginsPath.exists()) pluginsPath.createNewFile();
 		Logger.info("Loading properties...");
 		properties = new PropertiesFile("server.properties", new String[][] {
 			{"server-port", "19132"},
@@ -91,6 +105,15 @@ public final class Server {
 		}catch(Exception e) {
 			e.printStackTrace();
 			Logger.warn("Failed to get save-player-data from properties. Player Data WILL be saved.");
+		}
+		
+		try {
+			Server.loadPlugins();
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | MalformedURLException
+				| NoSuchMethodException | SecurityException | ClassNotFoundException | InstantiationException e) {
+			Logger.info("Failed to load plugins!");
+			e.printStackTrace();
+			System.exit(0);
 		}
 		
 		handler = new RakNetHandler();
@@ -133,6 +156,66 @@ public final class Server {
 		System.exit(0);
 	}
 	
+	private static void loadPlugins() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException, ClassNotFoundException, InstantiationException {
+		Method urlAdd = (java.net.URLClassLoader.class).getDeclaredMethod("addURL", new Class[] {java.net.URL.class});
+		urlAdd.setAccessible(true);
+		ClassLoader classLoader = Server.class.getClassLoader();
+		if(classLoader instanceof URLClassLoader) {
+			File[] fs = Server.pluginsPath.listFiles();
+			for(File f : fs) {
+				if(f.getName().endsWith(".jar")) {
+					urlAdd.invoke(classLoader, new Object[] {
+							f.toURI().toURL()
+					});
+				}
+			}
+			
+			for(File f : fs) {
+				if(f.getName().endsWith(".jar")) {
+					FileInputStream fileinputstream = new FileInputStream(f);
+                    ZipInputStream zipinputstream = new ZipInputStream(fileinputstream);
+                    ZipEntry entry = null;
+                    PluginInfo info = new PluginInfo();
+                    Plugin plugin = null;
+					while((entry  = zipinputstream.getNextEntry()) != null) {
+                    	if(entry.getName().equals("plugin.properties")) {
+                    		Scanner sc = new Scanner((InputStream)classLoader.getResource(entry.getName()).getContent());
+							while(sc.hasNext()) {
+								String line = sc.nextLine();
+                    			String[] propValue = line.split("=");
+                    			String prop = propValue[0].trim();
+                    			String value = propValue[1].trim();
+                    			if(prop.equals("name")) info.name = value;
+                    			else if(prop.equals("api")) info.api = Integer.parseInt(value);
+                    			else if(prop.equals("description")) info.description = value;
+                    			else if(prop.equals("author")) info.author = value;
+                    			else if(prop.equals("version")) info.version = value;
+                    			else if(prop.equals("mainclass")) {
+                    				Class<?> cl = classLoader.loadClass(value.replace("/", "."));
+                    				plugin = (Plugin) cl.newInstance();
+                    				plugin.onEnable();
+                    				
+                    			}
+                    			
+                    		};
+                    		if(plugin != null) {
+                    			Server.plugins.put(info.name, plugin);
+                    			Logger.info("Plugin "+info.name+" "+info.version+" by "+info.author+" was loaded!");
+                    		}
+                    		
+                    		sc.close();
+                    		break;
+                    	}
+                    }
+					zipinputstream.close();
+					fileinputstream.close();
+					
+				}
+			}
+		}
+		
+	}
+
 	public static Collection<Player> getPlayers(){
 		return id2Player.values();
 	}
