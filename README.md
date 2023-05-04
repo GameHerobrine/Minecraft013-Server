@@ -13,6 +13,6 @@ A Minecraft 0.1.3 server core written on Java. Uses [Old Nukkit's Raknet impleme
 # Compability
 * The server works correctly with 0.1.2 - 0.1.3. 0.1.1 works, but chunks do not load correctly.
 
-#Prebuilds
+# Prebuilds
 * Individual commit builds can be found at https://github.com/GameHerobrine/MCPE013CoreArtifacts/releases/
 * Stable Releases are located in https://github.com/GameHerobrine/Minecraft013-Server/releases
