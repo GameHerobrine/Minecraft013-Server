@@ -23,5 +23,12 @@ jobs:
           name: build
           path: 
             src/classes/build.jar
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: build-${{ github.sha }}
+          repository: GameHerobrine/MCPE013CoreArtifacts
+          token: ${{ secrets.TOKEN }}
+          files: src/classes/build.jar
           
           
