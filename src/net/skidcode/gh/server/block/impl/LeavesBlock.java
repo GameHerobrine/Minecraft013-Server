@@ -9,5 +9,4 @@ public class LeavesBlock extends SolidBlock{
 		super(id, Material.leaves);
 		this.name = "Leaves"; //TODO log meta: 0 - oak, 1 - spruce, 2 - birch
 	}
-
 }

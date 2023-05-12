@@ -21,6 +21,7 @@ import net.skidcode.gh.server.block.Block;
 import net.skidcode.gh.server.console.ThreadConsole;
 import net.skidcode.gh.server.console.command.CommandBase;
 import net.skidcode.gh.server.console.command.ConsoleIssuer;
+import net.skidcode.gh.server.event.packet.DataPacketReceive;
 import net.skidcode.gh.server.network.RakNetHandler;
 import net.skidcode.gh.server.player.Player;
 import net.skidcode.gh.server.plugin.Plugin;
@@ -117,9 +118,6 @@ public final class Server {
 		}
 		
 		handler = new RakNetHandler();
-		//TODO remove
-		//new TestDataPacketReceiveListener(DataPacketReceive.INSTANCE);
-		//new TestDataPacketSendListener(DataPacketSend.INSTANCE);
 		
 		if(Files.exists(Paths.get("world/level.dat"))){
 			Logger.info("Loading world...");
@@ -134,8 +132,7 @@ public final class Server {
 			}else
 			if(type.equalsIgnoreCase("normal")) {
 				Logger.info("Generating normal world...");
-				Server.world = new World(0xabeef);
-				Logger.info(Server.world.biomeSource.getTemperatureBlock(1, 1, 1, 1));
+				Server.world = new World(0x256512);
 				NormalWorldGenerator.generateChunks(Server.world);
 				Server.world.setSaveSpawn(127, 127);
 			}else {

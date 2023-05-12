@@ -9,12 +9,14 @@ import net.skidcode.gh.server.network.protocol.RemoveEntityPacket;
 import net.skidcode.gh.server.player.Player;
 import net.skidcode.gh.server.world.chunk.Chunk;
 import net.skidcode.gh.server.world.generator.BiomeSource;
+import net.skidcode.gh.server.world.generator.LevelSource;
+import net.skidcode.gh.server.world.generator.RandomLevelSource;
 
 public class World {
 	
 	public HashMap<Integer, Player> players = new HashMap<>();
 	private int freeEID = 1;
-	public int worldSeed = 0xd34db33f;
+	public int worldSeed = 0x256512;
 	public Random random;
 	public Chunk[][] chunks = new Chunk[16][16];
 	
@@ -24,11 +26,12 @@ public class World {
 	public int[][] locationTable;
 	public int unknown5 = 0;
 	public BiomeSource biomeSource;
-	
+	public LevelSource levelSource;
 	public World(int seed) {
 		this.worldSeed = seed;
-		this.random = new Random(worldSeed);
+		this.random = new Random(seed);
 		this.biomeSource = new BiomeSource(this);
+		this.levelSource = new RandomLevelSource(this, seed); //TODO API
 	}
 	
 	public void addPlayer(Player player) {

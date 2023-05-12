@@ -13,4 +13,9 @@ public class Chunk {
 		this.posX = x;
 		this.posZ = z;
 	}
+	
+	public Chunk(byte[][][] blockData, int cx, int cz) {
+		this(cx, cz);
+		this.blockData = blockData;
+	}
 }
