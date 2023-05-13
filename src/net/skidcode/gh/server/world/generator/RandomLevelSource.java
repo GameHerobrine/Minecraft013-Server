@@ -174,6 +174,7 @@ public class RandomLevelSource implements LevelSource{ //TODO all public?, try t
                                 }
                         		
                         		if (blockY < 64 && b == 0) {
+                        			Logger.info("waterStill");
                                     b = (byte) Block.waterStill.blockID;
                                 }
                         		i = nextFloat;

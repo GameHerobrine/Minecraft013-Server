@@ -21,7 +21,7 @@ public class PropertiesFile extends ConfigFile{
 		
 		for(String s : strl) {
 			String[] sa = s.split("=");
-			this.data.put(sa[0], sa[1]);
+			this.data.put(sa[0], sa.length > 1 ? sa[1] : "");
 		}
 		
 	}
