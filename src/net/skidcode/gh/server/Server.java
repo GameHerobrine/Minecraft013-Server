@@ -59,7 +59,7 @@ public final class Server {
 		Logger.info("Starting Server...");
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			public void run() {
-				if(Server.saveWorld) {
+				if(Server.saveWorld && Server.world != null) {
 					Logger.info("Saving world...");
 					try {
 						VanillaParser.saveVanillaWorld();
@@ -154,7 +154,7 @@ public final class Server {
 	}
 	
 	private static void loadPlugins() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException, ClassNotFoundException, InstantiationException {
-		Method urlAdd = (java.net.URLClassLoader.class).getDeclaredMethod("addURL", new Class[] {java.net.URL.class});
+		Method urlAdd = (java.net.URLClassLoader.class).getDeclaredMethod("addURL", new Class[] {java.net.URL.class}); //TODO new java comp
 		urlAdd.setAccessible(true);
 		ClassLoader classLoader = Server.class.getClassLoader();
 		if(classLoader instanceof URLClassLoader) {

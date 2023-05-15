@@ -54,8 +54,8 @@ public class ChunkDataParser extends WorldNBTFile{
 					for(int z = 0; z < 16; ++z) {
 						for(int y = 0; y < 64; ++y) {
 							byte dd = this.getByte();
-							c.blockMetadata[x][z][y] = (byte) (dd & 0xf);
-							c.blockMetadata[x][z][y+1] = (byte) (dd >> 0x4);
+							c.blockMetadata[x][z][y*2] = (byte) (dd & 0xf);
+							c.blockMetadata[x][z][y*2+1] = (byte) (dd >> 0x4);
 						}
 					}
 				}
@@ -63,8 +63,8 @@ public class ChunkDataParser extends WorldNBTFile{
 					for(int z = 0; z < 16; ++z) {
 						for(int y = 0; y < 64; ++y) {
 							byte dd = this.getByte();
-							c.blockSkyLight[x][z][y] = (byte) (dd & 0xf);
-							c.blockSkyLight[x][z][y+1] = (byte) (dd >> 0x4);
+							c.blockSkyLight[x][z][y*2] = (byte) (dd & 0xf);
+							c.blockSkyLight[x][z][y*2+1] = (byte) (dd >> 0x4);
 						}
 					}
 				}
@@ -72,8 +72,8 @@ public class ChunkDataParser extends WorldNBTFile{
 					for(int z = 0; z < 16; ++z) {
 						for(int y = 0; y < 64; ++y) {
 							byte dd = this.getByte();
-							c.blockLight[x][z][y] = (byte) (dd & 0xf);
-							c.blockLight[x][z][y+1] = (byte) (dd >> 0x4);
+							c.blockLight[x][z][y*2] = (byte) (dd & 0xf);
+							c.blockLight[x][z][y*2+1] = (byte) (dd >> 0x4);
 						}
 					}
 				}
@@ -110,28 +110,22 @@ public class ChunkDataParser extends WorldNBTFile{
 				}
 				for(int x = 0; x < 16; ++x) {
 					for(int z = 0; z < 16; ++z) {
-						for(int y = 0; y < 128; ++y) {
-							if(y % 2 == 0) {
-								this.putByte((byte) (c.blockMetadata[x][z][y] + (c.blockMetadata[x][z][y+1] << 4)));
-							}
+						for(int y = 0; y < 64; ++y) {
+							this.putByte((byte) (c.blockMetadata[x][z][y*2] + (c.blockMetadata[x][z][y*2+1] << 4)));
 						}
 					}
 				}
 				for(int x = 0; x < 16; ++x) {
 					for(int z = 0; z < 16; ++z) {
-						for(int y = 0; y < 128; ++y) {
-							if(y % 2 == 0) {
-								this.putByte((byte) (c.blockSkyLight[x][z][y] + (c.blockSkyLight[x][z][y+1] << 4)));
-							}
+						for(int y = 0; y < 64; ++y) {
+							this.putByte((byte) (c.blockSkyLight[x][z][y*2] + (c.blockSkyLight[x][z][y*2+1] << 4)));
 						}
 					}
 				}
 				for(int x = 0; x < 16; ++x) { //TODO make more beautiful
 					for(int z = 0; z < 16; ++z) {
-						for(int y = 0; y < 128; ++y) {
-							if(y % 2 == 0) {
-								this.putByte((byte) (c.blockLight[x][z][y] + (c.blockLight[x][z][y+1] << 4)));
-							}
+						for(int y = 0; y < 64; ++y) {
+							this.putByte((byte) (c.blockLight[x][z][y*2] + (c.blockLight[x][z][y*2+1] << 4)));
 						}
 					}
 				}
