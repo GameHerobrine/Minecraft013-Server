@@ -72,7 +72,7 @@ public class BiomeSource {
 
 		for(int blockX = 0; blockX < xSize; ++blockX) {
 			for(int blockZ = 0; blockZ < zSize; ++blockZ) {
-				float f = 1.0f - (((this.detailNoises[index] * 1.1f) + 0.5f) * 0.01f) + (((this.temperatureNoises[index] * 0.15f) + 0.7f) * 0.99f);
+				float f = 1.0f - ((((this.detailNoises[index] * 1.1f) + 0.5f) * 0.01f) + (((this.temperatureNoises[index] * 0.15f) + 0.7f) * 0.99f));
 				float f1 = 1.0f - (f*f);
 				if(f1 < 0) f1 = 0;
 				else if(f1 > 0) f1 = 1;

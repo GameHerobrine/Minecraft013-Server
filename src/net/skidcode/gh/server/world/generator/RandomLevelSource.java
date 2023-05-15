@@ -69,7 +69,6 @@ public class RandomLevelSource implements LevelSource{ //TODO all public?, try t
 				float f5 = ((this.biomeNoises[rainbiomedepthIndex] + 256.0f) / 512.0f) * (1.0f - (f4 * f4));
 				
 				if(f5 > 1) f5 = 1;
-				else if(f5 < 0) f5 = 0;
 				
 				float f6 = this.depthNoises[rainbiomedepthIndex++] / 8000;
 				if(f6 < 0) f6 = (-f6) * 0.3f;
@@ -88,6 +87,7 @@ public class RandomLevelSource implements LevelSource{ //TODO all public?, try t
 					}
 					f = f7 / 8.0f;
 				}
+				if(f5 < 0) f5 = 0;
 				
 				float f9 = f5 + 0.5f;
 				float f10 = (scaleY / 2) + (((f * scaleY) / 16) * 4);
@@ -126,7 +126,7 @@ public class RandomLevelSource implements LevelSource{ //TODO all public?, try t
 		byte[][][] bArr = new byte[16][16][128];
 		this.biomes = this.world.biomeSource.getBiomeBlock(chunkX * 16, chunkZ * 16, 16, 16);
 		this.prepareHeights(chunkX, chunkZ, bArr, this.biomes, this.world.biomeSource.temperatureNoises);
-		this.buildSurfaces(chunkX, chunkZ, bArr, this.biomes);
+		//this.buildSurfaces(chunkX, chunkZ, bArr, this.biomes);
 		Chunk c = new Chunk(bArr, chunkX, chunkZ);
 		return c;
 	}

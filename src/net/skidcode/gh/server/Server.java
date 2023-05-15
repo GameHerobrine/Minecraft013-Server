@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -126,13 +127,13 @@ public final class Server {
 			String type = properties.getNullsafe("world-generator");
 			if(type.equalsIgnoreCase("flat")) {
 				Logger.info("Generating flat world...");
-				Server.world = new World(0xabeef);
+				Server.world = new World(0xfe1ebeef);
 				FlatWorldGenerator.generateChunks(Server.world);
 				Server.world.setSaveSpawn(127, 127);
 			}else
 			if(type.equalsIgnoreCase("normal")) {
 				Logger.info("Generating normal world...");
-				Server.world = new World(0x256512);
+				Server.world = new World(0xfe1ebeef);
 				NormalWorldGenerator.generateChunks(Server.world);
 				Server.world.setSaveSpawn(127, 127);
 			}else {
@@ -154,16 +155,12 @@ public final class Server {
 	}
 	
 	private static void loadPlugins() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException, ClassNotFoundException, InstantiationException {
-		Method urlAdd = (java.net.URLClassLoader.class).getDeclaredMethod("addURL", new Class[] {java.net.URL.class}); //TODO new java comp
-		urlAdd.setAccessible(true);
-		ClassLoader classLoader = Server.class.getClassLoader();
+		ServerClassLoader classLoader = new ServerClassLoader(new URL[] {}, Server.class.getClassLoader());
 		if(classLoader instanceof URLClassLoader) {
 			File[] fs = Server.pluginsPath.listFiles();
 			for(File f : fs) {
 				if(f.getName().endsWith(".jar")) {
-					urlAdd.invoke(classLoader, new Object[] {
-							f.toURI().toURL()
-					});
+					classLoader.addUrl(f.toURI().toURL());
 				}
 			}
 			
@@ -210,6 +207,7 @@ public final class Server {
 				}
 			}
 		}
+		classLoader.close();
 		
 	}
 
