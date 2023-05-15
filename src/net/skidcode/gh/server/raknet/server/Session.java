@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import net.skidcode.gh.server.Server;
 import net.skidcode.gh.server.raknet.RakNet;
 import net.skidcode.gh.server.raknet.protocol.DataPacket;
 import net.skidcode.gh.server.raknet.protocol.EncapsulatedPacket;
@@ -505,7 +506,7 @@ public class Session {
                 pk.serverID = this.sessionManager.getID();
                 
                 pk.pingID = ((UNCONNECTED_PING) packet).pingID;
-                pk.serverName = "MCCPP;Demo;Minecraft 0.1.3 Server";//this.sessionManager.getName(); TODO custom server info
+                pk.serverName = Server.serverName;//this.sessionManager.getName();
                 this.sendPacket(pk);
             }else if (packet instanceof OPEN_CONNECTION_REQUEST_1) {
                 //TODO: check protocol number and refuse connections

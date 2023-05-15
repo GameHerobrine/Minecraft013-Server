@@ -43,11 +43,12 @@ public final class Server {
 	private static HashMap<String, Player> id2Player = new HashMap<>();
 	public static PropertiesFile properties;
 	public static final File pluginsPath = new File("plugins/");
-	private static int port = 19132;
-	public static boolean saveWorld = true;
-	public static boolean savePlayerData = true;
+	private static volatile int port = 19132;
+	public static volatile boolean saveWorld = true;
+	public static volatile boolean savePlayerData = true;
 	public static long nextTick = 0;
 	public static int tps = 0;
+	public static volatile String serverName = "MCCPP;Demo;Minecraft 0.1.3 Server";
 	public static int stableTPS = 0;
 	public static long lastSecondRecorded = 0;
 	
@@ -87,8 +88,9 @@ public final class Server {
 			{"save-player-data", "true"},
 			{"generate-world", "false"},
 			{"world-generator", "NORMAL"},
+			{"server-name", "MCCPP;Demo;Minecraft 0.1.3 Server"}
 		});
-		
+		Server.serverName = properties.data.get("server-name");
 		try {
 			Server.port = Integer.parseInt(properties.data.get("server-port"));
 		}catch(Exception e) {
