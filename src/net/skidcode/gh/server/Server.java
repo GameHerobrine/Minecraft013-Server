@@ -80,7 +80,7 @@ public final class Server {
 		Logger.info("Creating directories...");
 		Files.createDirectories(Paths.get("world/players"));
 		Files.createDirectories(Paths.get("world"));
-		if(!pluginsPath.exists()) pluginsPath.createNewFile();
+		pluginsPath.mkdirs();
 		Logger.info("Loading properties...");
 		properties = new PropertiesFile("server.properties", new String[][] {
 			{"server-port", "19132"},
