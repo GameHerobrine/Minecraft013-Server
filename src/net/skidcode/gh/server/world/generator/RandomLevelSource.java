@@ -5,13 +5,14 @@ import java.util.Random;
 import net.skidcode.gh.server.block.Block;
 import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.utils.noise.PerlinNoise;
+import net.skidcode.gh.server.utils.random.MTRandom;
 import net.skidcode.gh.server.world.World;
 import net.skidcode.gh.server.world.biome.Biome;
 import net.skidcode.gh.server.world.chunk.Chunk;
 
 public class RandomLevelSource implements LevelSource{ //TODO all public?, try to make more vanilla
 	private World world;
-	private Random rand;
+	private MTRandom rand;
 	private PerlinNoise upperInterpolationNoise;
 	private PerlinNoise lowerInterpolationNoise;
 	private PerlinNoise interpolationNoise;
@@ -33,7 +34,7 @@ public class RandomLevelSource implements LevelSource{ //TODO all public?, try t
 
 	public RandomLevelSource(World world, int seed) {
 		this.world = world;
-		this.rand = new Random(seed);
+		this.rand = new MTRandom(seed);
 		this.upperInterpolationNoise = new PerlinNoise(this.rand, 16);
 		this.lowerInterpolationNoise = new PerlinNoise(this.rand, 16);
 		this.interpolationNoise = new PerlinNoise(this.rand, 8);
@@ -122,11 +123,11 @@ public class RandomLevelSource implements LevelSource{ //TODO all public?, try t
 
 	@Override
 	public Chunk getChunk(int chunkX, int chunkZ) {
-		this.rand.setSeed((chunkX * 341873128712L) + (chunkZ * 132897987541L)); //TODO maybe 341872712 * chunkX + 132899541 * chunkZ ?
+		this.rand.setSeed((int) ((chunkX * 341873128712L) + (chunkZ * 132897987541L))); //TODO maybe 341872712 * chunkX + 132899541 * chunkZ ?
 		byte[][][] bArr = new byte[16][16][128];
 		this.biomes = this.world.biomeSource.getBiomeBlock(chunkX * 16, chunkZ * 16, 16, 16);
 		this.prepareHeights(chunkX, chunkZ, bArr, this.biomes, this.world.biomeSource.temperatureNoises);
-		//this.buildSurfaces(chunkX, chunkZ, bArr, this.biomes);
+		this.buildSurfaces(chunkX, chunkZ, bArr, this.biomes);
 		Chunk c = new Chunk(bArr, chunkX, chunkZ);
 		return c;
 	}

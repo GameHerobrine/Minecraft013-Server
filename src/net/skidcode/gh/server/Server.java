@@ -29,6 +29,8 @@ import net.skidcode.gh.server.plugin.Plugin;
 import net.skidcode.gh.server.plugin.PluginInfo;
 import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.utils.config.PropertiesFile;
+import net.skidcode.gh.server.utils.noise.PerlinNoise;
+import net.skidcode.gh.server.utils.random.MTRandom;
 import net.skidcode.gh.server.world.World;
 import net.skidcode.gh.server.world.generator.FlatWorldGenerator;
 import net.skidcode.gh.server.world.generator.NormalWorldGenerator;
@@ -58,6 +60,13 @@ public final class Server {
 	}
 	
 	public static void main(String[] args) throws IOException {
+		
+		if(!true) {
+			PerlinNoise pn = new PerlinNoise(new MTRandom(1), 1);
+			Logger.info(pn.getValue(21, 145));
+			return;
+		}
+		
 		Logger.info("Starting Server...");
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			public void run() {
@@ -135,7 +144,7 @@ public final class Server {
 			}else
 			if(type.equalsIgnoreCase("normal")) {
 				Logger.info("Generating normal world...");
-				Server.world = new World(0xfe1ebeef);
+				Server.world = new World(2);
 				NormalWorldGenerator.generateChunks(Server.world);
 				Server.world.setSaveSpawn(127, 127);
 			}else {

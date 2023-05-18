@@ -6,19 +6,18 @@ public class MTRandom {
     private static final int[] MAG01 = {0x0, 0x9908B0DF};
     
     private int[] state;
-    private int index;
-
+    private int index = 0;
+    public MTRandom() {}
     public MTRandom(int seed) {
         state = new int[N];
         this.setSeed(seed);
     }
 
     public void setSeed(int seed) {
-    	state[0] = seed;
-        for (int i = 1; i < N; ++i) {
-            state[i] = 0x6C078965 * (state[i - 1] ^ (state[i - 1] >>> 30)) + i;
+    	this.state[0] = seed & 0xFFFFFFFF;
+        for (this.index = 1; this.index < N; ++this.index) {
+            this.state[this.index] = (1812433253 * (this.state[this.index-1] ^ (this.state[this.index-1] >>> 30)) + this.index);
         }
-        index = N;
 	}
 
 	public int genrand_int32() {
@@ -40,18 +39,29 @@ public class MTRandom {
     }
     
     public float nextFloat() {
-    	return this.genrand_int32() * 2.32830644e-10f;
+    	return (float)((this.genrand_int32() & 0xffffffffl) * 2.32830644e-10d);
     }
     
     public int nextInt(int a2)
     {
-      return this.genrand_int32() % a2;
+      return (int) ((this.genrand_int32() & 0xffffffffl) % a2);
     }
     private void twistState() {
-        for (int i = 0; i < N; ++i) {
-            int x = (state[i] & 0x80000000) | (state[(i + 1) % N] & 0x7FFFFFFF);
-            state[i] = state[(i + M) % N] ^ (x >>> 1) ^ MAG01[x & 1];
+    	int kk, y;
+        
+        for (kk = 0; kk < N - M; ++kk) {
+            y = (this.state[kk] & 0x80000000) | (this.state[kk + 1] & 0x7fffffff);
+            this.state[kk] = this.state[kk + M] ^ (y >>> 1) ^ MAG01[y & 0x1];
         }
-        index = 0;
+        
+        for (; kk < N - 1; ++kk) {
+            y = (this.state[kk] & 0x80000000) | (this.state[kk + 1] & 0x7fffffff);
+            this.state[kk] = this.state[kk + (M - N)] ^ (y >>> 1) ^ MAG01[y & 0x1];
+        }
+        
+        y = (this.state[N - 1] & 0x80000000) | (this.state[0] & 0x7fffffff);
+        this.state[N - 1] = this.state[M - 1] ^ (y >>> 1) ^ MAG01[y & 0x1];
+        
+        this.index = 0;
     }
 }

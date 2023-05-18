@@ -2,6 +2,8 @@ package net.skidcode.gh.server.utils.noise;
 
 import java.util.Random;
 
+import net.skidcode.gh.server.utils.random.MTRandom;
+
 //TODO
 public class ImprovedNoise {
 	public int[] permutations;
@@ -31,7 +33,7 @@ public class ImprovedNoise {
 		return a + (b - a) * t;
 	}
 	
-	public ImprovedNoise(Random r) {
+	public ImprovedNoise(MTRandom r) {
 		this.permutations = new int[512];
 		
 		this.xCoord = r.nextFloat() * 256;
@@ -44,7 +46,7 @@ public class ImprovedNoise {
 		
 		for(int i = 0; i < 256; ++i) {
 			int k = r.nextInt(256 - i) + i;
-			int prev = this.permutations[k];
+			int prev = this.permutations[i];
 			this.permutations[i] = this.permutations[k];
 			this.permutations[k] = prev;
 			this.permutations[i + 256] = this.permutations[i];

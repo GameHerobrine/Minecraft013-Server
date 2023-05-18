@@ -3,10 +3,12 @@ package net.skidcode.gh.server.utils.noise;
 import java.util.Arrays;
 import java.util.Random;
 
+import net.skidcode.gh.server.utils.random.MTRandom;
+
 public class PerlinNoise {
 	public ImprovedNoise[] noises;
 	public int octavesAmount;
-	public PerlinNoise(Random r, int octaves) {
+	public PerlinNoise(MTRandom r, int octaves) {
 		this.octavesAmount = octaves;
 		this.noises = new ImprovedNoise[octaves];
 		for(int i = 0; i < octaves; ++i) {
