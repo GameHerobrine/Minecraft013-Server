@@ -5,6 +5,7 @@ import java.util.Random;
 import net.skidcode.gh.server.block.Block;
 import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.utils.noise.PerlinNoise;
+import net.skidcode.gh.server.utils.random.BedrockRandom;
 import net.skidcode.gh.server.utils.random.MTRandom;
 import net.skidcode.gh.server.world.World;
 import net.skidcode.gh.server.world.biome.Biome;
@@ -12,7 +13,7 @@ import net.skidcode.gh.server.world.chunk.Chunk;
 
 public class RandomLevelSource implements LevelSource{ //TODO all public?, try to make more vanilla
 	private World world;
-	private MTRandom rand;
+	private BedrockRandom rand;
 	private PerlinNoise upperInterpolationNoise;
 	private PerlinNoise lowerInterpolationNoise;
 	private PerlinNoise interpolationNoise;
@@ -34,7 +35,7 @@ public class RandomLevelSource implements LevelSource{ //TODO all public?, try t
 
 	public RandomLevelSource(World world, int seed) {
 		this.world = world;
-		this.rand = new MTRandom(seed);
+		this.rand = new BedrockRandom(seed);
 		this.upperInterpolationNoise = new PerlinNoise(this.rand, 16);
 		this.lowerInterpolationNoise = new PerlinNoise(this.rand, 16);
 		this.interpolationNoise = new PerlinNoise(this.rand, 8);
@@ -56,78 +57,106 @@ public class RandomLevelSource implements LevelSource{ //TODO all public?, try t
 		this.interpolationNoises = this.interpolationNoise.getRegion(null, chunkX, chunkY, chunkZ, scaleX, scaleY, scaleZ, 8.5552f, 4.2776f, 8.5552f);
 		this.upperInterpolationNoises = this.upperInterpolationNoise.getRegion(null, chunkX, chunkY, chunkZ, scaleX, scaleY, scaleZ, 684.41f, 684.41f, 684.41f);
 		this.lowerInterpolationNoises = this.lowerInterpolationNoise.getRegion(null, chunkX, chunkY, chunkZ, scaleX, scaleY, scaleZ, 684.41f, 684.41f, 684.41f);
-		int index = 0;
-		int rainbiomedepthIndex = 0;
-		int i = 16 / scaleX;
 		
-		float f, f2;
-		for(int blockX = 0; blockX < scaleX; ++blockX) {
-			int i2 = (blockX * i) + (i / 2);
-			for(int blockZ = 0; blockZ < scaleZ; ++blockZ) {
-				int i3 = (blockZ * i) + (i / 2);
-				float f3 = 1.0f - (rainNoises[(i2 * 16) + i3] * tempNoises[(i2 * 16) + i3]);
-				float f4 = f3 * f3;
-				float f5 = ((this.biomeNoises[rainbiomedepthIndex] + 256.0f) / 512.0f) * (1.0f - (f4 * f4));
-				
-				if(f5 > 1) f5 = 1;
-				
-				float f6 = this.depthNoises[rainbiomedepthIndex++] / 8000;
-				if(f6 < 0) f6 = (-f6) * 0.3f;
-				
-				float f7 = (f6 * 3) - 2;
-				if(f7 < 0) {
-					float f8 = f7 / 2;
-					if(f8 < -1) {
-						f8 = -1;
-					}
-					f = (f8 / 1.4f) / 2.0f;
-					f5 = 0;
-				}else {
-					if (f7 > 1) {
-						f7 = 1;
-					}
-					f = f7 / 8.0f;
-				}
-				if(f5 < 0) f5 = 0;
-				
-				float f9 = f5 + 0.5f;
-				float f10 = (scaleY / 2) + (((f * scaleY) / 16) * 4);
-				
-				for(int blockY = 0; blockY < scaleY; ++blockY) {
-					float f11 = ((blockY - f10) * 12) / f9;
-					if (f11 < 0) {
-						f11 *= 4;
-					}
-					float f12 = this.upperInterpolationNoises[index] / 512f;
-					float f13 = this.lowerInterpolationNoises[index] / 512f;
-					float f14 = ((this.interpolationNoises[index] / 10) + 1) / 2;
+		int k1 = 0;
+        int l1 = 0;
+        int i2 = 16 / scaleX;
+        for(int j2 = 0; j2 < scaleX; j2++)
+        {
+            int k2 = j2 * i2 + i2 / 2;
+            for(int l2 = 0; l2 < scaleZ; l2++)
+            {
+                int i3 = l2 * i2 + i2 / 2;
+                float d2 = tempNoises[k2 * 16 + i3];
+                float d3 = rainNoises[k2 * 16 + i3] * d2;
+                float d4 = 1.0F - d3;
+                d4 *= d4;
+                d4 *= d4;
+                d4 = 1.0F - d4;
+                float d5 = (biomeNoises[l1] + 256F) / 512F;
+                d5 *= d4;
+                if(d5 > 1.0F)
+                {
+                    d5 = 1.0F;
+                }
+                float d6 = depthNoises[l1] / 8000F;
+                if(d6 < 0.0F)
+                {
+                    d6 = -d6 * 0.29999999999999999F;
+                }
+                d6 = d6 * 3F - 2F;
+                if(d6 < 0.0F)
+                {
+                    d6 /= 2D;
+                    if(d6 < -1D)
+                    {
+                        d6 = -1F;
+                    }
+                    d6 /= 1.3999999999999999F;
+                    d6 /= 2D;
+                    d5 = 0.0F;
+                } else
+                {
+                    if(d6 > 1.0F)
+                    {
+                        d6 = 1.0F;
+                    }
+                    d6 /= 8D;
+                }
+                if(d5 < 0.0F)
+                {
+                    d5 = 0.0F;
+                }
+                d5 += 0.5F;
+                d6 = (d6 * (float)scaleY) / 16F;
+                float d7 = (float)scaleY / 2F + d6 * 4F;
+                l1++;
+                for(int j3 = 0; j3 < scaleY; j3++)
+                {
+                    float d8 = 0.0F;
+                    float d9 = (((float)j3 - d7) * 12F) / d5;
+                    if(d9 < 0.0F)
+                    {
+                        d9 *= 4D;
+                    }
+                    float d10 = upperInterpolationNoises[k1] / 512F;
+                    float d11 = lowerInterpolationNoises[k1] / 512F;
+                    float d12 = (interpolationNoises[k1] / 10F + 1.0F) / 2F;
+                    if(d12 < 0.0F)
+                    {
+                        d8 = d10;
+                    } else
+                    if(d12 > 1.0F)
+                    {
+                        d8 = d11;
+                    } else
+                    {
+                        d8 = d10 + (d11 - d10) * d12;
+                    }
+                    d8 -= d9;
+                    if(j3 > scaleY - 4)
+                    {
+                        float d13 = (float)(j3 - (scaleY - 4)) / 3F;
+                        d8 = d8 * (1.0F - d13) + -10F * d13;
+                    }
+                    heights[k1] = (float) d8;
+                    k1++;
+                }
 
-					if (f14 < 0) {
-						f2 = f12;
-					} else {
-						f2 = f14 > 1 ? f13 : f12 + ((f13 - f12) * f14);
-					}
-					float f15 = f2 - f11;
-					if (blockY > scaleY - 4) {
-						float f16 = (blockY - (scaleY - 4)) / 3;
-						f15 = (f15 * (1 - f16)) + ((-10) * f16);
-					}
-					heights[index++] = f15;
-				}
-				
-			}
-		}
+            }
+
+        }
 		
 		return heights;
 	}
 
 	@Override
 	public Chunk getChunk(int chunkX, int chunkZ) {
-		this.rand.setSeed((int) ((chunkX * 341873128712L) + (chunkZ * 132897987541L))); //TODO maybe 341872712 * chunkX + 132899541 * chunkZ ?
+		this.rand.setSeed((int) (341872712 * chunkX + 132899541 * chunkZ)); //TODO maybe 341872712 * chunkX + 132899541 * chunkZ ?
 		byte[][][] bArr = new byte[16][16][128];
 		this.biomes = this.world.biomeSource.getBiomeBlock(chunkX * 16, chunkZ * 16, 16, 16);
 		this.prepareHeights(chunkX, chunkZ, bArr, this.biomes, this.world.biomeSource.temperatureNoises);
-		this.buildSurfaces(chunkX, chunkZ, bArr, this.biomes);
+		//this.buildSurfaces(chunkX, chunkZ, bArr, this.biomes);
 		Chunk c = new Chunk(bArr, chunkX, chunkZ);
 		return c;
 	}

@@ -4,6 +4,7 @@ import java.util.Random;
 
 import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.utils.noise.PerlinNoise;
+import net.skidcode.gh.server.utils.random.BedrockRandom;
 import net.skidcode.gh.server.utils.random.MTRandom;
 import net.skidcode.gh.server.world.World;
 import net.skidcode.gh.server.world.biome.Biome;
@@ -18,9 +19,9 @@ public class BiomeSource {
 	public float[] detailNoises;
 	
 	public BiomeSource(World w) {
-		this.temperatureNoise = new PerlinNoise(new MTRandom(w.worldSeed * 9871), 4);
-        this.rainfallNoise = new PerlinNoise(new MTRandom(w.worldSeed * 39811), 4);
-        this.detailNoise = new PerlinNoise(new MTRandom(w.worldSeed * 543321), 2);
+		this.temperatureNoise = new PerlinNoise(new BedrockRandom((int)w.worldSeed * 9871), 4);
+        this.rainfallNoise = new PerlinNoise(new BedrockRandom((int)w.worldSeed * 39811), 4);
+        this.detailNoise = new PerlinNoise(new BedrockRandom((int)w.worldSeed * 543321), 2);
 	}
 	
 	public Biome getBiome(int x, int z) {

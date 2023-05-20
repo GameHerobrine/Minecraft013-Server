@@ -2,6 +2,7 @@ package net.skidcode.gh.server.utils.noise;
 
 import java.util.Random;
 
+import net.skidcode.gh.server.utils.random.BedrockRandom;
 import net.skidcode.gh.server.utils.random.MTRandom;
 
 //TODO
@@ -16,24 +17,18 @@ public class ImprovedNoise {
 		return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v);
 	}
 	
-	public static float grad2(int a2, float a3, float a4) {
-		int v5 = a2 & 0xF;
-		float v6 = (1 - ((a2 >> 3) & 1)) * a3;
-		if ((v5 >> 3 & 1) == 1)
-			v6 = -v6;
-		float v4;
-		if (v5 < 4 || (v5 > 7 && v5 < 12))
-			v4 = a4;
-		else
-			v4 = 0.0f;
-		return v6 + v4;
+	public static float grad2(int i, float d, float d1) {
+		int j = i & 0xf;
+        float d2 = (1 - ((j & 8) >> 3)) * d;
+        float d3 = j >= 4 ? j != 12 && j != 14 ? d1 : d : 0;
+        return ((j & 1) != 0 ? -d2 : d2) + ((j & 2) != 0 ? -d3 : d3);
 	}
 	
 	public static float lerp(float t, float a, float b) {
-		return a + (b - a) * t;
+		return a + t * (b - a);
 	}
 	
-	public ImprovedNoise(MTRandom r) {
+	public ImprovedNoise(BedrockRandom r) {
 		this.permutations = new int[512];
 		
 		this.xCoord = r.nextFloat() * 256;
