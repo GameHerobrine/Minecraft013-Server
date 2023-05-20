@@ -156,7 +156,7 @@ public class RandomLevelSource implements LevelSource{ //TODO all public?, try t
 		byte[][][] bArr = new byte[16][16][128];
 		this.biomes = this.world.biomeSource.getBiomeBlock(chunkX * 16, chunkZ * 16, 16, 16);
 		this.prepareHeights(chunkX, chunkZ, bArr, this.biomes, this.world.biomeSource.temperatureNoises);
-		//this.buildSurfaces(chunkX, chunkZ, bArr, this.biomes);
+		this.buildSurfaces(chunkX, chunkZ, bArr, this.biomes);
 		Chunk c = new Chunk(bArr, chunkX, chunkZ);
 		return c;
 	}
@@ -177,9 +177,9 @@ public class RandomLevelSource implements LevelSource{ //TODO all public?, try t
                 for (int blockY = 127; blockY >= 0; blockY--) {
                 	int i2 = (((blockZ * 16) + blockX) * 128) + blockY;
                 	if (blockY <= 0 + this.rand.nextInt(5)) {
-                		blockIDS[blockX][blockZ][blockY] = (byte) Block.bedrock.blockID;
+                		blockIDS[blockZ][blockX][blockY] = (byte) Block.bedrock.blockID;
                     }else {
-                    	byte b3 = blockIDS[blockX][blockZ][blockY];
+                    	byte b3 = blockIDS[blockZ][blockX][blockY];
                     	if (b3 == 0) {
                             i = -1;
                         } else if (b3 == Block.stone.blockID) {
@@ -204,18 +204,17 @@ public class RandomLevelSource implements LevelSource{ //TODO all public?, try t
                                 }
                         		
                         		if (blockY < 64 && b == 0) {
-                        			Logger.info("waterStill");
                                     b = (byte) Block.waterStill.blockID;
                                 }
                         		i = nextFloat;
                         		if (blockY >= 64 - 1) {
-                        			blockIDS[blockX][blockZ][blockY] = b;
+                        			blockIDS[blockZ][blockX][blockY] = b;
                                 } else {
-                                	blockIDS[blockX][blockZ][blockY] = b2;
+                                	blockIDS[blockZ][blockX][blockY] = b2;
                                 }
                         	} else if (i > 0) {
                                 i--;
-                                blockIDS[blockX][blockZ][blockY] = b2;
+                                blockIDS[blockZ][blockX][blockY] = b2; //dont ask me why
                                 if (i == 0 && b2 == Block.sand.blockID) {
                                     i = this.rand.nextInt(4);
                                     b2 = (byte) Block.sandStone.blockID;

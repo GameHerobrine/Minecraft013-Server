@@ -34,37 +34,40 @@ public class Biome {
 		rain *= temp;
 		
 		if (temp < 0.1f) {
-            return Biome.tundra;
-        }
+			return Biome.tundra;
+		}
 		
-        if (rain < 0.2f) {
-            if (temp < 0.5f) {
-                return Biome.tundra;
-            }
-            if (temp < 0.95f) {
-                return Biome.savanna;
-            }
-            return Biome.desert;
-        } else if (rain > 0.5f && temp < 0.7f) {
-            return Biome.swampland;
-        } else {
-            if (temp < 0.5f) {
-                return Biome.taiga;
-            }
-            if (temp < 0.97f) {
-                if (rain < 0.35f) {
-                    return Biome.shrubland;
-                }
-                return Biome.forest;
-            } else if (rain < 0.45f) {
-                return Biome.plains;
-            } else {
-                if (rain < 0.9f) {
-                    return Biome.seasonalForest;
-                }
-                return Biome.rainForest;
-            }
-        }
+		if (rain < 0.2f) {
+			if (temp < 0.5f) {
+				return Biome.tundra;
+			}
+			if (temp < 0.95f) {
+				return Biome.savanna;
+			}else {
+				return Biome.desert;
+			}
+		}
+		
+		if (rain > 0.5f && temp < 0.7f) {
+			return Biome.swampland;
+		}
+		if (temp < 0.5f) {
+			return Biome.taiga;
+		}
+		if (temp < 0.97f) {
+			if (rain < 0.35f) {
+				return Biome.shrubland;
+			}else {
+				return Biome.forest;
+			}
+		}
+		if (rain < 0.45f) {
+			return Biome.plains;
+		}
+		if (rain < 0.9f) {
+			return Biome.seasonalForest;
+		}
+		return Biome.rainForest;
 
 	}
 	
@@ -72,7 +75,7 @@ public class Biome {
 	public static void recalc() {
 		for(int i = 0; i < 64; ++i) {
 			for(int j = 0; j < 64; ++j) {
-				Biome.biomes[i + (j * 64)] = Biome.__getBiome(i / 63, j / 63);
+				Biome.biomes[i + (j * 64)] = Biome.__getBiome((float) i / 63f, (float) j / 63f);
 			}
 		}
 		Biome.desert.topBlock = Biome.desert.fillerBlock = (byte) Block.sand.blockID;
@@ -107,6 +110,8 @@ public class Biome {
 	}
 
 	public static Biome getBiome(float blockTemperature, float blockRainfall) {
-		return Biome.biomes[(int) (64 * (blockTemperature * 63.0) + (blockRainfall * 63.0))];
+		int i = (int) (blockTemperature * 63f);
+		int j = (int) (blockRainfall * 63f);
+		return Biome.biomes[i + j * 64];
 	}
 }
