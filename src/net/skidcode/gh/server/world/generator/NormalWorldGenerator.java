@@ -17,7 +17,12 @@ public class NormalWorldGenerator {
 				w.chunks[x][z] = w.levelSource.getChunk(x, z);
 			}
 		}
-		
+		for(int x = 0; x < 16; ++x) {
+			Logger.info("Populating "+x+": [0-15] chunks");
+			for(int z = 0; z < 16; ++z) {
+				w.levelSource.postProcess(x, z);
+			}
+		}
 		w.locationTable = new int[32][32]; //TODO comp with vanilla
 	}
 	

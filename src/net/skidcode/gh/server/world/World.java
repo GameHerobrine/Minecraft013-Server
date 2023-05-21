@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 import net.skidcode.gh.server.block.Block;
+import net.skidcode.gh.server.block.material.Material;
 import net.skidcode.gh.server.network.MinecraftDataPacket;
 import net.skidcode.gh.server.network.protocol.RemoveEntityPacket;
 import net.skidcode.gh.server.player.Player;
@@ -91,6 +92,7 @@ public class World {
 	}
 	
 	public int getBlockIDAt(int x, int y, int z) {
+		if(x > 255 || y > 127 || z > 255) return 0; //TODO return invisBedrock for 255+?
 		return this.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf][y];
 	}
 	
@@ -99,8 +101,14 @@ public class World {
 	}
 	
 	public void placeBlock(int x, int y, int z, byte id) {
-		this.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf][y] = id;
-		this.chunks[x >> 4][z >> 4].blockMetadata[x & 0xf][z & 0xf][y] = 0;
+		if(x < 256 && y < 128 && z < 256) {
+			Chunk c = this.chunks[x >> 4][z >> 4];
+			c.blockData[x & 0xf][z & 0xf][y] = id;
+			c.blockMetadata[x & 0xf][z & 0xf][y] = 0;
+			if(id != 0 && c.heightMap[x & 0xf][z & 0xf] < y) {
+				c.heightMap[x & 0xf][z & 0xf] = (byte) y;
+			}
+		}
 	}
 	
 	public boolean isBlockSolid(int x, int y, int z) {
@@ -109,8 +117,14 @@ public class World {
 	}
 	
 	public void placeBlock(int x, int y, int z, byte id, byte meta) {
-		this.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf][y] = id;
-		this.chunks[x >> 4][z >> 4].blockMetadata[x & 0xf][z & 0xf][y] = meta;
+		if(x < 256 && y < 128 && z < 256) {
+			Chunk c = this.chunks[x >> 4][z >> 4];
+			c.blockData[x & 0xf][z & 0xf][y] = id;
+			c.blockMetadata[x & 0xf][z & 0xf][y] = meta;
+			if(id != 0 && c.heightMap[x & 0xf][z & 0xf] < y) {
+				c.heightMap[x & 0xf][z & 0xf] = (byte) y;
+			}
+		}
 	}
 	
 	public void broadcastPacket(MinecraftDataPacket pk) {
@@ -129,6 +143,41 @@ public class World {
 	
 	public int incrementAndGetNextFreeEID() {
 		return ++freeEID;
+	}
+
+	public Material getMaterial(int x, int y, int z) {
+		int id = this.getBlockIDAt(x, y, z);
+		if(id > 0) {
+			return Block.blocks[id].material;
+		}
+		return Material.air;
+	}
+
+	public int getHeightValue(int x, int z) {
+		if(x < 256 && z < 256) {
+			return this.chunks[x >> 4][z >> 4].heightMap[x & 0xf][z & 0xf];
+		}
+		return 0;
+	}
+
+	public boolean isAirBlock(int x, int y, int z) {
+		if(x < 256 && y < 128 && z < 256) {
+			return this.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf][y] == 0;
+		}
+		return false;
+	}
+
+	public int findTopSolidBlock(int x, int z) {
+		if(x < 256 && z < 256) {
+			Chunk c = this.chunks[x >> 4][z >> 4];
+			for(int y = 127; y > 0; --y) {
+				int id = c.blockData[x & 0xf][z & 0xf][y];
+				if(id > 0 && Block.blocks[id].material.isSolid) {
+					return y;
+				}
+			}
+		}
+		return 0;
 	}
 	
 }

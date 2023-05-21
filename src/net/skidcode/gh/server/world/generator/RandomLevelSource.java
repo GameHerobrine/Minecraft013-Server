@@ -3,6 +3,7 @@ package net.skidcode.gh.server.world.generator;
 import java.util.Random;
 
 import net.skidcode.gh.server.block.Block;
+import net.skidcode.gh.server.block.material.Material;
 import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.utils.noise.PerlinNoise;
 import net.skidcode.gh.server.utils.random.BedrockRandom;
@@ -10,6 +11,9 @@ import net.skidcode.gh.server.utils.random.MTRandom;
 import net.skidcode.gh.server.world.World;
 import net.skidcode.gh.server.world.biome.Biome;
 import net.skidcode.gh.server.world.chunk.Chunk;
+import net.skidcode.gh.server.world.feature.ClayFeature;
+import net.skidcode.gh.server.world.feature.Feature;
+import net.skidcode.gh.server.world.feature.OreFeature;
 
 public class RandomLevelSource implements LevelSource{ //TODO all public?, try to make more vanilla
 	private World world;
@@ -59,173 +63,174 @@ public class RandomLevelSource implements LevelSource{ //TODO all public?, try t
 		this.lowerInterpolationNoises = this.lowerInterpolationNoise.getRegion(null, chunkX, chunkY, chunkZ, scaleX, scaleY, scaleZ, 684.41f, 684.41f, 684.41f);
 		
 		int k1 = 0;
-        int l1 = 0;
-        int i2 = 16 / scaleX;
-        for(int j2 = 0; j2 < scaleX; j2++)
-        {
-            int k2 = j2 * i2 + i2 / 2;
-            for(int l2 = 0; l2 < scaleZ; l2++)
-            {
-                int i3 = l2 * i2 + i2 / 2;
-                float d2 = tempNoises[k2 * 16 + i3];
-                float d3 = rainNoises[k2 * 16 + i3] * d2;
-                float d4 = 1.0F - d3;
-                d4 *= d4;
-                d4 *= d4;
-                d4 = 1.0F - d4;
-                float d5 = (biomeNoises[l1] + 256F) / 512F;
-                d5 *= d4;
-                if(d5 > 1.0F)
-                {
-                    d5 = 1.0F;
-                }
-                float d6 = depthNoises[l1] / 8000F;
-                if(d6 < 0.0F)
-                {
-                    d6 = -d6 * 0.29999999999999999F;
-                }
-                d6 = d6 * 3F - 2F;
-                if(d6 < 0.0F)
-                {
-                    d6 /= 2D;
-                    if(d6 < -1D)
-                    {
-                        d6 = -1F;
-                    }
-                    d6 /= 1.3999999999999999F;
-                    d6 /= 2D;
-                    d5 = 0.0F;
-                } else
-                {
-                    if(d6 > 1.0F)
-                    {
-                        d6 = 1.0F;
-                    }
-                    d6 /= 8D;
-                }
-                if(d5 < 0.0F)
-                {
-                    d5 = 0.0F;
-                }
-                d5 += 0.5F;
-                d6 = (d6 * (float)scaleY) / 16F;
-                float d7 = (float)scaleY / 2F + d6 * 4F;
-                l1++;
-                for(int j3 = 0; j3 < scaleY; j3++)
-                {
-                    float d8 = 0.0F;
-                    float d9 = (((float)j3 - d7) * 12F) / d5;
-                    if(d9 < 0.0F)
-                    {
-                        d9 *= 4D;
-                    }
-                    float d10 = upperInterpolationNoises[k1] / 512F;
-                    float d11 = lowerInterpolationNoises[k1] / 512F;
-                    float d12 = (interpolationNoises[k1] / 10F + 1.0F) / 2F;
-                    if(d12 < 0.0F)
-                    {
-                        d8 = d10;
-                    } else
-                    if(d12 > 1.0F)
-                    {
-                        d8 = d11;
-                    } else
-                    {
-                        d8 = d10 + (d11 - d10) * d12;
-                    }
-                    d8 -= d9;
-                    if(j3 > scaleY - 4)
-                    {
-                        float d13 = (float)(j3 - (scaleY - 4)) / 3F;
-                        d8 = d8 * (1.0F - d13) + -10F * d13;
-                    }
-                    heights[k1] = (float) d8;
-                    k1++;
-                }
+		int l1 = 0;
+		int i2 = 16 / scaleX;
+		for(int j2 = 0; j2 < scaleX; j2++)
+		{
+			int k2 = j2 * i2 + i2 / 2;
+			for(int l2 = 0; l2 < scaleZ; l2++)
+			{
+				int i3 = l2 * i2 + i2 / 2;
+				float d2 = tempNoises[k2 * 16 + i3];
+				float d3 = rainNoises[k2 * 16 + i3] * d2;
+				float d4 = 1.0F - d3;
+				d4 *= d4;
+				d4 *= d4;
+				d4 = 1.0F - d4;
+				float d5 = (biomeNoises[l1] + 256F) / 512F;
+				d5 *= d4;
+				if(d5 > 1.0F)
+				{
+					d5 = 1.0F;
+				}
+				float d6 = depthNoises[l1] / 8000F;
+				if(d6 < 0.0F)
+				{
+					d6 = -d6 * 0.29999999999999999F;
+				}
+				d6 = d6 * 3F - 2F;
+				if(d6 < 0.0F)
+				{
+					d6 /= 2D;
+					if(d6 < -1D)
+					{
+						d6 = -1F;
+					}
+					d6 /= 1.3999999999999999F;
+					d6 /= 2D;
+					d5 = 0.0F;
+				} else
+				{
+					if(d6 > 1.0F)
+					{
+						d6 = 1.0F;
+					}
+					d6 /= 8D;
+				}
+				if(d5 < 0.0F)
+				{
+					d5 = 0.0F;
+				}
+				d5 += 0.5F;
+				d6 = (d6 * (float)scaleY) / 16F;
+				float d7 = (float)scaleY / 2F + d6 * 4F;
+				l1++;
+				for(int j3 = 0; j3 < scaleY; j3++)
+				{
+					float d8 = 0.0F;
+					float d9 = (((float)j3 - d7) * 12F) / d5;
+					if(d9 < 0.0F)
+					{
+						d9 *= 4D;
+					}
+					float d10 = upperInterpolationNoises[k1] / 512F;
+					float d11 = lowerInterpolationNoises[k1] / 512F;
+					float d12 = (interpolationNoises[k1] / 10F + 1.0F) / 2F;
+					if(d12 < 0.0F)
+					{
+						d8 = d10;
+					} else
+					if(d12 > 1.0F)
+					{
+						d8 = d11;
+					} else
+					{
+						d8 = d10 + (d11 - d10) * d12;
+					}
+					d8 -= d9;
+					if(j3 > scaleY - 4)
+					{
+						float d13 = (float)(j3 - (scaleY - 4)) / 3F;
+						d8 = d8 * (1.0F - d13) + -10F * d13;
+					}
+					heights[k1] = (float) d8;
+					k1++;
+				}
 
-            }
+			}
 
-        }
+		}
 		
 		return heights;
 	}
 
 	@Override
 	public Chunk getChunk(int chunkX, int chunkZ) {
-		this.rand.setSeed((int) (341872712 * chunkX + 132899541 * chunkZ)); //TODO maybe 341872712 * chunkX + 132899541 * chunkZ ?
+		this.rand.setSeed((int) (341872712 * chunkX + 132899541 * chunkZ));
 		byte[][][] bArr = new byte[16][16][128];
 		this.biomes = this.world.biomeSource.getBiomeBlock(chunkX * 16, chunkZ * 16, 16, 16);
 		this.prepareHeights(chunkX, chunkZ, bArr, this.biomes, this.world.biomeSource.temperatureNoises);
 		this.buildSurfaces(chunkX, chunkZ, bArr, this.biomes);
 		Chunk c = new Chunk(bArr, chunkX, chunkZ);
+		c.generateHeightMap();
 		return c;
 	}
 
 	public void buildSurfaces(int chunkX, int chunkZ, byte[][][] blockIDS, Biome[] biomes) {
 		this.sandNoises = this.beachNoise.getRegion(null, chunkX * 16, chunkZ * 16, 0f, 16, 16, 1, 0.03125f, 0.03125f, 1);
-        this.gravelNoises = this.beachNoise.getRegion(null, chunkX * 16, 109.01f, chunkZ * 16, 16, 1, 16, 0.03125f, 1, 0.03125f);
-        this.surfaceDepthNoises = this.surfaceDepthNoise.getRegion(null, chunkX * 16, chunkZ * 16, 0, 16, 16, 1, 0.0625f, 0.0625f, 0.0625f);
-        for (int blockX = 0; blockX < 16; blockX++) {
-            for (int blockZ = 0; blockZ < 16; blockZ++) {
-                Biome biome = biomes[blockX + (blockZ * 16)];
-                boolean z = this.sandNoises[blockX + (blockZ * 16)] + (this.rand.nextFloat() * 0.2f) > 0.0f;
-                boolean z2 = this.gravelNoises[blockX + (blockZ * 16)] + (this.rand.nextFloat() * 0.2f) > 3.0f;
-                int nextFloat = (int) ((this.surfaceDepthNoises[blockX + (blockZ * 16)] / 3.0f) + 3.0f + (this.rand.nextFloat() * 0.25f));
-                int i = -1;
-                byte b = biome.topBlock;
-                byte b2 = biome.fillerBlock;
-                for (int blockY = 127; blockY >= 0; blockY--) {
-                	int i2 = (((blockZ * 16) + blockX) * 128) + blockY;
-                	if (blockY <= 0 + this.rand.nextInt(5)) {
-                		blockIDS[blockZ][blockX][blockY] = (byte) Block.bedrock.blockID;
-                    }else {
-                    	byte b3 = blockIDS[blockZ][blockX][blockY];
-                    	if (b3 == 0) {
-                            i = -1;
-                        } else if (b3 == Block.stone.blockID) {
-                        	if (i == -1) {
-                        		if (nextFloat > 0) {
-                        			if (blockY >= 64 - 4 && blockY <= 64 + 1) {
-                                        b = biome.topBlock;
-                                        b2 = biome.fillerBlock;
-                                        if (z2) {
-                                            b = 0;
-                                            b2 = (byte) Block.gravel.blockID;
-                                        }
-                                        if (z) {
-                                            b = (byte) Block.sand.blockID;
-                                            b2 = (byte) Block.sand.blockID;
-                                        }
-                                    }
+		this.gravelNoises = this.beachNoise.getRegion(null, chunkX * 16, 109.01f, chunkZ * 16, 16, 1, 16, 0.03125f, 1, 0.03125f);
+		this.surfaceDepthNoises = this.surfaceDepthNoise.getRegion(null, chunkX * 16, chunkZ * 16, 0, 16, 16, 1, 0.0625f, 0.0625f, 0.0625f);
+		for (int blockX = 0; blockX < 16; blockX++) {
+			for (int blockZ = 0; blockZ < 16; blockZ++) {
+				Biome biome = biomes[blockX + (blockZ * 16)];
+				boolean z = this.sandNoises[blockX + (blockZ * 16)] + (this.rand.nextFloat() * 0.2f) > 0.0f;
+				boolean z2 = this.gravelNoises[blockX + (blockZ * 16)] + (this.rand.nextFloat() * 0.2f) > 3.0f;
+				int nextFloat = (int) ((this.surfaceDepthNoises[blockX + (blockZ * 16)] / 3.0f) + 3.0f + (this.rand.nextFloat() * 0.25f));
+				int i = -1;
+				byte b = biome.topBlock;
+				byte b2 = biome.fillerBlock;
+				for (int blockY = 127; blockY >= 0; blockY--) {
+					int i2 = (((blockZ * 16) + blockX) * 128) + blockY;
+					if (blockY <= 0 + this.rand.nextInt(5)) {
+						blockIDS[blockZ][blockX][blockY] = (byte) Block.bedrock.blockID;
+					}else {
+						byte b3 = blockIDS[blockZ][blockX][blockY];
+						if (b3 == 0) {
+							i = -1;
+						} else if (b3 == Block.stone.blockID) {
+							if (i == -1) {
+								if (nextFloat > 0) {
+									if (blockY >= 64 - 4 && blockY <= 64 + 1) {
+										b = biome.topBlock;
+										b2 = biome.fillerBlock;
+										if (z2) {
+											b = 0;
+											b2 = (byte) Block.gravel.blockID;
+										}
+										if (z) {
+											b = (byte) Block.sand.blockID;
+											b2 = (byte) Block.sand.blockID;
+										}
+									}
 
-                        		} else {
-                                    b = 0;
-                                    b2 = (byte) Block.stone.blockID;
-                                }
-                        		
-                        		if (blockY < 64 && b == 0) {
-                                    b = (byte) Block.waterStill.blockID;
-                                }
-                        		i = nextFloat;
-                        		if (blockY >= 64 - 1) {
-                        			blockIDS[blockZ][blockX][blockY] = b;
-                                } else {
-                                	blockIDS[blockZ][blockX][blockY] = b2;
-                                }
-                        	} else if (i > 0) {
-                                i--;
-                                blockIDS[blockZ][blockX][blockY] = b2; //dont ask me why
-                                if (i == 0 && b2 == Block.sand.blockID) {
-                                    i = this.rand.nextInt(4);
-                                    b2 = (byte) Block.sandStone.blockID;
-                                }
-                            }
+								} else {
+									b = 0;
+									b2 = (byte) Block.stone.blockID;
+								}
+								
+								if (blockY < 64 && b == 0) {
+									b = (byte) Block.waterStill.blockID;
+								}
+								i = nextFloat;
+								if (blockY >= 64 - 1) {
+									blockIDS[blockZ][blockX][blockY] = b;
+								} else {
+									blockIDS[blockZ][blockX][blockY] = b2;
+								}
+							} else if (i > 0) {
+								i--;
+								blockIDS[blockZ][blockX][blockY] = b2; //dont ask me why
+								if (i == 0 && b2 == Block.sand.blockID) {
+									i = this.rand.nextInt(4);
+									b2 = (byte) Block.sandStone.blockID;
+								}
+							}
 
-                        }
-                    }
-                }
-            }
-        }
+						}
+					}
+				}
+			}
+		}
 		
 	}
 
@@ -282,5 +287,83 @@ public class RandomLevelSource implements LevelSource{ //TODO all public?, try t
 				}
 			}
 		}
+	}
+
+	@Override
+	public void postProcess(int chunkX, int chunkZ) {
+		int chunkXWorld = chunkX * 16;
+		int chunkZWorld = chunkZ * 16;
+		Biome biome = this.world.biomeSource.getBiome(chunkXWorld, chunkZWorld);
+		this.rand.setSeed(this.world.worldSeed);
+		int i1 = (rand.nextInt() / 2) * 2 + 1;
+        int j1 = (rand.nextInt() / 2) * 2 + 1;
+        rand.setSeed(chunkX * i1 + chunkZ * j1 ^ world.worldSeed);
+		for (int i2 = 0; i2 < 10; i2++) {
+			new ClayFeature(32).place(this.world, this.rand, chunkXWorld + this.rand.nextInt(16), this.rand.nextInt(128), chunkZWorld + this.rand.nextInt(16));
+		}
+		for (int i3 = 0; i3 < 20; i3++) {
+			new OreFeature(Block.dirt.blockID, 32).place(this.world, this.rand, chunkXWorld + this.rand.nextInt(16), this.rand.nextInt(128), chunkZWorld + this.rand.nextInt(16));
+		}
+		for (int i4 = 0; i4 < 10; i4++) {
+			new OreFeature(Block.gravel.blockID, 32).place(this.world, this.rand, chunkXWorld + this.rand.nextInt(16), this.rand.nextInt(128), chunkZWorld + this.rand.nextInt(16));
+		}
+		for (int i5 = 0; i5 < 20; i5++) {
+			new OreFeature(Block.oreCoal.blockID, 16).place(this.world, this.rand, chunkXWorld + this.rand.nextInt(16), this.rand.nextInt(128), chunkZWorld + this.rand.nextInt(16));
+		}
+		for (int i6 = 0; i6 < 20; i6++) {
+			new OreFeature(Block.oreIron.blockID, 8).place(this.world, this.rand, chunkXWorld + this.rand.nextInt(16), this.rand.nextInt(64), chunkZWorld + this.rand.nextInt(16));
+		}
+		for (int i7 = 0; i7 < 2; i7++) {
+			new OreFeature(Block.oreGold.blockID, 8).place(this.world, this.rand, chunkXWorld + this.rand.nextInt(16), this.rand.nextInt(32), chunkZWorld + this.rand.nextInt(16));
+		}
+		for (int i8 = 0; i8 < 8; i8++) {
+			new OreFeature(Block.redstoneOre.blockID, 7).place(this.world, this.rand, chunkXWorld + this.rand.nextInt(16), this.rand.nextInt(16), chunkZWorld + this.rand.nextInt(16));
+		}
+		for (int i9 = 0; i9 < 1; i9++) {
+			new OreFeature(Block.diamondOre.blockID, 7).place(this.world, this.rand, chunkXWorld + this.rand.nextInt(16), this.rand.nextInt(16), chunkZWorld + this.rand.nextInt(16));
+		}
+		for (int i10 = 0; i10 < 1; i10++) {
+			new OreFeature(Block.lapisOre.blockID, 6).place(this.world, this.rand, chunkXWorld + this.rand.nextInt(16), this.rand.nextInt(16) + this.rand.nextInt(16), chunkZWorld + this.rand.nextInt(16));
+		}
+
+		int sample = (int) ((((this.treeNoise.getValue(chunkXWorld * 0.5f, chunkZWorld * 0.5f) / 8.0f) + (this.rand.nextFloat() * 4.0f)) + 4.0f) / 3.0f);
+		int i11 = this.rand.nextInt(10) == 0 ? 1 : 0;
+		if(biome == Biome.forest)
+		{
+			i11 += sample + 2;
+		}
+		if(biome == Biome.rainForest)
+		{
+			i11 += sample + 2;
+		}
+		if(biome == Biome.seasonalForest)
+		{
+			i11 += sample + 1;
+		}
+		if(biome == Biome.taiga)
+		{
+			i11 += sample + 1;
+		}
+		if(biome == Biome.desert)
+		{
+			i11 -= 20;
+		}
+		if(biome == Biome.tundra)
+		{
+			i11 -= 20;
+		}
+		if(biome == Biome.plains)
+		{
+			i11 -= 20;
+		}
+		for(int l8 = 0; l8 < i11; l8++)
+		{
+			int l12 = chunkXWorld + rand.nextInt(16) + 8;
+			int j15 = chunkZWorld + rand.nextInt(16) + 8;
+			Feature tree = biome.getTreeFeature(rand);
+			//tree.func_517_a(1.0D, 1.0D, 1.0D);
+			tree.place(this.world, rand, l12, this.world.getHeightValue(l12, j15), j15); //TODO fix vanilla
+		}
+		
 	}
 }

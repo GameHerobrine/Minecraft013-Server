@@ -3,9 +3,11 @@ package net.skidcode.gh.server.world.biome;
 import java.util.Random;
 
 import net.skidcode.gh.server.block.Block;
+import net.skidcode.gh.server.utils.random.BedrockRandom;
 import net.skidcode.gh.server.world.biome.impl.FlatBiome;
 import net.skidcode.gh.server.world.biome.impl.ForestBiome;
 import net.skidcode.gh.server.world.biome.impl.TaigaBiome;
+import net.skidcode.gh.server.world.feature.Feature;
 import net.skidcode.gh.server.world.feature.TreeFeature;
 
 public class Biome {
@@ -26,7 +28,8 @@ public class Biome {
 	public byte topBlock = (byte) Block.grass.blockID;
 	public byte fillerBlock = (byte) Block.dirt.blockID; //TODO maybe stone??
 	
-	public TreeFeature getTreeFeature(Random r) {
+	public Feature getTreeFeature(BedrockRandom r) {
+		r.nextInt(); //necessary for vanilla-like gen!
 		return new TreeFeature();
 	}
 	
