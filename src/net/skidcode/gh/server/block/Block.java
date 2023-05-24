@@ -94,6 +94,10 @@ public abstract class Block {
 		world.removeBlock(x, y, z);
 	}
 	
+	public boolean canSurvive(World world, int x, int y, int z) {
+		return true;
+	}
+	
 	public void onBlockPlacedByPlayer(World world, int x, int y, int z, int face, Player player) {
 		world.placeBlock(x, y, z, (byte) this.blockID);
 	}

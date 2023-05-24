@@ -1,5 +1,6 @@
 package net.skidcode.gh.server.world.generator;
 
+import java.util.Arrays;
 import java.util.Random;
 
 import net.skidcode.gh.server.block.Block;
@@ -11,9 +12,13 @@ import net.skidcode.gh.server.utils.random.MTRandom;
 import net.skidcode.gh.server.world.World;
 import net.skidcode.gh.server.world.biome.Biome;
 import net.skidcode.gh.server.world.chunk.Chunk;
+import net.skidcode.gh.server.world.feature.CactusFeature;
 import net.skidcode.gh.server.world.feature.ClayFeature;
 import net.skidcode.gh.server.world.feature.Feature;
+import net.skidcode.gh.server.world.feature.FlowerFeature;
 import net.skidcode.gh.server.world.feature.OreFeature;
+import net.skidcode.gh.server.world.feature.ReedsFeature;
+import net.skidcode.gh.server.world.feature.SpringFeature;
 
 public class RandomLevelSource implements LevelSource{ //TODO all public?, try to make more vanilla
 	private World world;
@@ -293,11 +298,11 @@ public class RandomLevelSource implements LevelSource{ //TODO all public?, try t
 	public void postProcess(int chunkX, int chunkZ) {
 		int chunkXWorld = chunkX * 16;
 		int chunkZWorld = chunkZ * 16;
-		Biome biome = this.world.biomeSource.getBiome(chunkXWorld, chunkZWorld);
+		Biome biome = this.world.biomeSource.getBiome(chunkXWorld + 16, chunkZWorld + 16);
 		this.rand.setSeed(this.world.worldSeed);
 		int i1 = (rand.nextInt() / 2) * 2 + 1;
-        int j1 = (rand.nextInt() / 2) * 2 + 1;
-        rand.setSeed(chunkX * i1 + chunkZ * j1 ^ world.worldSeed);
+		int j1 = (rand.nextInt() / 2) * 2 + 1;
+		rand.setSeed(chunkX * i1 + chunkZ * j1 ^ world.worldSeed);
 		for (int i2 = 0; i2 < 10; i2++) {
 			new ClayFeature(32).place(this.world, this.rand, chunkXWorld + this.rand.nextInt(16), this.rand.nextInt(128), chunkZWorld + this.rand.nextInt(16));
 		}
@@ -327,43 +332,124 @@ public class RandomLevelSource implements LevelSource{ //TODO all public?, try t
 		}
 
 		int sample = (int) ((((this.treeNoise.getValue(chunkXWorld * 0.5f, chunkZWorld * 0.5f) / 8.0f) + (this.rand.nextFloat() * 4.0f)) + 4.0f) / 3.0f);
-		int i11 = this.rand.nextInt(10) == 0 ? 1 : 0;
+		int treesAmount = this.rand.nextInt(10) == 0 ? 1 : 0;
 		if(biome == Biome.forest)
 		{
-			i11 += sample + 2;
+			treesAmount += sample + 2;
 		}
 		if(biome == Biome.rainForest)
 		{
-			i11 += sample + 2;
+			treesAmount += sample + 2;
 		}
 		if(biome == Biome.seasonalForest)
 		{
-			i11 += sample + 1;
+			treesAmount += sample + 1;
 		}
 		if(biome == Biome.taiga)
 		{
-			i11 += sample + 1;
+			treesAmount += sample + 1;
 		}
 		if(biome == Biome.desert)
 		{
-			i11 -= 20;
+			treesAmount -= 20;
 		}
 		if(biome == Biome.tundra)
 		{
-			i11 -= 20;
+			treesAmount -= 20;
 		}
 		if(biome == Biome.plains)
 		{
-			i11 -= 20;
+			treesAmount -= 20;
 		}
-		for(int l8 = 0; l8 < i11; l8++)
+		for(int l8 = 0; l8 < treesAmount; l8++)
 		{
 			int l12 = chunkXWorld + rand.nextInt(16) + 8;
 			int j15 = chunkZWorld + rand.nextInt(16) + 8;
 			Feature tree = biome.getTreeFeature(rand);
 			//tree.func_517_a(1.0D, 1.0D, 1.0D);
-			tree.place(this.world, rand, l12, this.world.getHeightValue(l12, j15), j15); //TODO fix vanilla
+			tree.place(this.world, rand, l12, this.world.getHeightValue(l12, j15), j15);
+		}
+		for(int i9 = 0; i9 < 2; i9++)
+		{
+			int i13 = chunkXWorld + rand.nextInt(16) + 8;
+			int k15 = rand.nextInt(128);
+			int l17 = chunkZWorld + rand.nextInt(16) + 8;
+			(new FlowerFeature(Block.yellowFlowerBlock.blockID)).place(this.world, rand, i13, k15, l17);
+		}
+
+		if(rand.nextInt(2) == 0)
+		{
+			int j9 = chunkXWorld + rand.nextInt(16) + 8;
+			int j13 = rand.nextInt(128);
+			int l15 = chunkZWorld + rand.nextInt(16) + 8;
+			(new FlowerFeature(Block.rose.blockID)).place(this.world, rand, j9, j13, l15);
+		}
+		if(rand.nextInt(4) == 0)
+		{
+			int k9 = chunkXWorld + rand.nextInt(16) + 8;
+			int k13 = rand.nextInt(128);
+			int i16 = chunkZWorld + rand.nextInt(16) + 8;
+			(new FlowerFeature(Block.brownMushroom.blockID)).place(this.world, rand, k9, k13, i16);
+		}
+		if(rand.nextInt(8) == 0)
+		{
+			int l9 = chunkXWorld + rand.nextInt(16) + 8;
+			int l13 = rand.nextInt(128);
+			int j16 = chunkZWorld + rand.nextInt(16) + 8;
+			(new FlowerFeature(Block.redMushroom.blockID)).place(this.world, rand, l9, l13, j16);
 		}
 		
+		for(int i10 = 0; i10 < 10; i10++)
+		{
+			int i14 = chunkXWorld + rand.nextInt(16) + 8;
+			int k16 = rand.nextInt(128);
+			int i18 = chunkZWorld + rand.nextInt(16) + 8;
+			(new ReedsFeature()).place(this.world, rand, i14, k16, i18);
+		}
+		
+		int cactiAmount = 0;
+		if(biome == Biome.desert)
+		{
+			cactiAmount += 5;
+		}
+		for(int j14 = 0; j14 < cactiAmount; j14++)
+		{
+			int l16 = chunkXWorld + rand.nextInt(16) + 8;
+			int j18 = rand.nextInt(128);
+			int j19 = chunkZWorld + rand.nextInt(16) + 8;
+			(new CactusFeature()).place(this.world, rand, l16, j18, j19);
+		}
+		
+		for(int k14 = 0; k14 < 50; k14++)
+		{
+			int i17 = chunkXWorld + rand.nextInt(16) + 8;
+			int k18 = rand.nextInt(rand.nextInt(120) + 8);
+			int k19 = chunkZWorld + rand.nextInt(16) + 8;
+			(new SpringFeature(Block.waterFlowing.blockID)).place(this.world, rand, i17, k18, k19);
+		}
+
+		for(int l14 = 0; l14 < 20; l14++)
+		{
+			int j17 = chunkXWorld + rand.nextInt(16) + 8;
+			int l18 = rand.nextInt(rand.nextInt(rand.nextInt(112) + 8) + 8);
+			int l19 = chunkZWorld + rand.nextInt(16) + 8;
+			(new SpringFeature(Block.lavaFlowing.blockID)).place(this.world, rand, j17, l18, l19);
+		}
+		
+		float[] temps = this.world.biomeSource.getTemperatureBlock(chunkXWorld + 8, chunkZWorld + 8, 16, 16);
+		for(int i15 = chunkXWorld + 8; i15 < chunkXWorld + 8 + 16; i15++)
+		{
+			for(int k17 = chunkZWorld + 8; k17 < chunkZWorld + 8 + 16; k17++)
+			{
+				int i19 = i15 - (chunkXWorld + 8);
+				int i20 = k17 - (chunkZWorld + 8);
+				int j20 = this.world.findTopSolidBlock(i15, k17);
+				float d1 = temps[i19 * 16 + i20] - ((j20 - 64) / 64f) * 0.3f;
+				if(d1 < 0.5D && j20 > 0 && j20 < 128 && this.world.isAirBlock(i15, j20, k17) && this.world.getMaterial(i15, j20 - 1, k17).isSolid && this.world.getMaterial(i15, j20 - 1, k17) != Material.ice)
+				{
+					this.world.placeBlock(i15, j20, k17, (byte) Block.snowLayer.blockID);
+				}
+			}
+		}
 	}
 }

@@ -92,7 +92,7 @@ public class World {
 	}
 	
 	public int getBlockIDAt(int x, int y, int z) {
-		if(x > 255 || y > 127 || z > 255) return 0; //TODO return invisBedrock for 255+?
+		if(x > 255 || y > 127 || z > 255 || y < 0 || z < 0 || x < 0) return 0; //TODO return invisBedrock for 255+?
 		return this.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf][y];
 	}
 	
@@ -101,7 +101,7 @@ public class World {
 	}
 	
 	public void placeBlock(int x, int y, int z, byte id) {
-		if(x < 256 && y < 128 && z < 256) {
+		if(x < 256 && y < 128 && z < 256 && y >= 0 && x >= 0 && z >= 0) {
 			Chunk c = this.chunks[x >> 4][z >> 4];
 			c.blockData[x & 0xf][z & 0xf][y] = id;
 			c.blockMetadata[x & 0xf][z & 0xf][y] = 0;
@@ -117,7 +117,7 @@ public class World {
 	}
 	
 	public void placeBlock(int x, int y, int z, byte id, byte meta) {
-		if(x < 256 && y < 128 && z < 256) {
+		if(x < 256 && y < 128 && z < 256 && y >= 0 && x >= 0 && z >= 0) {
 			Chunk c = this.chunks[x >> 4][z >> 4];
 			c.blockData[x & 0xf][z & 0xf][y] = id;
 			c.blockMetadata[x & 0xf][z & 0xf][y] = meta;
@@ -154,30 +154,39 @@ public class World {
 	}
 
 	public int getHeightValue(int x, int z) {
-		if(x < 256 && z < 256) {
+		if(x < 256 && z < 256 && x >= 0 && z >= 0) {
 			return this.chunks[x >> 4][z >> 4].heightMap[x & 0xf][z & 0xf];
 		}
 		return 0;
 	}
 
 	public boolean isAirBlock(int x, int y, int z) {
-		if(x < 256 && y < 128 && z < 256) {
+		if(x < 256 && y < 128 && z < 256 && y >= 0 && x >= 0 && z >= 0) {
 			return this.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf][y] == 0;
 		}
 		return false;
 	}
 
 	public int findTopSolidBlock(int x, int z) {
-		if(x < 256 && z < 256) {
+		if(x < 256 && z < 256 && x >= 0 && z >= 0) {
 			Chunk c = this.chunks[x >> 4][z >> 4];
 			for(int y = 127; y > 0; --y) {
 				int id = c.blockData[x & 0xf][z & 0xf][y];
-				if(id > 0 && Block.blocks[id].material.isSolid) {
-					return y;
+				Material mat = (id == 0 ? Material.air : Block.blocks[id].material);
+				if(mat.isSolid || mat.isLiquid) {
+					return y + 1;
 				}
 			}
 		}
-		return 0;
+		return -1;
+	}
+
+	public boolean canSeeSky(int x, int y, int z) {
+		if(x < 256 && y < 128 && z < 256 && y >= 0 && x >= 0 && z >= 0) {
+			return y >= this.chunks[x >> 4][z >> 4].heightMap[x & 0xf][z & 0xf];
+		}
+		return false;
+		
 	}
 	
 }

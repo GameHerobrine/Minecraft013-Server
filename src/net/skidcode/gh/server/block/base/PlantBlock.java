@@ -16,4 +16,13 @@ public class PlantBlock extends Block{
 			this.onBlockRemoved(world, x, y, z);
 		}
 	}
+	public boolean canSurvive(World world, int x, int y, int z) {
+		boolean res = world.canSeeSky(x, y, z);
+		if(/*Level::getRawBrightness(a2, a3, a4, a5) > 7 TODO light ||*/ res) {
+			int id = world.getBlockIDAt(x, y - 1, z);
+			return id == Block.grass.blockID || id == Block.dirt.blockID || id == Block.farmland.blockID;
+		}
+		return res;
+	}
+	
 }

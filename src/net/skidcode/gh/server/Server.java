@@ -65,6 +65,8 @@ public final class Server {
 		if(true) {
 			World w = new World(113318802);
 			w.levelSource.getChunk(158 >> 4, 162 >> 4);
+			//w.levelSource.postProcess(158 >> 4, 162 >> 4);
+			//return;
 		}
 		Logger.info("Starting Server...");
 		Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -143,7 +145,7 @@ public final class Server {
 			}else
 			if(type.equalsIgnoreCase("normal")) {
 				Logger.info("Generating normal world...");
-				Server.world = new World(Utils.stringHash("nyan"));
+				Server.world = new World(Utils.stringHash("world"));
 				NormalWorldGenerator.generateChunks(Server.world);
 				Server.world.setSaveSpawn(127, 127);
 			}else {
