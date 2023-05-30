@@ -61,9 +61,9 @@ public class SpringFeature extends Feature{
         if(l == 3 && i1 == 1)
         {
             world.placeBlock(x, y, z, this.blockID);
-            //world.scheduledUpdatesAreImmediate = true; TODO random tick updates
-            //Block.blocksList[liquidBlockId].updateTick(world, x, y, z, rand);
-            //world.scheduledUpdatesAreImmediate = false;
+            world.instantScheduledUpdate = true;
+            Block.blocks[this.blockID].tick(world, x, y, z, rand);
+            world.instantScheduledUpdate = false;
         }
         return true;
 	}

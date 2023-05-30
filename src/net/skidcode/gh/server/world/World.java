@@ -8,6 +8,8 @@ import net.skidcode.gh.server.block.material.Material;
 import net.skidcode.gh.server.network.MinecraftDataPacket;
 import net.skidcode.gh.server.network.protocol.RemoveEntityPacket;
 import net.skidcode.gh.server.player.Player;
+import net.skidcode.gh.server.utils.TickNextTickData;
+import net.skidcode.gh.server.utils.random.BedrockRandom;
 import net.skidcode.gh.server.world.chunk.Chunk;
 import net.skidcode.gh.server.world.generator.BiomeSource;
 import net.skidcode.gh.server.world.generator.LevelSource;
@@ -18,9 +20,9 @@ public class World {
 	public HashMap<Integer, Player> players = new HashMap<>();
 	private int freeEID = 1;
 	public int worldSeed = 0x256512;
-	public Random random;
+	public BedrockRandom random;
 	public Chunk[][] chunks = new Chunk[16][16];
-	
+	public boolean instantScheduledUpdate = false;
 	public int spawnX, spawnY, spawnZ;
 	public String name = "world";
 	public int worldTime = 0, saveTime = 0;
@@ -30,9 +32,36 @@ public class World {
 	public LevelSource levelSource;
 	public World(int seed) {
 		this.worldSeed = seed;
-		this.random = new Random(seed);
+		this.random = new BedrockRandom(seed);
 		this.biomeSource = new BiomeSource(this);
 		this.levelSource = new RandomLevelSource(this, seed); //TODO API
+	}
+	
+	public void addToTickNextTick(int x, int y, int z, int id, int delay) {
+		TickNextTickData tick = new TickNextTickData(x, y, z, id);
+		if(this.instantScheduledUpdate) {
+			if(this.hasChunksAt(tick.posX - 8, tick.posY - 8, tick.posZ - 8, tick.posX + 8, tick.posY + 8, tick.posZ + 8)) {
+				int worldID = this.getBlockIDAt(x, y, z);
+				if(worldID == tick.blockID && worldID > 0) {
+					Block.blocks[worldID].tick(this, x, y, z, this.random);
+				}
+			}
+		}else if(this.hasChunksAt(x - 8, y - 8, z - 8, x + 8, y + 8, z + 8)){
+			if(id > 0) tick.scheduledTime = delay + this.worldTime;
+			
+		}
+	}
+	
+	public boolean hasChunksAt(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
+		if(minY > -1 && minY < 128) {
+			for(int chunkX = minX >> 4; chunkX <= maxX >> 4; ++chunkX) {
+				for(int chunkZ = minZ >> 4; chunkZ <= maxZ >> 4; ++chunkZ) {
+					if(this.chunks[chunkX][chunkZ] == null) return false;
+				}
+			}
+			return true;
+		}
+		return false;
 	}
 	
 	public void addPlayer(Player player) {
@@ -180,7 +209,11 @@ public class World {
 		}
 		return -1;
 	}
-
+	
+	public void tick() {
+		
+	}
+	
 	public boolean canSeeSky(int x, int y, int z) {
 		if(x < 256 && y < 128 && z < 256 && y >= 0 && x >= 0 && z >= 0) {
 			return y >= this.chunks[x >> 4][z >> 4].heightMap[x & 0xf][z & 0xf];

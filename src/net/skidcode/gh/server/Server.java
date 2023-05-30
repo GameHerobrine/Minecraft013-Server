@@ -14,6 +14,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -98,7 +99,8 @@ public final class Server {
 			{"save-player-data", "true"},
 			{"generate-world", "false"},
 			{"world-generator", "NORMAL"},
-			{"server-name", "MCCPP;Demo;Minecraft 0.1.3 Server"}
+			{"server-name", "MCCPP;Demo;Minecraft 0.1.3 Server"},
+			{"world-seed", ""}
 		});
 		Server.serverName = properties.data.get("server-name");
 		try {
@@ -129,7 +131,17 @@ public final class Server {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		
+		int iWorldSeed;
+		String worldSeed = properties.getNullsafe("world-seed");
+		if(worldSeed.equals("")) {
+			iWorldSeed = new Random().nextInt();
+		}else {
+			try {
+				iWorldSeed = Integer.parseInt(worldSeed);
+			}catch(NumberFormatException e) {
+				iWorldSeed = Utils.stringHash(worldSeed);
+			}
+		}
 		handler = new RakNetHandler();
 		
 		if(Files.exists(Paths.get("world/level.dat"))){
@@ -139,13 +151,13 @@ public final class Server {
 			String type = properties.getNullsafe("world-generator");
 			if(type.equalsIgnoreCase("flat")) {
 				Logger.info("Generating flat world...");
-				Server.world = new World(0xfe1ebeef);
+				Server.world = new World(iWorldSeed);
 				FlatWorldGenerator.generateChunks(Server.world);
 				Server.world.setSaveSpawn(127, 127);
 			}else
 			if(type.equalsIgnoreCase("normal")) {
 				Logger.info("Generating normal world...");
-				Server.world = new World(Utils.stringHash("world"));
+				Server.world = new World(iWorldSeed);
 				NormalWorldGenerator.generateChunks(Server.world);
 				Server.world.setSaveSpawn(127, 127);
 			}else {
@@ -284,6 +296,9 @@ public final class Server {
 						}
 					}
 				}
+				
+				Server.world.tick();
+				
 				++Server.tps;
 				if(tickTime - lastSecondRecorded >= 1000) { //maybe make it better?
 					lastSecondRecorded = tickTime;

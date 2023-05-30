@@ -214,15 +214,9 @@ public class BedrockRandom
         return (double)Integer.toUnsignedLong(func_26510__genRandInt32()) * 2.3283064365386963E-010D;
     }
 
-    private static final int field_26531_N = 624;
-    private static final int field_26533_M = 397;
-    private static final int field_26526_MATRIX_A = 0x9908b0df;
-    private static final int field_26529_UPPER_MASK = 0x80000000;
-    private static final int field_26535_LOWER_MASK = 0x7fffffff;
     private static final int field_26528_MAG_01[] = {
         0, 0x9908b0df
     };
-    private static final double field_26536_TWO_POW_M32 = 2.3283064365386963E-010D;
     private int field_26530_seed;
     private int state[];
     private int field_26534_mti;

@@ -1,11 +1,14 @@
 package net.skidcode.gh.server.block;
 
+import java.util.Random;
+
 import net.skidcode.gh.server.block.impl.*;
 import net.skidcode.gh.server.block.material.Material;
 import net.skidcode.gh.server.network.protocol.RemoveBlockPacket;
 import net.skidcode.gh.server.network.protocol.UpdateBlockPacket;
 import net.skidcode.gh.server.player.Player;
 import net.skidcode.gh.server.utils.Logger;
+import net.skidcode.gh.server.utils.random.BedrockRandom;
 import net.skidcode.gh.server.world.World;
 //TODO block properties
 public abstract class Block {
@@ -92,6 +95,10 @@ public abstract class Block {
 	}
 	public void onBlockRemovedByPlayer(World world, int x, int y, int z, Player player) {
 		world.removeBlock(x, y, z);
+	}
+	
+	public void tick(World world, int x, int y, int z, BedrockRandom random) {
+		
 	}
 	
 	public boolean canSurvive(World world, int x, int y, int z) {
