@@ -6,8 +6,9 @@ A Minecraft 0.1.3 server core written on Java. Uses [Old Nukkit's Raknet impleme
 * World Data Loading
 * Chunk Data sending
 * World modifying
-* World Generating (Only flat for now)
+* Almost Completely Vanilla World Generator
 * Player data saving/loading
+
 
 
 # Compability
