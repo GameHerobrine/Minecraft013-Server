@@ -12,10 +12,12 @@ public class ReedsBlock extends PlantBlock{
 	}
 	
 	public boolean canSurvive(World world, int x, int y, int z) {
-		int idDown = world.getBlockIDAt(x, y - 1, z);
+		
+		int dY = y - 1;
+		int idDown = world.getBlockIDAt(x, dY, z);
 		if(idDown == this.blockID) return true;
 		else if(idDown != Block.grass.blockID && idDown != Block.dirt.blockID) return false;
-		return world.getMaterial(x - 1, y - 1, z) == Material.water || world.getMaterial(x + 1, y - 1, z) == Material.water || world.getMaterial(x, y - 1, z - 1) == Material.water|| world.getMaterial(x, y - 1, z + 1) == Material.water;
+		return world.getMaterial(x - 1, dY, z) == Material.water || world.getMaterial(x + 1, dY, z) == Material.water || world.getMaterial(x, dY, z - 1) == Material.water || world.getMaterial(x, dY, z + 1) == Material.water;
 	}
 
 }

@@ -1,13 +1,8 @@
 package net.skidcode.gh.server.world.generator;
 
-import java.util.stream.IntStream;
-
-import net.skidcode.gh.server.block.Block;
 import net.skidcode.gh.server.utils.Logger;
-import net.skidcode.gh.server.utils.noise.PerlinNoise;
 import net.skidcode.gh.server.world.World;
-import net.skidcode.gh.server.world.chunk.Chunk;
-//TODO rename to LevelSource + make non-static
+
 public class NormalWorldGenerator {
 	
 	public static void generateChunks(World w) {

@@ -63,12 +63,6 @@ public final class Server {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		//if(true) {
-			//World w = new World(113318802);
-			//w.levelSource.getChunk(158 >> 4, 162 >> 4);
-			//w.levelSource.postProcess(158 >> 4, 162 >> 4);
-			//return;
-		//}
 		Logger.info("Starting Server...");
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			public void run() {

@@ -25,7 +25,6 @@ import net.skidcode.gh.server.world.chunk.Chunk;
 import net.skidcode.gh.server.world.format.PlayerData;
 
 public class Player extends Entity implements CommandIssuer{
-	
 	public long clientID;
 	public int port;
 	public byte itemID;
