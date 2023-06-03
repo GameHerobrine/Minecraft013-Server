@@ -7,6 +7,7 @@ public class LavaBlock extends LiquidFlowingBlock{
 	public LavaBlock(int id) {
 		super(id, Material.lava);
 		this.name = "Lava";
+		this.tickrate = 30;
 	}
 
 }

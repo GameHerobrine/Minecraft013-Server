@@ -34,4 +34,8 @@ public class TickNextTickData implements Comparable<TickNextTickData>{
 		}
 		return false;
 	}
+	
+	public String toString() {
+		return this.tickEntryID+": "+posX+"/"+posY+"/"+posZ+"/"+blockID+"/"+scheduledTime;
+	}
 }

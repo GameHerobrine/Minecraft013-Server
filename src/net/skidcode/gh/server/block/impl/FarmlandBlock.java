@@ -7,6 +7,7 @@ public class FarmlandBlock extends SolidBlock{
 
 	public FarmlandBlock(int id) {
 		super(id, Material.dirt);
+		this.isSolid = false;
 	}
 
 }

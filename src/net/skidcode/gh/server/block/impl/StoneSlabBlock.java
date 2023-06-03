@@ -10,6 +10,7 @@ public class StoneSlabBlock extends SolidBlock{
 
 	public StoneSlabBlock(int id) {
 		super(id, Material.stone);
+		this.isSolid = false;
 	}
 	
 	public void onBlockPlacedByPlayer(World world, int x, int y, int z, int face, Player player) {

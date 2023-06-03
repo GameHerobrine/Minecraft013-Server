@@ -7,6 +7,7 @@ public class SnowLayerBlock extends Block{ //TODO some baseclass for non-solid?
 
 	public SnowLayerBlock(int id) {
 		super(id, Material.topSnow);
+		this.isSolid = false;
 	}
 
 }

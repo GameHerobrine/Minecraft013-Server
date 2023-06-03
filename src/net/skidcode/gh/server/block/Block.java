@@ -101,6 +101,10 @@ public abstract class Block {
 		
 	}
 	
+	public void onBlockAdded(World world, int x, int y, int z) {
+		
+	}
+	
 	public boolean canSurvive(World world, int x, int y, int z) {
 		return true;
 	}
@@ -121,4 +125,5 @@ public abstract class Block {
 	public int blockID;
 	public String name = "";
 	public Material material;
+	public boolean isSolid = true; //isRenderSolid method in 0.1.3
 }

@@ -8,6 +8,7 @@ public class PlantBlock extends Block{
 
 	public PlantBlock(int id, Material m) {
 		super(id, m);
+		this.isSolid = false;
 	}
 	
 	public void onNeighborBlockChanged(World world, int x, int y, int z, int meta) {

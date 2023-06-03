@@ -7,6 +7,7 @@ public class LeavesBlock extends SolidBlock{
 
 	public LeavesBlock(int id) {
 		super(id, Material.leaves);
-		this.name = "Leaves"; //TODO log meta: 0 - oak, 1 - spruce, 2 - birch
+		this.name = "Leaves";
+		this.isSolid = false; //um well... it depends on graphics level...?
 	}
 }

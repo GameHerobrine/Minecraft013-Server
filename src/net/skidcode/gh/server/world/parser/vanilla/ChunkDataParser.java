@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
 
+import net.skidcode.gh.server.block.Block;
 import net.skidcode.gh.server.world.World;
 import net.skidcode.gh.server.world.chunk.Chunk;
 import net.skidcode.gh.server.world.nbt.WorldNBTFile;

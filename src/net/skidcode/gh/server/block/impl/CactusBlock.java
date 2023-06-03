@@ -10,6 +10,7 @@ public class CactusBlock extends SolidBlock{
 	public CactusBlock(int id) {
 		super(id, Material.cactus);
 		this.name = "Cactus";
+		this.isSolid = false;
 	}
 	
 	public boolean canSurvive(World world, int x, int y, int z) {

@@ -1,13 +1,18 @@
 package net.skidcode.gh.server.world;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.TreeSet;
 
 import net.skidcode.gh.server.block.Block;
 import net.skidcode.gh.server.block.material.Material;
 import net.skidcode.gh.server.network.MinecraftDataPacket;
+import net.skidcode.gh.server.network.protocol.PlaceBlockPacket;
 import net.skidcode.gh.server.network.protocol.RemoveEntityPacket;
+import net.skidcode.gh.server.network.protocol.UpdateBlockPacket;
 import net.skidcode.gh.server.player.Player;
+import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.utils.TickNextTickData;
 import net.skidcode.gh.server.utils.random.BedrockRandom;
 import net.skidcode.gh.server.world.chunk.Chunk;
@@ -25,16 +30,22 @@ public class World {
 	public boolean instantScheduledUpdate = false;
 	public int spawnX, spawnY, spawnZ;
 	public String name = "world";
-	public int worldTime = 0, saveTime = 0;
+	public long worldTime = 0;
+	public int saveTime = 0;
 	public int[][] locationTable;
 	public int unknown5 = 0;
 	public BiomeSource biomeSource;
 	public LevelSource levelSource;
+	
+	public TreeSet<TickNextTickData> scheduledTickTreeSet;
+	public HashSet<TickNextTickData> scheduledTickSet;
 	public World(int seed) {
 		this.worldSeed = seed;
 		this.random = new BedrockRandom(seed);
 		this.biomeSource = new BiomeSource(this);
 		this.levelSource = new RandomLevelSource(this, seed); //TODO API
+		this.scheduledTickTreeSet = new TreeSet<>();
+		this.scheduledTickSet = new HashSet<>();
 	}
 	
 	public void addToTickNextTick(int x, int y, int z, int id, int delay) {
@@ -48,7 +59,11 @@ public class World {
 			}
 		}else if(this.hasChunksAt(x - 8, y - 8, z - 8, x + 8, y + 8, z + 8)){
 			if(id > 0) tick.scheduledTime = delay + this.worldTime;
-			
+			if(!scheduledTickSet.contains(tick)) {
+				scheduledTickSet.add(tick);
+				Logger.info(tick);
+				scheduledTickTreeSet.add(tick);
+			}
 		}
 	}
 	
@@ -56,7 +71,7 @@ public class World {
 		if(minY > -1 && minY < 128) {
 			for(int chunkX = minX >> 4; chunkX <= maxX >> 4; ++chunkX) {
 				for(int chunkZ = minZ >> 4; chunkZ <= maxZ >> 4; ++chunkZ) {
-					if(this.chunks[chunkX][chunkZ] == null) return false;
+					if(chunkX < 0 || chunkZ < 0 || chunkX > 15 || chunkZ > 15 || this.chunks[chunkX][chunkZ] == null) return false;
 				}
 			}
 			return true;
@@ -101,16 +116,22 @@ public class World {
 		this.spawnY = 127;
 	}
 	
-	public void removeBlock(int x, int y, int z) {
-		this.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf][y] = 0;
-		this.chunks[x >> 4][z >> 4].blockMetadata[x & 0xf][z & 0xf][y] = 0;
-		
+	public void notifyNearby(int x, int y, int z) {
 		this.notifyNeighbor(x - 1, y, z);
 		this.notifyNeighbor(x + 1, y, z);
 		this.notifyNeighbor(x, y - 1, z);
 		this.notifyNeighbor(x, y + 1, z);
 		this.notifyNeighbor(x, y, z - 1);
 		this.notifyNeighbor(x, y, z + 1);
+	}
+	
+	public void removeBlock(int x, int y, int z) {
+		if(x < 256 && y < 128 && z < 256 && y >= 0 && x >= 0 && z >= 0) {
+			this.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf][y] = 0;
+			this.chunks[x >> 4][z >> 4].blockMetadata[x & 0xf][z & 0xf][y] = 0;
+			
+			this.notifyNearby(x, y, z);
+		}
 	}
 	
 	public void notifyNeighbor(int x, int y, int z) {
@@ -128,6 +149,65 @@ public class World {
 	public int getBlockMetaAt(int x, int y, int z) {
 		return this.chunks[x >> 4][z >> 4].blockMetadata[x & 0xf][z & 0xf][y];
 	}
+	public void placeBlockAndNotifyNearby(int x, int y, int z, byte id, byte meta) {
+		if(x < 256 && y < 128 && z < 256 && y >= 0 && x >= 0 && z >= 0) {
+			Chunk c = this.chunks[x >> 4][z >> 4];
+			c.blockData[x & 0xf][z & 0xf][y] = id;
+			c.blockMetadata[x & 0xf][z & 0xf][y] = meta;
+			if(id != 0 && c.heightMap[x & 0xf][z & 0xf] < y) {
+				c.heightMap[x & 0xf][z & 0xf] = (byte) y;
+			}
+			this.notifyNearby(x, y, z);
+			
+			UpdateBlockPacket pk = new UpdateBlockPacket();
+			pk.posX = x;
+			pk.posY = (byte) y;
+			pk.posZ = z;
+			pk.id = id;
+			pk.metadata = meta;
+			for(Player p : this.players.values()) {
+				p.dataPacket(pk);
+			}
+		}
+	}
+	public void placeBlockMetaAndNotifyNearby(int x, int y, int z, byte meta) {
+		if(x < 256 && y < 128 && z < 256 && y >= 0 && x >= 0 && z >= 0) {
+			Chunk c = this.chunks[x >> 4][z >> 4];
+			c.blockMetadata[x & 0xf][z & 0xf][y] = meta;
+			this.notifyNearby(x, y, z);
+			
+			UpdateBlockPacket pk = new UpdateBlockPacket();
+			pk.posX = x;
+			pk.posY = (byte) y;
+			pk.posZ = z;
+			pk.id = c.blockData[x & 0xf][z & 0xf][y];
+			pk.metadata = meta;
+			for(Player p : this.players.values()) {
+				p.dataPacket(pk);
+			}
+		}
+	}
+	public void placeBlockAndNotifyNearby(int x, int y, int z, byte id) {
+		if(x < 256 && y < 128 && z < 256 && y >= 0 && x >= 0 && z >= 0) {
+			Chunk c = this.chunks[x >> 4][z >> 4];
+			c.blockData[x & 0xf][z & 0xf][y] = id;
+			c.blockMetadata[x & 0xf][z & 0xf][y] = 0;
+			if(id != 0 && c.heightMap[x & 0xf][z & 0xf] < y) {
+				c.heightMap[x & 0xf][z & 0xf] = (byte) y;
+			}
+			this.notifyNearby(x, y, z);
+			
+			UpdateBlockPacket pk = new UpdateBlockPacket();
+			pk.posX = x;
+			pk.posY = (byte) y;
+			pk.posZ = z;
+			pk.id = id;
+			pk.metadata = 0;
+			for(Player p : this.players.values()) {
+				p.dataPacket(pk);
+			}
+		}
+	}
 	
 	public void placeBlock(int x, int y, int z, byte id) {
 		if(x < 256 && y < 128 && z < 256 && y >= 0 && x >= 0 && z >= 0) {
@@ -136,6 +216,16 @@ public class World {
 			c.blockMetadata[x & 0xf][z & 0xf][y] = 0;
 			if(id != 0 && c.heightMap[x & 0xf][z & 0xf] < y) {
 				c.heightMap[x & 0xf][z & 0xf] = (byte) y;
+			}
+			
+			UpdateBlockPacket pk = new UpdateBlockPacket();
+			pk.posX = x;
+			pk.posY = (byte) y;
+			pk.posZ = z;
+			pk.id = id;
+			pk.metadata = 0;
+			for(Player p : this.players.values()) {
+				p.dataPacket(pk);
 			}
 		}
 	}
@@ -152,6 +242,16 @@ public class World {
 			c.blockMetadata[x & 0xf][z & 0xf][y] = meta;
 			if(id != 0 && c.heightMap[x & 0xf][z & 0xf] < y) {
 				c.heightMap[x & 0xf][z & 0xf] = (byte) y;
+			}
+			
+			UpdateBlockPacket pk = new UpdateBlockPacket();
+			pk.posX = x;
+			pk.posY = (byte) y;
+			pk.posZ = z;
+			pk.id = id;
+			pk.metadata = meta;
+			for(Player p : this.players.values()) {
+				p.dataPacket(pk);
 			}
 		}
 	}
@@ -211,6 +311,27 @@ public class World {
 	}
 	
 	public void tick() {
+		
+		/*Timer*/
+		this.worldTime++;
+		
+		int ticksAmount = scheduledTickTreeSet.size();
+		if(ticksAmount > 1000) ticksAmount = 1000;
+		for(int i = 0; i < ticksAmount; ++i) {
+			TickNextTickData tick = scheduledTickTreeSet.first();
+			if(tick.scheduledTime > this.worldTime) {
+				break;
+			}
+			scheduledTickTreeSet.remove(tick);
+			scheduledTickSet.remove(tick);
+			if(this.hasChunksAt(tick.posX - 8, tick.posY - 8, tick.posY - 8, tick.posX + 8, tick.posY + 8, tick.posY + 8)) {
+				int id = this.getBlockIDAt(tick.posX, tick.posY, tick.posZ);
+				Logger.info(id+":"+tick.blockID);
+				if(id > 0 && id == tick.blockID) {
+					Block.blocks[id].tick(this, tick.posX, tick.posY, tick.posZ, random);
+				}
+			}
+		}
 		
 	}
 	

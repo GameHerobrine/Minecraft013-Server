@@ -31,7 +31,7 @@ public class LevelDatParser extends WorldNBTFile{
 		
 		world.unknown5 = this.getInt(); //somethin idk
 		
-		world.worldTime = this.getInt();
+		world.worldTime = ((long)this.getInt() & 0xffffffffl);
 		world.saveTime = this.getInt();
 		world.name = this.getString();
 		
@@ -44,7 +44,7 @@ public class LevelDatParser extends WorldNBTFile{
 		this.putInt(world.spawnY);
 		this.putInt(world.spawnZ);
 		this.putInt(world.unknown5);
-		this.putInt(world.worldTime); 
+		this.putInt((int)world.worldTime); 
 		this.putInt(world.saveTime); //TODO generate a new one
 		this.putString(world.name);
 	}

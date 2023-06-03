@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import net.skidcode.gh.server.Server;
+import net.skidcode.gh.server.block.Block;
 import net.skidcode.gh.server.player.Player;
 import net.skidcode.gh.server.world.World;
 import net.skidcode.gh.server.world.format.PlayerData;
@@ -18,6 +19,16 @@ public class VanillaParser {
 		World w = new World(0xdeadbeef);
 		levelDat.parse(w);
 		chunkDat.parse(w);
+		for(int x = 0; x < 256; ++x) {
+			for(int z = 0; z < 256; ++z) {
+				for(int y = 0; y < 128; ++y) {
+					int id = w.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf][y];
+					if(id > 0) {
+						Block.blocks[id].onBlockAdded(w, x, y, z);
+					}
+				}
+			}
+		}
 		return w;
 	}
 

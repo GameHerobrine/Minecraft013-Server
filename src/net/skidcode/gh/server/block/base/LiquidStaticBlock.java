@@ -7,6 +7,7 @@ public class LiquidStaticBlock extends Block{
 
 	public LiquidStaticBlock(int id, Material m) {
 		super(id, m);
+		this.isSolid = false;
 	}
 
 }

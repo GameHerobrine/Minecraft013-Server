@@ -9,6 +9,7 @@ public class LadderBlock extends Block{
 
 	public LadderBlock(int id) {
 		super(id, Material.decoration);
+		this.isSolid = false;
 	}
 	
 	public void onBlockPlacedByPlayer(World world, int x, int y, int z, int face, Player player) {

@@ -7,6 +7,7 @@ public class DoorBlock extends Block{
 
 	public DoorBlock(int id, Material m) {
 		super(id, m);
+		this.isSolid = false;
 	}
 
 }

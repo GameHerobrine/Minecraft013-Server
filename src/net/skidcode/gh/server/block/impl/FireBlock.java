@@ -7,6 +7,7 @@ public class FireBlock extends Block{
 
 	public FireBlock(int id) {
 		super(id, Material.fire);
+		this.isSolid = false;
 	}
 
 }
