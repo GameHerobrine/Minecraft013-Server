@@ -6,6 +6,7 @@ import net.skidcode.gh.server.player.Player;
 
 public class DataPacketSend extends Event{
 	public static final DataPacketSend INSTANCE = new DataPacketSend();
+	private static final long _id = Event.getNextFreeID();
 	
 	public DataPacketSend(Player p, MinecraftDataPacket pk) {
 		this.player = p;
@@ -18,4 +19,9 @@ public class DataPacketSend extends Event{
 	
 	public Player player;
 	public MinecraftDataPacket packet;
+
+	@Override
+	public long getID() {
+		return _id;
+	}
 }

@@ -4,15 +4,21 @@ import net.skidcode.gh.server.utils.Logger;
 
 //TODO Cancellable
 public abstract class Event {
-	public String name = this.getClass().getSimpleName();
+	private static long nextID = 0;
 	public boolean isReuseable = true;
 	
 	public Event() {
 		this.isReuseable = false;
 	}
 	
+	public abstract long getID();
+	
+	public static long getNextFreeID() {
+		return Event.nextID++;
+	}
+	
 	@Override
 	public boolean equals(Object e) {
-		return e instanceof Event && ((Event)e).name.equals(this.name);
+		return e instanceof Event && ((Event)e).getID() == this.getID();
 	}
 }

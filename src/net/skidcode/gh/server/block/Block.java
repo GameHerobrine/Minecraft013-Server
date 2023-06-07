@@ -13,7 +13,7 @@ import net.skidcode.gh.server.world.World;
 //TODO block properties
 public abstract class Block {
 	public static Block[] blocks = new Block[256];
-	
+	public static int[] lightOpacity = new int[256];
 	public static StoneBlock stone = new StoneBlock(1); //love old mcje code btw <<<
 	public static GrassBlock grass = new GrassBlock(2);
 	public static DirtBlock dirt = new DirtBlock(3);

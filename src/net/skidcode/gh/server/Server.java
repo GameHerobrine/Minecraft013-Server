@@ -118,7 +118,18 @@ public final class Server {
 		}
 		
 		try {
-			Server.loadPlugins();
+			ServerClassLoader classLoader = new ServerClassLoader(new URL[] {}, Server.class.getClassLoader());
+			String[] pluginClasses;
+			for(int i = 0; i < args.length; ++i) {
+				if(args[i].equals("--plugins")) {
+					for(String s : args[i+1].split(";")) {
+						Class<?> cl = classLoader.loadClass(s);
+        				Plugin plugin = (Plugin) cl.newInstance();
+        				plugin.onEnable();
+					}
+				}
+			}
+			Server.loadPlugins(classLoader);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | MalformedURLException
 				| NoSuchMethodException | SecurityException | ClassNotFoundException | InstantiationException e) {
 			Logger.info("Failed to load plugins!");
@@ -167,13 +178,16 @@ public final class Server {
 		}
 		Logger.info("Done!");
 		
+		for(Plugin p : Server.plugins.values()) {
+			p.onServerInitialized();
+		}
 		
 		run();
 		System.exit(0);
 	}
 	
-	private static void loadPlugins() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException, ClassNotFoundException, InstantiationException {
-		ServerClassLoader classLoader = new ServerClassLoader(new URL[] {}, Server.class.getClassLoader());
+	private static void loadPlugins(ServerClassLoader classLoader) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException, ClassNotFoundException, InstantiationException {
+		
 		if(classLoader instanceof URLClassLoader) {
 			File[] fs = Server.pluginsPath.listFiles();
 			for(File f : fs) {
@@ -291,7 +305,7 @@ public final class Server {
 					}
 				}
 				
-				Server.world.tick();
+				//TODO enable world ticking Server.world.tick();
 				
 				++Server.tps;
 				if(tickTime - lastSecondRecorded >= 1000) { //maybe make it better?

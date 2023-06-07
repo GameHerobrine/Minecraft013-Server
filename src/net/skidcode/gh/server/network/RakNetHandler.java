@@ -3,6 +3,7 @@ package net.skidcode.gh.server.network;
 import net.skidcode.gh.server.Server;
 import net.skidcode.gh.server.event.EventRegistry;
 import net.skidcode.gh.server.event.packet.DataPacketSend;
+import net.skidcode.gh.server.event.packet.RawPacketReceive;
 import net.skidcode.gh.server.player.Player;
 import net.skidcode.gh.server.raknet.RakNet;
 import net.skidcode.gh.server.raknet.protocol.EncapsulatedPacket;
@@ -13,8 +14,8 @@ import net.skidcode.gh.server.utils.Logger;
 
 public class RakNetHandler implements ServerInstance{
 	
-	private RakNetServer raknet;
-	private ServerHandler handler;
+	public RakNetServer raknet;
+	public ServerHandler handler;
 	
 	public RakNetHandler() {
 		this.raknet = new RakNetServer(Server.getPort());
@@ -78,7 +79,7 @@ public class RakNetHandler implements ServerInstance{
 	
 	@Override
 	public void handleRaw(String address, int port, byte[] payload) {
-		Logger.info("RAW");
+		EventRegistry.handleEvent(new RawPacketReceive(address, port, payload));
 	}
 
 	@Override

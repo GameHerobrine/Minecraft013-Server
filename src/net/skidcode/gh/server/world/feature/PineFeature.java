@@ -8,76 +8,94 @@ public class PineFeature extends Feature{
 
 	@Override
 	public boolean place(World world, BedrockRandom rand, int x, int y, int z) {
-		int i;
-        int nextInt = rand.nextInt(4) + 6;
-        int nextInt2 = 1 + rand.nextInt(2);
-        int i2 = nextInt - nextInt2;
-        int nextInt3 = 2 + rand.nextInt(2);
-        boolean z2 = true;
-        if (y < 1 || y + nextInt + 1 > 128) {
+		int l = rand.nextInt(5) + 7;
+        int i1 = l - rand.nextInt(2) - 3;
+        int j1 = l - i1;
+        int k1 = 1 + rand.nextInt(j1 + 1);
+        boolean flag = true;
+        if(y < 1 || y + l + 1 > 128)
+        {
             return false;
         }
-        for (int i3 = y; i3 <= y + 1 + nextInt && z2; i3++) {
-            if (i3 - y < nextInt2) {
-                i = 0;
-            } else {
-                i = nextInt3;
+        for(int l1 = y; l1 <= y + 1 + l && flag; l1++)
+        {
+            int j2 = 1;
+            if(l1 - y < i1)
+            {
+                j2 = 0;
+            } else
+            {
+                j2 = k1;
             }
-            for (int i4 = x - i; i4 <= x + i && z2; i4++) {
-                for (int i5 = z - i; i5 <= z + i && z2; i5++) {
-                    if (i3 >= 0 && i3 < 128) {
-                        int blockIDAt = world.getBlockIDAt(i4, i3, i5);
-                        if (blockIDAt != 0 && blockIDAt != Block.leaves.blockID) {
-                            z2 = false;
+            for(int l2 = x - j2; l2 <= x + j2 && flag; l2++)
+            {
+                for(int k3 = z - j2; k3 <= z + j2 && flag; k3++)
+                {
+                    if(l1 >= 0 && l1 < 128)
+                    {
+                        int j4 = world.getBlockIDAt(l2, l1, k3);
+                        if(j4 != 0 && j4 != Block.leaves.blockID)
+                        {
+                            flag = false;
                         }
-                    } else {
-                        z2 = false;
+                    } else
+                    {
+                        flag = false;
                     }
                 }
-            }
-        }
-        if (z2) {
-            int blockIDAt2 = world.getBlockIDAt(x, y - 1, z);
-            if ((blockIDAt2 == Block.grass.blockID || blockIDAt2 == Block.dirt.blockID) && y < (128 - nextInt) - 1) {
-                world.placeBlock(x, y - 1, z, (byte)Block.dirt.blockID);
-                int nextInt4 = rand.nextInt(2);
-                int i6 = 1;
-                int i7 = 0;
-                for (int i8 = 0; i8 <= i2; i8++) {
-                    int i9 = (y + nextInt) - i8;
-                    for (int i10 = x - nextInt4; i10 <= x + nextInt4; i10++) {
-                        int i11 = i10 - x;
-                        for (int i12 = z - nextInt4; i12 <= z + nextInt4; i12++) {
-                            int i13 = i12 - z;
-                            if ((Math.abs(i11) != nextInt4 || Math.abs(i13) != nextInt4 || nextInt4 <= 0)/* && !Block.FULL_OPAQUE[world.getBlockIDAt(i10, i9, i12)]TODO opaque*/) {
-                                world.placeBlock(i10, i9, i12, (byte)Block.leaves.blockID, (byte)1);
-                            }
-                        }
-                    }
-                    if (nextInt4 >= i6) {
-                        nextInt4 = i7;
-                        i7 = 1;
-                        i6++;
-                        if (i6 > nextInt3) {
-                            i6 = nextInt3;
-                        }
-                    } else {
-                        nextInt4++;
-                    }
-                }
-                int nextInt5 = rand.nextInt(3);
-                for (int i14 = 0; i14 < nextInt - nextInt5; i14++) {
-                    int blockIDAt3 = world.getBlockIDAt(x, y + i14, z);
-                    if (blockIDAt3 == 0 || blockIDAt3 == Block.leaves.blockID) {
-                        world.placeBlock(x, y + i14, z, (byte)Block.log.blockID, (byte)1);
-                    }
-                }
-                return true;
-            }
-            return false;
-        }
-        return false;
 
+            }
+
+        }
+
+        if(!flag)
+        {
+            return false;
+        }
+        int i2 = world.getBlockIDAt(x, y - 1, z);
+        if(i2 != Block.grass.blockID && i2 != Block.dirt.blockID || y >= 128 - l - 1)
+        {
+            return false;
+        }
+        world.placeBlock(x, y - 1, z, (byte)Block.dirt.blockID);
+        int k2 = 0;
+        for(int i3 = y + l; i3 >= y + i1; i3--)
+        {
+            for(int l3 = x - k2; l3 <= x + k2; l3++)
+            {
+                int k4 = l3 - x;
+                for(int l4 = z - k2; l4 <= z + k2; l4++)
+                {
+                    int i5 = l4 - z;
+                    if((Math.abs(k4) != k2 || Math.abs(i5) != k2 || k2 <= 0)/* && !Block.opaqueCubeLookup[world.getBlockId(l3, i3, l4)] TODO opaque*/)
+                    {
+                        world.placeBlock(l3, i3, l4, (byte)Block.leaves.blockID, (byte)1);
+                    }
+                }
+
+            }
+
+            if(k2 >= 1 && i3 == y + i1 + 1)
+            {
+                k2--;
+                continue;
+            }
+            if(k2 < k1)
+            {
+                k2++;
+            }
+        }
+
+        for(int j3 = 0; j3 < l - 1; j3++)
+        {
+            int i4 = world.getBlockIDAt(x, y + j3, z);
+            if(i4 == 0 || i4 == Block.leaves.blockID)
+            {
+                world.placeBlock(x, y + j3, z, (byte)Block.log.blockID, (byte)1);
+            }
+        }
+
+        return true;
 	}
 
 }

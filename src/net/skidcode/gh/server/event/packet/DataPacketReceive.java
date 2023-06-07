@@ -7,7 +7,7 @@ import net.skidcode.gh.server.player.Player;
 public class DataPacketReceive extends Event{
 	
 	public static final DataPacketReceive INSTANCE = new DataPacketReceive();
-	
+	private static final long _id = Event.getNextFreeID();
 	public DataPacketReceive(Player p, MinecraftDataPacket pk) {
 		this.player = p;
 		this.packet = pk;
@@ -20,7 +20,8 @@ public class DataPacketReceive extends Event{
 	public Player player;
 	public MinecraftDataPacket packet;
 
-	
-	
-	
+	@Override
+	public long getID() {
+		return _id;
+	}
 }
