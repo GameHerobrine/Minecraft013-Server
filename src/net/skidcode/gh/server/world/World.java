@@ -61,7 +61,6 @@ public class World {
 			if(id > 0) tick.scheduledTime = delay + this.worldTime;
 			if(!scheduledTickSet.contains(tick)) {
 				scheduledTickSet.add(tick);
-				Logger.info(tick);
 				scheduledTickTreeSet.add(tick);
 			}
 		}
@@ -331,7 +330,6 @@ public class World {
 			scheduledTickSet.remove(tick);
 			if(this.hasChunksAt(tick.posX - 8, tick.posY - 8, tick.posY - 8, tick.posX + 8, tick.posY + 8, tick.posY + 8)) {
 				int id = this.getBlockIDAt(tick.posX, tick.posY, tick.posZ);
-				Logger.info(id+":"+tick.blockID);
 				if(id > 0 && id == tick.blockID) {
 					Block.blocks[id].tick(this, tick.posX, tick.posY, tick.posZ, random);
 				}

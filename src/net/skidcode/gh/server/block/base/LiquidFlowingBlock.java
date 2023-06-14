@@ -29,7 +29,6 @@ public class LiquidFlowingBlock extends Block{
 	}
 	@Override
 	public void tick(World world, int x, int y, int z, BedrockRandom random) {
-		Logger.info("ticking: "+x+":"+y+":"+z+":"+world.getBlockIDAt(x, y, z)+":"+world.getBlockMetaAt(x, y, z));
 		int depth = this.getDepth(world, x, y, z);
 		byte byte0 = (byte) (this.material == Material.lava ? 2 : 1); //prob flow speed?
 		boolean flag = true;
