@@ -305,7 +305,7 @@ public final class Server {
 					}
 				}
 				
-				//TODO enable world ticking Server.world.tick();
+				Server.world.tick(); //TODO enable world ticking 
 				
 				++Server.tps;
 				if(tickTime - lastSecondRecorded >= 1000) { //maybe make it better?

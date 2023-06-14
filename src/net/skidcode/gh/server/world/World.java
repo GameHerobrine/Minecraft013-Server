@@ -27,7 +27,7 @@ public class World {
 	public int worldSeed = 0x256512;
 	public BedrockRandom random;
 	public Chunk[][] chunks = new Chunk[16][16];
-	public boolean instantScheduledUpdate = false;
+	public boolean instantScheduledUpdate = false, editingBlocks = false;
 	public int spawnX, spawnY, spawnZ;
 	public String name = "world";
 	public long worldTime = 0;
@@ -135,9 +135,11 @@ public class World {
 	}
 	
 	public void notifyNeighbor(int x, int y, int z) {
-		int id = this.getBlockIDAt(x, y, z);
-		if(Block.blocks[id] instanceof Block) {
-			Block.blocks[id].onNeighborBlockChanged(this, x, y, z, this.getBlockMetaAt(x, y, z));
+		if(!editingBlocks) {
+			int id = this.getBlockIDAt(x, y, z);
+			if(Block.blocks[id] instanceof Block) {
+				Block.blocks[id].onNeighborBlockChanged(this, x, y, z, this.getBlockMetaAt(x, y, z));
+			}
 		}
 	}
 	
@@ -157,6 +159,7 @@ public class World {
 			if(id != 0 && c.heightMap[x & 0xf][z & 0xf] < y) {
 				c.heightMap[x & 0xf][z & 0xf] = (byte) y;
 			}
+			if(id > 0) Block.blocks[id].onBlockAdded(this, x, y, z);
 			this.notifyNearby(x, y, z);
 			
 			UpdateBlockPacket pk = new UpdateBlockPacket();
@@ -182,6 +185,7 @@ public class World {
 			pk.posZ = z;
 			pk.id = c.blockData[x & 0xf][z & 0xf][y];
 			pk.metadata = meta;
+			
 			for(Player p : this.players.values()) {
 				p.dataPacket(pk);
 			}
@@ -195,6 +199,7 @@ public class World {
 			if(id != 0 && c.heightMap[x & 0xf][z & 0xf] < y) {
 				c.heightMap[x & 0xf][z & 0xf] = (byte) y;
 			}
+			if(id > 0) Block.blocks[id].onBlockAdded(this, x, y, z);
 			this.notifyNearby(x, y, z);
 			
 			UpdateBlockPacket pk = new UpdateBlockPacket();
@@ -217,7 +222,7 @@ public class World {
 			if(id != 0 && c.heightMap[x & 0xf][z & 0xf] < y) {
 				c.heightMap[x & 0xf][z & 0xf] = (byte) y;
 			}
-			
+			if(id > 0) Block.blocks[id].onBlockAdded(this, x, y, z);
 			UpdateBlockPacket pk = new UpdateBlockPacket();
 			pk.posX = x;
 			pk.posY = (byte) y;
@@ -243,7 +248,7 @@ public class World {
 			if(id != 0 && c.heightMap[x & 0xf][z & 0xf] < y) {
 				c.heightMap[x & 0xf][z & 0xf] = (byte) y;
 			}
-			
+			if(id > 0) Block.blocks[id].onBlockAdded(this, x, y, z);
 			UpdateBlockPacket pk = new UpdateBlockPacket();
 			pk.posX = x;
 			pk.posY = (byte) y;
