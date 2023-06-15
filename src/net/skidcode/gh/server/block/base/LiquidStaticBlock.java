@@ -5,7 +5,7 @@ import net.skidcode.gh.server.block.material.Material;
 import net.skidcode.gh.server.player.Player;
 import net.skidcode.gh.server.world.World;
 
-public class LiquidStaticBlock extends Block{
+public class LiquidStaticBlock extends LiquidBaseBlock{
 	
 	public int tickrate;
 	
@@ -25,8 +25,7 @@ public class LiquidStaticBlock extends Block{
 	@Override
 	public void onNeighborBlockChanged(World world, int x, int y, int z, int meta) {
 		super.onNeighborBlockChanged(world, x, y, z, meta);
-		
-		this.setDynamic(world, x, y, z);
+		if(this.blockID == world.getBlockIDAt(x, y, z)) this.setDynamic(world, x, y, z);
 	}
 	
 }

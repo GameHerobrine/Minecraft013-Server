@@ -7,7 +7,7 @@ import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.utils.random.BedrockRandom;
 import net.skidcode.gh.server.world.World;
 
-public class LiquidFlowingBlock extends Block{
+public class LiquidFlowingBlock extends LiquidBaseBlock{
 	public int something = 0;
 	public boolean[] boolArr;
 	public int[] intArr;
@@ -21,11 +21,15 @@ public class LiquidFlowingBlock extends Block{
 	
 	@Override
 	public void onBlockAdded(World world, int x, int y, int z) {
-		world.addToTickNextTick(x, y, z, this.blockID, this.tickrate);
+		super.onBlockAdded(world, x, y, z);
+		if(world.getBlockIDAt(x, y, z) == this.blockID) {
+			world.addToTickNextTick(x, y, z, this.blockID, this.tickrate);
+		}
+		
 	}
 	public void onBlockPlacedByPlayer(World world, int x, int y, int z, int face, Player player) {
 		super.onBlockPlacedByPlayer(world, x, y, z, face, player);
-		world.addToTickNextTick(x, y, z, this.blockID, this.tickrate);
+		//world.addToTickNextTick(x, y, z, this.blockID, this.tickrate);
 	}
 	@Override
 	public void tick(World world, int x, int y, int z, BedrockRandom random) {
