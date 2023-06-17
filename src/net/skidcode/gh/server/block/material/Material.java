@@ -23,7 +23,7 @@ public class Material {
 	public static Material water = new Material().setLiquid().setNoBlockLight().setNoBlockMotion(); //while it is liquid, mcpe 0.1's Material::isLiquid always returns 0  
 	public static Material lava = new Material().setLiquid().setNoBlockLight().setNoBlockMotion();
 	public static Material leaves = new Material().setFlameable();
-	public static Material plant = new Material();
+	public static Material plant = new Material().setNonSolid(); //TODO check
 	public static Material sponge = new Material();
 	public static Material cloth = new Material().setFlameable(); //wool
 	public static Material fire = new Material();

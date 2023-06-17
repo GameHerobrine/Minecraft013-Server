@@ -302,14 +302,15 @@ public class World {
 
 	public int findTopSolidBlock(int x, int z) {
 		if(x < 256 && z < 256 && x >= 0 && z >= 0) {
-			Chunk c = this.chunks[x >> 4][z >> 4];
-			for(int y = 127; y > 0; --y) {
-				int id = c.blockData[x & 0xf][z & 0xf][y];
-				Material mat = (id == 0 ? Material.air : Block.blocks[id].material);
-				if(mat.isSolid || mat.isLiquid) {
-					return y + 1;
-				}
-			}
+			byte[] idsY = this.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf];
+			int k = 127;
+			byte id;
+			
+			do {
+				id = idsY[k];
+				Material m = id == 0 ? Material.air : Block.blocks[id].material;
+				if(m.isSolid || m.isLiquid) return k + 1;
+			}while(k-- > 0); //TODO why did i change it?
 		}
 		return -1;
 	}
