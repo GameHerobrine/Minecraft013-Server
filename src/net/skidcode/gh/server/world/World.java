@@ -153,6 +153,7 @@ public class World {
 	}
 	
 	public int getBlockMetaAt(int x, int y, int z) {
+		if(x > 255 || y > 127 || z > 255 || y < 0 || z < 0 || x < 0) return 0; //TODO return invisBedrock for 255+?
 		return this.chunks[x >> 4][z >> 4].blockMetadata[x & 0xf][z & 0xf][y];
 	}
 	public void placeBlockAndNotifyNearby(int x, int y, int z, byte id, byte meta) {
@@ -357,7 +358,7 @@ public class World {
 					int y = xyz >>> 16 & 0x7f;
 					int id = c.blockData[x][z][y];
 					if(Block.shouldTick[id]) {
-						Block.blocks[id].tick(this, x + c.posX >> 4, y, z + c.posZ >> 4, random);
+						Block.blocks[id].tick(this, x + (c.posX << 4), y, z + (c.posZ << 4), random);
 					}
 				}while(++l1 <= 80);
 			}

@@ -16,7 +16,7 @@ public class ReedsBlock extends PlantBlock{
 	}
 	
 	public void tick(World world, int x, int y, int z, BedrockRandom random) {
-		Logger.info("ticking cactus at "+x+":"+y+":"+z);
+		Logger.info(x+":"+y+":"+z+"  is"+this.blockID);
 		if(world.isAirBlock(x, y + 1, z)) {
 			int l = 0;
 			do{
