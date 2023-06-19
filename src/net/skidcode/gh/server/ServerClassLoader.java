@@ -12,5 +12,4 @@ public class ServerClassLoader extends URLClassLoader{
 	public void addUrl(URL url) {
 		super.addURL(url);
 	}
-	
 }

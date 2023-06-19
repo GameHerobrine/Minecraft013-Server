@@ -13,6 +13,7 @@ public class TorchBlock extends DecorationBlock{
 		super(id, Material.decoration);
 		this.name = "Torch";
 		this.isSolid = false;
+		Block.shouldTick[id] = true; //TODO torch should not tick?
 	}
 	public void onBlockPlacedByPlayer(World world, int x, int y, int z, int face, Player player) {
 		byte meta2Place = 0;

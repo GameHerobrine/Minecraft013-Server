@@ -8,6 +8,7 @@ public class LiquidBaseBlock extends Block{
 
 	public LiquidBaseBlock(int id, Material m) {
 		super(id, m);
+		Block.shouldTick[id] = true;
 	}
 	
 	public void updateLiquid(World world, int x, int y, int z) {

@@ -1,5 +1,6 @@
 package net.skidcode.gh.server.world;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
@@ -37,6 +38,8 @@ public class World {
 	public BiomeSource biomeSource;
 	public LevelSource levelSource;
 	
+	public int randInt1, randInt2;
+	
 	public TreeSet<TickNextTickData> scheduledTickTreeSet;
 	public HashSet<TickNextTickData> scheduledTickSet;
 	public World(int seed) {
@@ -46,6 +49,8 @@ public class World {
 		this.levelSource = new RandomLevelSource(this, seed); //TODO API
 		this.scheduledTickTreeSet = new TreeSet<>();
 		this.scheduledTickSet = new HashSet<>();
+		this.randInt1 = 0x283AE83; //it is static in 0.1
+		this.randInt2 = 0x3C6EF35F;
 	}
 	
 	public void addToTickNextTick(int x, int y, int z, int id, int delay) {
@@ -320,6 +325,7 @@ public class World {
 		/*Timer*/
 		this.worldTime++;
 		
+		 //Normal Ticking: Water/Lava
 		int ticksAmount = scheduledTickTreeSet.size();
 		if(ticksAmount > 1000) ticksAmount = 1000;
 		for(int i = 0; i < ticksAmount; ++i) {
@@ -334,6 +340,26 @@ public class World {
 				if(id > 0 && id == tick.blockID) {
 					Block.blocks[id].tick(this, tick.posX, tick.posY, tick.posZ, random);
 				}
+			}
+		}
+		
+		//Random Ticking
+		
+		for(int chunkX = 0; chunkX < 16; ++chunkX) {
+			for(int chunkZ = 0; chunkZ < 16; ++chunkZ) {
+				Chunk c = this.chunks[chunkX][chunkZ];
+				int l1 = 0;
+				do {
+					this.randInt1 = this.randInt1 * 3 + this.randInt2;
+					int xyz = this.randInt1 >>> 2;
+					int x = xyz & 0xf;
+					int z = xyz >>> 8 & 0xf;
+					int y = xyz >>> 16 & 0x7f;
+					int id = c.blockData[x][z][y];
+					if(Block.shouldTick[id]) {
+						Block.blocks[id].tick(this, x + c.posX >> 4, y, z + c.posZ >> 4, random);
+					}
+				}while(++l1 <= 80);
 			}
 		}
 		

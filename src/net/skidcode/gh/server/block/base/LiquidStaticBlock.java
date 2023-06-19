@@ -12,6 +12,7 @@ public class LiquidStaticBlock extends LiquidBaseBlock{
 	public LiquidStaticBlock(int id, Material m) {
 		super(id, m);
 		this.isSolid = false;
+		Block.shouldTick[id] = (m == Material.lava);
 	}
 	
 	public void setDynamic(World world, int x, int y, int z) {

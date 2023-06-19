@@ -10,6 +10,7 @@ public class ReedsBlock extends PlantBlock{
 	public ReedsBlock(int id) {
 		super(id, Material.plant);
 		this.isSolid = false;
+		Block.shouldTick[id] = true;
 	}
 	
 	public boolean canSurvive(World world, int x, int y, int z) {
