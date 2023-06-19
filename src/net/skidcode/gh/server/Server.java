@@ -44,11 +44,11 @@ public final class Server {
 	public static volatile boolean running = true;
 	public static RakNetHandler handler;
 	public static World world;
-	private static HashMap<String, Plugin> plugins = new HashMap<>();
-	private static HashMap<String, Player> id2Player = new HashMap<>();
+	public static HashMap<String, Plugin> plugins = new HashMap<>();
+	public static HashMap<String, Player> id2Player = new HashMap<>();
 	public static PropertiesFile properties;
 	public static final File pluginsPath = new File("plugins/");
-	private static volatile int port = 19132;
+	public static volatile int port = 19132;
 	public static volatile boolean saveWorld = true;
 	public static volatile boolean savePlayerData = true;
 	public static long nextTick = 0;

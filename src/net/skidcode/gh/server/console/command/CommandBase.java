@@ -5,6 +5,7 @@ import java.util.HashMap;
 import net.skidcode.gh.server.console.command.impl.BroadcastCommand;
 import net.skidcode.gh.server.console.command.impl.FillChunkCommand;
 import net.skidcode.gh.server.console.command.impl.HelpCommand;
+import net.skidcode.gh.server.console.command.impl.PlayerListCommand;
 import net.skidcode.gh.server.console.command.impl.StopCommand;
 import net.skidcode.gh.server.console.command.impl.TeleportCommand;
 import net.skidcode.gh.server.console.command.impl.TpsCommand;
@@ -32,6 +33,7 @@ public abstract class CommandBase {
 		addCommand(new StopCommand("stop"));
 		addCommand(new FillChunkCommand("fillchunk"));
 		addCommand(new TpsCommand("tps"));
+		addCommand(new PlayerListCommand("playerlist"));
 	}
 	
 }
