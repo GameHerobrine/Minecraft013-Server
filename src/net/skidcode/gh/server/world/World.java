@@ -313,7 +313,7 @@ public class World {
 			byte id;
 			
 			do {
-				id = idsY[k] & 0xff;
+				id = (byte) (idsY[k] & 0xff);
 				Material m = id == 0 ? Material.air : Block.blocks[id].material;
 				if(m.isSolid || m.isLiquid) return k + 1;
 			}while(k-- > 0); //TODO why did i change it?
