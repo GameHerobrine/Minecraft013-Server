@@ -103,7 +103,7 @@ public class World {
 		int cBX = x & 0xf;
 		int cBZ = z & 0xf;
 		for(int y = 125; y >= 0; --y) {
-			int id = c.blockData[cBX][cBZ][y];
+			int id = c.blockData[cBX][cBZ][y] & 0xff;
 			if(id > 0) {
 				Block b = Block.blocks[id];
 				if(b.material.isSolid) {
@@ -149,7 +149,7 @@ public class World {
 	
 	public int getBlockIDAt(int x, int y, int z) {
 		if(x > 255 || y > 127 || z > 255 || y < 0 || z < 0 || x < 0) return 0; //TODO return invisBedrock for 255+?
-		return this.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf][y];
+		return this.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf][y] & 0xff;
 	}
 	
 	public int getBlockMetaAt(int x, int y, int z) {
@@ -313,7 +313,7 @@ public class World {
 			byte id;
 			
 			do {
-				id = idsY[k];
+				id = idsY[k] & 0xff;
 				Material m = id == 0 ? Material.air : Block.blocks[id].material;
 				if(m.isSolid || m.isLiquid) return k + 1;
 			}while(k-- > 0); //TODO why did i change it?
@@ -356,7 +356,7 @@ public class World {
 					int x = xyz & 0xf;
 					int z = xyz >>> 8 & 0xf;
 					int y = xyz >>> 16 & 0x7f;
-					int id = c.blockData[x][z][y];
+					int id = c.blockData[x][z][y] & 0xff;
 					if(Block.shouldTick[id]) {
 						Block.blocks[id].tick(this, x + (c.posX << 4), y, z + (c.posZ << 4), random);
 					}
