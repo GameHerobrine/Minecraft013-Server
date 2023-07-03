@@ -48,7 +48,7 @@ public class EncapsulatedPacket implements Cloneable {
             packet.identifierACK = Binary.readInt(Binary.subBytes(binary, 5, 4));
             offset = 9;
         } else {
-            length = (int) Math.ceil(Binary.readShort(Binary.subBytes(binary, 1, 2)) / 8f);
+            length = MathUtils.fceil(Binary.readShort(Binary.subBytes(binary, 1, 2)) / 8f);
             offset = 3;
             packet.identifierACK = null;
         }
