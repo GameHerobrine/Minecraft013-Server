@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import net.skidcode.gh.server.utils.Binary;
+import net.skidcode.gh.server.utils.MathUtils;
 
 /**
  * author: MagicDroidX
@@ -47,7 +48,7 @@ public class EncapsulatedPacket implements Cloneable {
             packet.identifierACK = Binary.readInt(Binary.subBytes(binary, 5, 4));
             offset = 9;
         } else {
-            length = (int) Math.ceil(((double) Binary.readShort(Binary.subBytes(binary, 1, 2)) / 8));
+            length = MathUtils.fceil(Binary.readShort(Binary.subBytes(binary, 1, 2)) / 8f);
             offset = 3;
             packet.identifierACK = null;
         }
