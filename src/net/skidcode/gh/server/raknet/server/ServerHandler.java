@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import net.skidcode.gh.server.raknet.RakNet;
 import net.skidcode.gh.server.raknet.protocol.EncapsulatedPacket;
 import net.skidcode.gh.server.utils.Binary;
+import net.skidcode.gh.server.utils.Logger;
 
 /**
  * author: MagicDroidX

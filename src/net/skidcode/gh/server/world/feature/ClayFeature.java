@@ -3,6 +3,7 @@ package net.skidcode.gh.server.world.feature;
 import net.skidcode.gh.server.block.Block;
 import net.skidcode.gh.server.block.material.Material;
 import net.skidcode.gh.server.utils.Logger;
+import net.skidcode.gh.server.utils.MathUtils;
 import net.skidcode.gh.server.utils.random.BedrockRandom;
 import net.skidcode.gh.server.world.World;
 
@@ -33,12 +34,12 @@ public class ClayFeature extends Feature{
 			nextFloat = (rand.nextFloat() * this.size) / 16.0f;
 			float sin3 = (float) (((Math.sin((i * 3.1416f) / this.size) + 1.0f) * nextFloat) + 1.0f);
 			float sin4 = (float) (((Math.sin((i * 3.1416f) / this.size) + 1.0f) * nextFloat) + 1.0f);
-			int floor = (int) Math.floor(d - (sin3 / 2.0f)); //TODO Mth
-			int floor2 = (int) Math.floor(d + (sin3 / 2.0f));
-			int floor3 = (int) Math.floor(d2 - (sin4 / 2.0f));
-			int floor4 = (int) Math.floor(d2 + (sin4 / 2.0f));
-			int floor5 = (int) Math.floor(d3 - (sin3 / 2.0f));
-			int floor6 = (int) Math.floor(d3 + (sin3 / 2.0f));
+			int floor = MathUtils.ffloor(d - (sin3 / 2.0f)); //TODO Mth
+			int floor2 = MathUtils.ffloor(d + (sin3 / 2.0f));
+			int floor3 = MathUtils.ffloor(d2 - (sin4 / 2.0f));
+			int floor4 = MathUtils.ffloor(d2 + (sin4 / 2.0f));
+			int floor5 = MathUtils.ffloor(d3 - (sin3 / 2.0f));
+			int floor6 = MathUtils.ffloor(d3 + (sin3 / 2.0f));
 			for (int i2 = floor; i2 <= floor2; i2++) {
 				for (int i3 = floor3; i3 <= floor4; i3++) {
 					for (int i4 = floor5; i4 <= floor6; i4++) {

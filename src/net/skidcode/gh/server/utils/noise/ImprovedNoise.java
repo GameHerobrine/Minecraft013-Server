@@ -2,6 +2,7 @@ package net.skidcode.gh.server.utils.noise;
 
 import java.util.Random;
 
+import net.skidcode.gh.server.utils.MathUtils;
 import net.skidcode.gh.server.utils.random.BedrockRandom;
 import net.skidcode.gh.server.utils.random.MTRandom;
 
@@ -54,21 +55,9 @@ public class ImprovedNoise {
 		float d3 = d + xCoord;
 		float d4 = d1 + yCoord;
 		float d5 = d2 + zCoord;
-		int i = (int)d3;
-		int j = (int)d4;
-		int k = (int)d5;
-		if(d3 < i)
-		{
-			--i;
-		}
-		if(d4 < j)
-		{
-			--j;
-		}
-		if(d5 < k)
-		{
-			--k;
-		}
+		int i = MathUtils.ffloor(d3);
+		int j = MathUtils.ffloor(d4);
+		int k = MathUtils.ffloor(d5);
 		int l = i & 0xff;
 		int i1 = j & 0xff;
 		int j1 = k & 0xff;
@@ -106,11 +95,7 @@ public class ImprovedNoise {
 			for(int i4 = 0; i4 < i; i4++)
 			{
 				float d14 = (d + (float)i4) * d3 + xCoord;
-				int j4 = (int)d14;
-				if(d14 < (float)j4)
-				{
-					j4--;
-				}
+				int j4 = MathUtils.ffloor(d14);
 				int k4 = j4 & 0xff;
 				d14 -= j4;
 				float d17 = d14 * d14 * d14 * (d14 * (d14 * 6 - 15) + 10);
@@ -149,33 +134,21 @@ public class ImprovedNoise {
 		for(int i5 = 0; i5 < i; i5++)
 		{
 			float d20 = (d + (float)i5) * d3 + xCoord;
-			int k5 = (int)d20;
-			if(d20 < (float)k5)
-			{
-				k5--;
-			}
+			int k5 = MathUtils.ffloor(d20);
 			int i6 = k5 & 0xff;
 			d20 -= k5;
 			float d22 = d20 * d20 * d20 * (d20 * (d20 * 6f - 15f) + 10f);
 			for(int j6 = 0; j6 < k; j6++)
 			{
 				float d24 = (d2 + (float)j6) * d5 + zCoord;
-				int k6 = (int)d24;
-				if(d24 < (float)k6)
-				{
-					k6--;
-				}
+				int k6 = MathUtils.ffloor(d24);
 				int l6 = k6 & 0xff;
 				d24 -= k6;
 				float d25 = d24 * d24 * d24 * (d24 * (d24 * 6f - 15f) + 10f);
 				for(int i7 = 0; i7 < j; i7++)
 				{
 					float d26 = (d1 + (float)i7) * d4 + yCoord;
-					int j7 = (int)d26;
-					if(d26 < (float)j7)
-					{
-						j7--;
-					}
+					int j7 = MathUtils.ffloor(d26);
 					int k7 = j7 & 0xff;
 					d26 -= j7;
 					float d27 = d26 * d26 * d26 * (d26 * (d26 * 6f - 15f) + 10f);

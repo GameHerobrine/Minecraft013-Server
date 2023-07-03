@@ -1,6 +1,7 @@
 package net.skidcode.gh.server.world.feature;
 
 import net.skidcode.gh.server.block.Block;
+import net.skidcode.gh.server.utils.MathUtils;
 import net.skidcode.gh.server.utils.random.BedrockRandom;
 import net.skidcode.gh.server.world.World;
 
@@ -29,12 +30,12 @@ public class OreFeature extends Feature{
             nextFloat = (rand.nextFloat() * this.amount) / 16.0f;
             float sin3 = (float) (((Math.sin((i * 3.1415927f) / this.amount) + 1.0f) * nextFloat) + 1.0f);
             float sin4 = (float) (((Math.sin((i * 3.1415927f) / this.amount) + 1.0f) * nextFloat) + 1.0f);
-            int floor = (int) Math.floor(d - (sin3 / 2.0f));
-            int floor2 = (int) Math.floor(d2 - (sin4 / 2.0f));
-            int floor3 = (int) Math.floor(d3 - (sin3 / 2.0f));
-            int floor4 = (int) Math.floor(d + (sin3 / 2.0f));
-            int floor5 = (int) Math.floor(d2 + (sin4 / 2.0f));
-            int floor6 = (int) Math.floor(d3 + (sin3 / 2.0f));
+            int floor = MathUtils.ffloor(d - (sin3 / 2.0f));
+            int floor2 = MathUtils.ffloor(d2 - (sin4 / 2.0f));
+            int floor3 = MathUtils.ffloor(d3 - (sin3 / 2.0f));
+            int floor4 = MathUtils.ffloor(d + (sin3 / 2.0f));
+            int floor5 = MathUtils.ffloor(d2 + (sin4 / 2.0f));
+            int floor6 = MathUtils.ffloor(d3 + (sin3 / 2.0f));
             for (int i2 = floor; i2 <= floor4; i2++) {
                 float d4 = ((i2 + 0.5f) - d) / (sin3 / 2.0f);
                 if (d4 * d4 < 1.0d) {

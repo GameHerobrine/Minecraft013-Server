@@ -22,7 +22,15 @@ public class LiquidStaticBlock extends LiquidBaseBlock{
 		world.addToTickNextTick(x, y, z, this.blockID - 1, this.tickrate);
 		world.editingBlocks = false;
 	}
-	
+	@Override
+	public void onBlockAdded(World world, int x, int y, int z) {
+		/**
+		 * if ( *((_DWORD *)this + 0x10) == Material::lava )
+		    return (LiquidTile *)LiquidTile::_trySpreadFire(this, a2, a3, a4, a5, a6);
+		  return this;
+		 */
+		//TODO fire spread
+	}
 	@Override
 	public void onNeighborBlockChanged(World world, int x, int y, int z, int meta) {
 		super.onNeighborBlockChanged(world, x, y, z, meta);
