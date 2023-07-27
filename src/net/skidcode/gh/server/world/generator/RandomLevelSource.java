@@ -181,7 +181,6 @@ public class RandomLevelSource implements LevelSource{ //TODO all public?, try t
 				byte b = biome.topBlock;
 				byte b2 = biome.fillerBlock;
 				for (int blockY = 127; blockY >= 0; blockY--) {
-					int i2 = (((blockZ * 16) + blockX) * 128) + blockY;
 					if (blockY <= 0 + this.rand.nextInt(5)) {
 						blockIDS[blockZ][blockX][blockY] = (byte) Block.bedrock.blockID;
 					}else {
@@ -257,7 +256,6 @@ public class RandomLevelSource implements LevelSource{ //TODO all public?, try t
 						float f11 = (f3 - f) * 0.25f;
 						float f12 = (f4 - f2) * 0.25f;
 						for (int unkXX = 0; unkXX < 4; unkXX++) {
-							int i2 = ((unkXX + (unkX * 4)) << 11) | ((0 + (unkZ * 4)) << 7) | ((unkY * 8) + unkYY);
 							float f13 = f9;
 							float f14 = (f10 - f9) * 0.25f;
 							for (int unkZZ = 0; unkZZ < 4; unkZZ++) {
@@ -274,7 +272,6 @@ public class RandomLevelSource implements LevelSource{ //TODO all public?, try t
 									i3 = Block.stone.blockID;
 								}
 								blockIDS[(unkXX + (unkX * 4))][(unkZZ + (unkZ * 4))][((unkY * 8) + unkYY)] = (byte) i3;
-								i2 += 128;
 								f13 += f14;
 							}
 							f9 += f11;

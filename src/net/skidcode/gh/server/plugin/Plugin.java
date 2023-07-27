@@ -4,7 +4,5 @@ public abstract class Plugin{
 	
 	public abstract void onEnable();
 	
-	public void onServerInitialized() {}
-	
 	public void onDisable() {}
 }

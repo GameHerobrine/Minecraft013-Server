@@ -1,11 +1,7 @@
 package net.skidcode.gh.server.world.generator;
 
-import java.util.Random;
-
-import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.utils.noise.PerlinNoise;
 import net.skidcode.gh.server.utils.random.BedrockRandom;
-import net.skidcode.gh.server.utils.random.MTRandom;
 import net.skidcode.gh.server.world.World;
 import net.skidcode.gh.server.world.biome.Biome;
 

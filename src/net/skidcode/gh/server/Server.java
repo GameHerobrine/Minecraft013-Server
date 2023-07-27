@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -14,7 +13,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Random;
 import java.util.Scanner;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -23,18 +21,15 @@ import net.skidcode.gh.server.block.Block;
 import net.skidcode.gh.server.console.ThreadConsole;
 import net.skidcode.gh.server.console.command.CommandBase;
 import net.skidcode.gh.server.console.command.ConsoleIssuer;
-import net.skidcode.gh.server.event.packet.DataPacketReceive;
+import net.skidcode.gh.server.event.EventRegistry;
+import net.skidcode.gh.server.event.server.ServerInitialized;
 import net.skidcode.gh.server.network.RakNetHandler;
 import net.skidcode.gh.server.player.Player;
 import net.skidcode.gh.server.plugin.Plugin;
 import net.skidcode.gh.server.plugin.PluginInfo;
 import net.skidcode.gh.server.utils.Logger;
-import net.skidcode.gh.server.utils.MathUtils;
 import net.skidcode.gh.server.utils.Utils;
 import net.skidcode.gh.server.utils.config.PropertiesFile;
-import net.skidcode.gh.server.utils.noise.PerlinNoise;
-import net.skidcode.gh.server.utils.random.BedrockRandom;
-import net.skidcode.gh.server.utils.random.MTRandom;
 import net.skidcode.gh.server.world.World;
 import net.skidcode.gh.server.world.generator.FlatWorldGenerator;
 import net.skidcode.gh.server.world.generator.NormalWorldGenerator;
@@ -161,11 +156,7 @@ public final class Server {
 			System.exit(0);
 		}
 		Logger.info("Done!");
-		
-		for(Plugin p : Server.plugins.values()) {
-			p.onServerInitialized();
-		}
-		
+		EventRegistry.handleEvent(new ServerInitialized());
 		run();
 		System.exit(0);
 	}

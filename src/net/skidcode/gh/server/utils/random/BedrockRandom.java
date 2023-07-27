@@ -155,10 +155,10 @@ public class BedrockRandom
     private void func_26521__initGenRand(int i)
     {
         state[0] = i;
-        for(field_26534_mti = 1; field_26534_mti < 624; field_26534_mti++)
-        {
+        field_26534_mti = 1;
+        do{
             state[field_26534_mti] = 0x6c078965 * (state[field_26534_mti - 1] >>> 30 ^ state[field_26534_mti - 1]) + field_26534_mti;
-        }
+        }while(++field_26534_mti < 624);
 
         indexF = 624;
     }
@@ -166,11 +166,10 @@ public class BedrockRandom
     private void func_26508__initGenRandFast(int i)
     {
         state[0] = i;
-        for(indexF = 1; indexF <= 397; indexF++)
-        {
+        indexF = 1;
+        do{
             state[indexF] = 0x6c078965 * (state[indexF - 1] >>> 30 ^ state[indexF - 1]) + indexF;
-        }
-
+        }while(++indexF <= 397);
         field_26534_mti = 624;
     }
 

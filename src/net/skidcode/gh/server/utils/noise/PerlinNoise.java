@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Random;
 
 import net.skidcode.gh.server.utils.random.BedrockRandom;
-import net.skidcode.gh.server.utils.random.MTRandom;
 
 public class PerlinNoise {
 	public ImprovedNoise[] noises;

@@ -1,8 +1,6 @@
 package net.skidcode.gh.server.event;
 
-import net.skidcode.gh.server.utils.Logger;
 
-//TODO Cancellable
 public abstract class Event {
 	private static long nextID = 0;
 	public boolean isReuseable = true;

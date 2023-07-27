@@ -2,7 +2,6 @@ package net.skidcode.gh.server.world.format;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import net.skidcode.gh.server.Server;

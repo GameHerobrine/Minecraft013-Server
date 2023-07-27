@@ -1,12 +1,9 @@
 package net.skidcode.gh.server.utils.noise;
 
-import java.util.Random;
 
 import net.skidcode.gh.server.utils.MathUtils;
 import net.skidcode.gh.server.utils.random.BedrockRandom;
-import net.skidcode.gh.server.utils.random.MTRandom;
 
-//TODO
 public class ImprovedNoise {
 	public int[] permutations;
 	public float xCoord, yCoord, zCoord;

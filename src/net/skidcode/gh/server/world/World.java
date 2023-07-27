@@ -120,13 +120,13 @@ public class World {
 		this.spawnY = 127;
 	}
 	
-	public void notifyNearby(int x, int y, int z) {
-		this.notifyNeighbor(x - 1, y, z);
-		this.notifyNeighbor(x + 1, y, z);
-		this.notifyNeighbor(x, y - 1, z);
-		this.notifyNeighbor(x, y + 1, z);
-		this.notifyNeighbor(x, y, z - 1);
-		this.notifyNeighbor(x, y, z + 1);
+	public void notifyNearby(int x, int y, int z, int cid) {
+		this.notifyNeighbor(x - 1, y, z, cid);
+		this.notifyNeighbor(x + 1, y, z, cid);
+		this.notifyNeighbor(x, y - 1, z, cid);
+		this.notifyNeighbor(x, y + 1, z, cid);
+		this.notifyNeighbor(x, y, z - 1, cid);
+		this.notifyNeighbor(x, y, z + 1, cid);
 	}
 	
 	public void removeBlock(int x, int y, int z) {
@@ -134,15 +134,15 @@ public class World {
 			this.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf][y] = 0;
 			this.chunks[x >> 4][z >> 4].blockMetadata[x & 0xf][z & 0xf][y] = 0;
 			
-			this.notifyNearby(x, y, z);
+			this.notifyNearby(x, y, z, 0);
 		}
 	}
 	
-	public void notifyNeighbor(int x, int y, int z) {
+	public void notifyNeighbor(int x, int y, int z, int cid) {
 		if(!editingBlocks) {
 			int id = this.getBlockIDAt(x, y, z);
 			if(Block.blocks[id] instanceof Block) {
-				Block.blocks[id].onNeighborBlockChanged(this, x, y, z, this.getBlockMetaAt(x, y, z));
+				Block.blocks[id].onNeighborBlockChanged(this, x, y, z, cid);
 			}
 		}
 	}
@@ -176,7 +176,7 @@ public class World {
 			c.setBlock(x & 0xf, y, z & 0xf, id, meta);
 			
 			if(id > 0) Block.blocks[id].onBlockAdded(this, x, y, z);
-			this.notifyNearby(x, y, z);
+			this.notifyNearby(x, y, z, id);
 			
 			this.sendBlockPlace(x, y, z, id, meta);
 		}
@@ -187,7 +187,7 @@ public class World {
 			Chunk c = this.chunks[x >> 4][z >> 4];
 			c.setBlockMetadata(x & 0xf, y, z & 0xf, meta);
 			
-			this.notifyNearby(x, y, z);
+			this.notifyNearby(x, y, z, c.blockData[x & 0xf][z & 0xf][y]);
 			this.sendBlockPlace(x, y, z, c.blockData[x & 0xf][z & 0xf][y], meta);
 		}
 	}
@@ -198,7 +198,7 @@ public class World {
 			
 			if(id > 0) Block.blocks[id].onBlockAdded(this, x, y, z);
 			
-			this.notifyNearby(x, y, z);
+			this.notifyNearby(x, y, z, id);
 			this.sendBlockPlace(x, y, z, id, (byte)0);
 		}
 	}

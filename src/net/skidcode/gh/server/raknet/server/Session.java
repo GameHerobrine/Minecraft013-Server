@@ -12,7 +12,6 @@ import net.skidcode.gh.server.raknet.protocol.Packet;
 import net.skidcode.gh.server.raknet.protocol.packet.*;
 import net.skidcode.gh.server.utils.Binary;
 import net.skidcode.gh.server.utils.BinaryStream;
-import net.skidcode.gh.server.utils.Logger;
 
 /**
  * author: MagicDroidX
@@ -507,10 +506,9 @@ public class Session {
                 pk.serverID = this.sessionManager.getID();
                 
                 pk.pingID = ((UNCONNECTED_PING) packet).pingID;
-                pk.serverName = Server.serverName;//this.sessionManager.getName();
+                pk.serverName = Server.serverName;
                 this.sendPacket(pk);
             }else if (packet instanceof OPEN_CONNECTION_REQUEST_1) {
-                //TODO: check protocol number and refuse connections
                 OPEN_CONNECTION_REPLY_1 pk = new OPEN_CONNECTION_REPLY_1();
                 pk.mtuSize = ((OPEN_CONNECTION_REQUEST_1) packet).mtuSize;
                 pk.serverID = sessionManager.getID();

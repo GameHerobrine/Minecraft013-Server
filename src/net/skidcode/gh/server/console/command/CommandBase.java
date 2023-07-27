@@ -25,7 +25,6 @@ public abstract class CommandBase {
 		commands.put(cmd.name, cmd);
 	}
 	
-	
 	static {
 		addCommand(new HelpCommand("help"));
 		addCommand(new BroadcastCommand("broadcast"));

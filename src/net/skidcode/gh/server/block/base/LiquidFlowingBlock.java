@@ -53,10 +53,7 @@ public class LiquidFlowingBlock extends LiquidBaseBlock{
 				int idBot = world.getBlockIDAt(x, y - 1, z);
 				if(idBot != 0) {
 					Block b = Block.blocks[idBot];
-					if(b.isSolid) j1 = 0;
-					else if(b.material == this.material && world.getBlockMetaAt(x, y, z) == 0) {
-						j1 = 0;
-					}
+					if(b.isSolid || (b.material == this.material && world.getBlockMetaAt(x, y, z) == 0)) j1 = 0;
 				}
 			}
 			
@@ -69,9 +66,9 @@ public class LiquidFlowingBlock extends LiquidBaseBlock{
 				if(depth < 0) {
 					world.placeBlockAndNotifyNearby(x, y, z, (byte) 0);
 				}else {
-					world.placeBlock(x, y, z, (byte) this.blockID, (byte) depth);
-					world.notifyNearby(x, y, z);
+					world.placeBlockMetaAndNotifyNearby(x, y, z, (byte) depth);
 					world.addToTickNextTick(x, y, z, this.blockID, this.tickrate);
+					world.notifyNearby(x, y, z, this.blockID);
 				}
 			}else if(flag) {
 				this.setStatic(world, x, y, z);
@@ -82,7 +79,6 @@ public class LiquidFlowingBlock extends LiquidBaseBlock{
 		
 		if(this.canSpreadTo(world, x, y - 1, z)) {
 			world.placeBlockAndNotifyNearby(x, y - 1, z, (byte) this.blockID, (byte)((depth >= 8 ? depth : depth + 8) & 0xf));
-			//world.addToTickNextTick(x, y - 1, z, this.blockID, this.tickrate);
 		}else
 		if(depth >= 0 && (depth == 0 || this.isWaterBlocking(world, x, y - 1, z))) {
 			boolean[] flags = this.getSpread(world, x, y, z);
@@ -99,6 +95,10 @@ public class LiquidFlowingBlock extends LiquidBaseBlock{
 		if(this.canSpreadTo(w, x, y, z)) {
 			int i1 = w.getBlockIDAt(x, y, z);
 			if(i1 > 0) {
+				/*if(blockMaterial == Material.lava)
+                {
+                    func_292_i(world, i, j, k);
+                }*/ //TODO check
 				if(this.material != Material.lava) {
 					//TODO in case of further updates Block.blocks[i1].drop();
 				}

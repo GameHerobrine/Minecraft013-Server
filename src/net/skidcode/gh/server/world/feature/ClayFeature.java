@@ -2,7 +2,6 @@ package net.skidcode.gh.server.world.feature;
 
 import net.skidcode.gh.server.block.Block;
 import net.skidcode.gh.server.block.material.Material;
-import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.utils.MathUtils;
 import net.skidcode.gh.server.utils.random.BedrockRandom;
 import net.skidcode.gh.server.world.World;
@@ -34,7 +33,7 @@ public class ClayFeature extends Feature{
 			nextFloat = (rand.nextFloat() * this.size) / 16.0f;
 			float sin3 = (float) (((Math.sin((i * 3.1416f) / this.size) + 1.0f) * nextFloat) + 1.0f);
 			float sin4 = (float) (((Math.sin((i * 3.1416f) / this.size) + 1.0f) * nextFloat) + 1.0f);
-			int floor = MathUtils.ffloor(d - (sin3 / 2.0f)); //TODO Mth
+			int floor = MathUtils.ffloor(d - (sin3 / 2.0f));
 			int floor2 = MathUtils.ffloor(d + (sin3 / 2.0f));
 			int floor3 = MathUtils.ffloor(d2 - (sin4 / 2.0f));
 			int floor4 = MathUtils.ffloor(d2 + (sin4 / 2.0f));

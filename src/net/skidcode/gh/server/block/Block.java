@@ -130,4 +130,5 @@ public abstract class Block {
 	public String name = "";
 	public Material material;
 	public boolean isSolid = true; //isRenderSolid method in 0.1.3
+	public boolean isOpaque = true;
 }

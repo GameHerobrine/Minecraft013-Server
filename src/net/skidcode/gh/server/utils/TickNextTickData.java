@@ -7,7 +7,7 @@ public class TickNextTickData implements Comparable<TickNextTickData>{
 	private long tickEntryID;
 	
 	public TickNextTickData(int x, int y, int z, int id) {
-		this.tickEntryID = ++this.nextID;
+		this.tickEntryID = ++TickNextTickData.nextID;
 		this.posX = x;
 		this.posY = y;
 		this.posZ = z;
