@@ -156,113 +156,77 @@ public class World {
 		if(x > 255 || y > 127 || z > 255 || y < 0 || z < 0 || x < 0) return 0; //TODO return invisBedrock for 255+?
 		return this.chunks[x >> 4][z >> 4].blockMetadata[x & 0xf][z & 0xf][y];
 	}
+	
+	public void sendBlockPlace(int x, int y, int z, byte id, byte meta) {
+		UpdateBlockPacket pk = new UpdateBlockPacket();
+		pk.posX = x;
+		pk.posY = (byte) y;
+		pk.posZ = z;
+		pk.id = id;
+		pk.metadata = meta;
+		
+		for(Player p : this.players.values()) {
+			p.dataPacket(pk);
+		}
+	}
+	
 	public void placeBlockAndNotifyNearby(int x, int y, int z, byte id, byte meta) {
 		if(x < 256 && y < 128 && z < 256 && y >= 0 && x >= 0 && z >= 0) {
 			Chunk c = this.chunks[x >> 4][z >> 4];
-			c.blockData[x & 0xf][z & 0xf][y] = id;
-			c.blockMetadata[x & 0xf][z & 0xf][y] = meta;
-			if(id != 0 && c.heightMap[x & 0xf][z & 0xf] < y) {
-				c.heightMap[x & 0xf][z & 0xf] = (byte) y;
-			}
+			c.setBlock(x & 0xf, y, z & 0xf, id, meta);
+			
 			if(id > 0) Block.blocks[id].onBlockAdded(this, x, y, z);
 			this.notifyNearby(x, y, z);
 			
-			UpdateBlockPacket pk = new UpdateBlockPacket();
-			pk.posX = x;
-			pk.posY = (byte) y;
-			pk.posZ = z;
-			pk.id = id;
-			pk.metadata = meta;
-			for(Player p : this.players.values()) {
-				p.dataPacket(pk);
-			}
+			this.sendBlockPlace(x, y, z, id, meta);
 		}
 	}
+	
 	public void placeBlockMetaAndNotifyNearby(int x, int y, int z, byte meta) {
 		if(x < 256 && y < 128 && z < 256 && y >= 0 && x >= 0 && z >= 0) {
 			Chunk c = this.chunks[x >> 4][z >> 4];
-			c.blockMetadata[x & 0xf][z & 0xf][y] = meta;
+			c.setBlockMetadata(x & 0xf, y, z & 0xf, meta);
+			
 			this.notifyNearby(x, y, z);
-			
-			UpdateBlockPacket pk = new UpdateBlockPacket();
-			pk.posX = x;
-			pk.posY = (byte) y;
-			pk.posZ = z;
-			pk.id = c.blockData[x & 0xf][z & 0xf][y];
-			pk.metadata = meta;
-			
-			for(Player p : this.players.values()) {
-				p.dataPacket(pk);
-			}
+			this.sendBlockPlace(x, y, z, c.blockData[x & 0xf][z & 0xf][y], meta);
 		}
 	}
 	public void placeBlockAndNotifyNearby(int x, int y, int z, byte id) {
 		if(x < 256 && y < 128 && z < 256 && y >= 0 && x >= 0 && z >= 0) {
 			Chunk c = this.chunks[x >> 4][z >> 4];
-			c.blockData[x & 0xf][z & 0xf][y] = id;
-			c.blockMetadata[x & 0xf][z & 0xf][y] = 0;
-			if(id != 0 && c.heightMap[x & 0xf][z & 0xf] < y) {
-				c.heightMap[x & 0xf][z & 0xf] = (byte) y;
-			}
-			if(id > 0) Block.blocks[id].onBlockAdded(this, x, y, z);
-			this.notifyNearby(x, y, z);
+			c.setBlock(x & 0xf, y, z & 0xf, id, (byte) 0);
 			
-			UpdateBlockPacket pk = new UpdateBlockPacket();
-			pk.posX = x;
-			pk.posY = (byte) y;
-			pk.posZ = z;
-			pk.id = id;
-			pk.metadata = 0;
-			for(Player p : this.players.values()) {
-				p.dataPacket(pk);
-			}
+			if(id > 0) Block.blocks[id].onBlockAdded(this, x, y, z);
+			
+			this.notifyNearby(x, y, z);
+			this.sendBlockPlace(x, y, z, id, (byte)0);
 		}
 	}
 	
 	public void placeBlock(int x, int y, int z, byte id) {
 		if(x < 256 && y < 128 && z < 256 && y >= 0 && x >= 0 && z >= 0) {
 			Chunk c = this.chunks[x >> 4][z >> 4];
-			c.blockData[x & 0xf][z & 0xf][y] = id;
-			c.blockMetadata[x & 0xf][z & 0xf][y] = 0;
-			if(id != 0 && c.heightMap[x & 0xf][z & 0xf] < y) {
-				c.heightMap[x & 0xf][z & 0xf] = (byte) y;
-			}
+			c.setBlock(x & 0xf, y, z & 0xf, id, (byte) 0);
+			
 			if(id > 0) Block.blocks[id].onBlockAdded(this, x, y, z);
-			UpdateBlockPacket pk = new UpdateBlockPacket();
-			pk.posX = x;
-			pk.posY = (byte) y;
-			pk.posZ = z;
-			pk.id = id;
-			pk.metadata = 0;
-			for(Player p : this.players.values()) {
-				p.dataPacket(pk);
-			}
+			
+			this.sendBlockPlace(x, y, z, id, (byte) 0);
 		}
 	}
 	
 	public boolean isBlockSolid(int x, int y, int z) {
 		Block b = Block.blocks[this.getBlockIDAt(x, y, z)];
-		return b instanceof Block ? b.material.isSolid : false;
+		return (b instanceof Block && b.material.isSolid);
 	}
 	
 	public void placeBlock(int x, int y, int z, byte id, byte meta) {
 		if(x < 256 && y < 128 && z < 256 && y >= 0 && x >= 0 && z >= 0) {
 			Chunk c = this.chunks[x >> 4][z >> 4];
-			c.blockData[x & 0xf][z & 0xf][y] = id;
-			c.blockMetadata[x & 0xf][z & 0xf][y] = meta;
-			if(id != 0 && c.heightMap[x & 0xf][z & 0xf] < y) {
-				c.heightMap[x & 0xf][z & 0xf] = (byte) y;
-			}
+			c.setBlock(x & 0xf, y, z & 0xf, id, meta);
+			
 			if(id > 0) Block.blocks[id].onBlockAdded(this, x, y, z);
-			UpdateBlockPacket pk = new UpdateBlockPacket();
-			pk.posX = x;
-			pk.posY = (byte) y;
-			pk.posZ = z;
-			pk.id = id;
-			pk.metadata = meta;
-			for(Player p : this.players.values()) {
-				p.dataPacket(pk);
-			}
+			
+			this.sendBlockPlace(x, y, z, id, meta);
 		}
 	}
 	
@@ -286,10 +250,7 @@ public class World {
 
 	public Material getMaterial(int x, int y, int z) {
 		int id = this.getBlockIDAt(x, y, z);
-		if(id > 0) {
-			return Block.blocks[id].material;
-		}
-		return Material.air;
+		return id > 0 ? Block.blocks[id].material : Material.air;
 	}
 
 	public int getHeightValue(int x, int z) {

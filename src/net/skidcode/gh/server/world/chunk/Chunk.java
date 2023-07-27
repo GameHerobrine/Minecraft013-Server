@@ -16,6 +16,32 @@ public class Chunk {
 		this.posZ = z;
 	}
 	
+	public void setBlockID(int x, int y, int z, byte id) {
+		this.blockData[x][z][y] = id;
+		if(id != 0 && this.heightMap[x][z] < y) {
+			this.heightMap[x][z] = (byte) y;
+		}
+	}
+	
+	public void setBlockMetadata(int x, int y, int z, byte meta) {
+		this.blockMetadata[x][z][y] = meta;
+	}
+	
+	public void setBlock(int x, int y, int z, byte id) {
+		this.blockData[x][z][y] = id;
+		this.blockMetadata[x][z][y] = 0;
+		if(id != 0 && this.heightMap[x][z] < y) {
+			this.heightMap[x][z] = (byte) y;
+		}
+	}
+	
+	public void setBlock(int x, int y, int z, byte id, byte meta) {
+		this.blockData[x][z][y] = id;
+		this.blockMetadata[x][z][y] = meta;
+		if(id != 0 && this.heightMap[x][z] < y) {
+			this.heightMap[x][z] = (byte) y;
+		}
+	}
 	public Chunk(byte[][][] blockData, int cx, int cz) {
 		this(cx, cz);
 		this.blockData = blockData;

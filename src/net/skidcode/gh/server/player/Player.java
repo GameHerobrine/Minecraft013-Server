@@ -120,7 +120,7 @@ public class Player extends Entity implements CommandIssuer{
 					b.onBlockPlacedByPlayer(this.world, pbp.posX, pbp.posY, pbp.posZ, pbp.face, this);
 					this.world.broadcastPacketFromPlayer(pbp, this);
 				}else {
-					Logger.info(this.nickname+" tried to place invalid block id("+(pbp.id & 0xff)+")!");
+					Logger.warn(this.nickname+" tried to place invalid block id("+(pbp.id & 0xff)+")!");
 				}
 				
 				break;
@@ -156,6 +156,10 @@ public class Player extends Entity implements CommandIssuer{
 					this.firstChunkData = false;
 				}
 				RequestChunkPacket rcp = (RequestChunkPacket) dp;
+				if(rcp.chunkX > 15 || rcp.chunkX < 0 || rcp.chunkZ > 15 || rcp.chunkZ < 0) {
+					Logger.warn("Player "+this.nickname+" tried to get invalid chunk! ("+rcp.chunkX+" ,"+rcp.chunkZ+")");
+					break;
+				}
 				ChunkDataPacket cdp = new ChunkDataPacket();
 				cdp.chunkX = rcp.chunkX;
 				cdp.chunkZ = rcp.chunkZ;
