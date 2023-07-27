@@ -16,9 +16,12 @@ public class EventRegistry {
 	public static void handleEvent(Event event) {
 		ArrayList<EventListener<? extends Event>> arr = listeners.get(event.getClass());
 		if(arr != null) {
-			for(EventListener el : arr) {
+			EventListener el;
+			int index = 0;
+			do {
+				el = arr.get(index++);
 				el.handleEvent(event);
-			}
+			}while(!event.isCancelled && index < arr.size());
 		}
 	}
 }

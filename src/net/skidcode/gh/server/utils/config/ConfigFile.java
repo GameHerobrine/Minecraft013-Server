@@ -29,4 +29,9 @@ public abstract class ConfigFile {
 	}
 	public abstract void read() throws IOException;
 	public abstract void write() throws IOException;
+	
+	public abstract String getString(String key, String def);
+	public abstract boolean getBoolean(String key, boolean def);
+	public abstract int getInteger(String key, int def);
+	
 }

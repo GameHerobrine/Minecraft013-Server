@@ -143,13 +143,6 @@ public class Player extends Entity implements CommandIssuer{
 					this.world.broadcastPacketFromPlayer(pep, this);
 				}
 				break;
-			case ProtocolInfo.MESSAGE_PACKET: //TODO check
-				MessagePacket mp = (MessagePacket) dp;
-				mp.message = "<"+this.nickname+">: "+mp.message;
-				for(Player p : Server.getPlayers()) {
-					p.dataPacket(mp);
-				}
-				break;
 			case ProtocolInfo.REQUEST_CHUNK_PACKET:
 				if(this.firstChunkData) {
 					this.onSpawned();

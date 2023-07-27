@@ -45,7 +45,7 @@ public class LevelDatParser extends WorldNBTFile{
 		this.putInt(world.spawnZ);
 		this.putInt(world.unknown5);
 		this.putInt((int)world.worldTime); 
-		this.putInt(world.saveTime); //TODO generate a new one
+		this.putInt((int) (System.currentTimeMillis() / 1000L));
 		this.putString(world.name);
 	}
 	

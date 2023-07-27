@@ -97,30 +97,13 @@ public final class Server {
 			{"server-name", "MCCPP;Demo;Minecraft 0.1.3 Server"},
 			{"world-seed", ""}
 		});
-		Server.serverName = properties.data.get("server-name");
-		try {
-			Server.port = Integer.parseInt(properties.data.get("server-port"));
-		}catch(Exception e) {
-			e.printStackTrace();
-			Logger.warn("Failed to get port from properties. Running on 19132.");
-		}
-		
-		try {
-			Server.saveWorld = Boolean.parseBoolean(properties.data.get("save-world"));
-		}catch(Exception e) {
-			e.printStackTrace();
-			Logger.warn("Failed to get save-world from properties. World WILL be saved.");
-		}
-		try { //TODO make something with those try{}catch, theres too much of them
-			Server.savePlayerData = Boolean.parseBoolean(properties.data.get("save-player-data"));
-		}catch(Exception e) {
-			e.printStackTrace();
-			Logger.warn("Failed to get save-player-data from properties. Player Data WILL be saved.");
-		}
+		Server.serverName = properties.getString("server-name", "Minecraft 0.1.3 server");
+		Server.port = properties.getInteger("server-port", 19132);
+		Server.saveWorld = properties.getBoolean("save-world", true);
+		Server.savePlayerData = properties.getBoolean("save-player-data", true);
 		
 		try {
 			ServerClassLoader classLoader = new ServerClassLoader(new URL[] {}, Server.class.getClassLoader());
-			String[] pluginClasses;
 			for(int i = 0; i < args.length; ++i) {
 				if(args[i].equals("--plugins")) {
 					for(String s : args[i+1].split(";")) {
@@ -138,9 +121,9 @@ public final class Server {
 			System.exit(0);
 		}
 		int iWorldSeed;
-		String worldSeed = properties.getNullsafe("world-seed");
+		String worldSeed = properties.getString("world-seed", "");
 		if(worldSeed.equals("")) {
-			iWorldSeed = new Random().nextInt();
+			iWorldSeed = (int) (System.currentTimeMillis() / 1000L);
 		}else {
 			try {
 				iWorldSeed = Integer.parseInt(worldSeed);
@@ -149,12 +132,12 @@ public final class Server {
 			}
 		}
 		handler = new RakNetHandler();
-		
+		boolean generateWorld = properties.getBoolean("generate-world", false);
 		if(Files.exists(Paths.get("world/level.dat"))){
 			Logger.info("Loading world...");
 			Server.world = VanillaParser.parseVanillaWorld();
-		}else if(properties.getNullsafe("generate-world").equals("true")) {
-			String type = properties.getNullsafe("world-generator");
+		}else if(generateWorld) {
+			String type = properties.getString("world-generator", "");
 			if(type.equalsIgnoreCase("flat")) {
 				Logger.info("Generating flat world...");
 				Server.world = new World(iWorldSeed);

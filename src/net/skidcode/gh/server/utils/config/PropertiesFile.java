@@ -26,8 +26,8 @@ public class PropertiesFile extends ConfigFile{
 		
 	}
 	
-	public String getNullsafe(String key) {
-		return this.data.getOrDefault(key, "");
+	public String getString(String key, String def) {
+		return this.data.getOrDefault(key, def);
 	}
 	
 	@Override
@@ -37,6 +37,22 @@ public class PropertiesFile extends ConfigFile{
 			strl.add(entr.getKey()+"="+entr.getValue());
 		}
 		Files.write(Paths.get(this.path2File), strl);
+	}
+	@Override
+	public boolean getBoolean(String key, boolean def) {
+		try{
+			return Boolean.parseBoolean(this.data.get(key));
+		}catch(Exception e) {
+			return def;
+		}
+	}
+	@Override
+	public int getInteger(String key, int def) {
+		try{
+			return Integer.parseInt(this.data.get(key));
+		}catch(Exception e) {
+			return def;
+		}
 	}
 
 }

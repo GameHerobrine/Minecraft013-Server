@@ -6,7 +6,7 @@ import net.skidcode.gh.server.utils.Logger;
 public abstract class Event {
 	private static long nextID = 0;
 	public boolean isReuseable = true;
-	
+	public boolean isCancelled = false;
 	public Event() {
 		this.isReuseable = false;
 	}
