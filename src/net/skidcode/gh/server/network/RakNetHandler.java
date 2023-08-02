@@ -79,7 +79,6 @@ public class RakNetHandler implements ServerInstance{
 	
 	@Override
 	public void handleRaw(String address, int port, byte[] payload) {
-		Logger.info("raw");
 		EventRegistry.handleEvent(new RawPacketReceive(address, port, payload));
 	}
 

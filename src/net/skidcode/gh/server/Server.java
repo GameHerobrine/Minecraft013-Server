@@ -184,6 +184,7 @@ public final class Server {
 			for(File f : fs) {
 				if(f.getName().endsWith(".jar")) {
 					classLoader.addUrl(f.toURI().toURL());
+					
 				}
 			}
 			
@@ -221,7 +222,9 @@ public final class Server {
                     		}
                     		
                     		sc.close();
-                    		break;
+                    	}else if(entry.getName().endsWith(".class")) {
+                    		String className = entry.getName().replace("/", ".");
+                    		classLoader.loadClass(className.substring(0, className.length() - 6));
                     	}
                     }
 					zipinputstream.close();
