@@ -8,15 +8,15 @@ import net.skidcode.gh.server.raknet.protocol.EncapsulatedPacket;
  */
 public interface ServerInstance {
 
-    void openSession(String identifier, String address, int port, long clientID);
+	void openSession(String identifier, String address, int port, long clientID);
 
-    void closeSession(String identifier, String reason);
+	void closeSession(String identifier, String reason);
 
-    void handleEncapsulated(String identifier, EncapsulatedPacket packet, int flags);
+	void handleEncapsulated(String identifier, EncapsulatedPacket packet, int flags);
 
-    void handleRaw(String address, int port, byte[] payload);
+	void handleRaw(String address, int port, byte[] payload);
 
-    void notifyACK(String identifier, int identifierACK);
+	void notifyACK(String identifier, int identifierACK);
 
-    void handleOption(String option, String value);
+	void handleOption(String option, String value);
 }

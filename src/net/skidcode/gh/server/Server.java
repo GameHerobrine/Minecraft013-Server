@@ -47,6 +47,7 @@ public final class Server {
 	public static volatile int port = 19132;
 	public static volatile boolean saveWorld = true;
 	public static volatile boolean savePlayerData = true;
+	public static volatile int maxMTUSize = 1000;
 	public static long nextTick = 0;
 	public static int tps = 0;
 	public static volatile String serverName = "MCCPP;Demo;Minecraft 0.1.3 Server";
@@ -90,13 +91,14 @@ public final class Server {
 			{"generate-world", "false"},
 			{"world-generator", "NORMAL"},
 			{"server-name", "MCCPP;Demo;Minecraft 0.1.3 Server"},
-			{"world-seed", ""}
+			{"world-seed", ""},
+			{"max-mtu-size", String.valueOf(maxMTUSize)}
 		});
-		Server.serverName = properties.getString("server-name", "Minecraft 0.1.3 server");
+		Server.serverName = properties.getString("server-name", "MCCPP;Demo;Minecraft 0.1.3 server");
 		Server.port = properties.getInteger("server-port", 19132);
 		Server.saveWorld = properties.getBoolean("save-world", true);
 		Server.savePlayerData = properties.getBoolean("save-player-data", true);
-		
+		Server.maxMTUSize = properties.getInteger("max-mtu-size", maxMTUSize);
 		try {
 			ServerClassLoader classLoader = new ServerClassLoader(new URL[] {}, Server.class.getClassLoader());
 			for(int i = 0; i < args.length; ++i) {

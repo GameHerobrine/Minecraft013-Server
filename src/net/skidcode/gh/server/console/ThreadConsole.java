@@ -10,10 +10,10 @@ public class ThreadConsole extends Thread{
 		synchronized(this) {
 			Scanner sc = new Scanner(System.in);
 			while(Server.running) {
-				this.msg = sc.nextLine();
 				try {
+					this.msg = sc.nextLine();
 					this.wait();
-				} catch (InterruptedException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}

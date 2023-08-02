@@ -27,6 +27,7 @@ import net.skidcode.gh.server.world.format.PlayerData;
 public class Player extends Entity implements CommandIssuer{
 	public long clientID;
 	public int port;
+	public int mtuSize;
 	public byte itemID;
 	public String ip, identifier, nickname;
 	public boolean firstChunkData = true;
