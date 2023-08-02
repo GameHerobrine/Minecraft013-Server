@@ -86,7 +86,6 @@ public class ChunkDataParser extends WorldNBTFile{
 	@Override
 	public void save(World world) {
 		byte[] buf = new byte[22024192];
-		Arrays.fill(buf, (byte) 0);
 		this.setBuffer(buf);
 		this.count = 0;
 		

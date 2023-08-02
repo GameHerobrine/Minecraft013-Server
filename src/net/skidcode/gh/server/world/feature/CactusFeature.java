@@ -24,7 +24,6 @@ public class CactusFeature extends Feature{
                 if(Block.cactus.canSurvive(world, i1, j1 + i2, k1))
                 {
                     world.placeBlock(i1, j1 + i2, k1, (byte) Block.cactus.blockID);
-                    Logger.info("placing cactus on"+i1+":"+(j1+i2)+":"+k1);
                 }
             }
 

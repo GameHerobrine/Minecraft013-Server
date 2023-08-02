@@ -400,7 +400,7 @@ public class Session {
 					dataPacket.buffer = packet.buffer;
 					dataPacket.decode();
 
-					if (dataPacket.port == this.sessionManager.getPort() || !this.sessionManager.portChecking) {
+					if (Server.allowFromDifferentPort || dataPacket.port == this.sessionManager.getPort()) {
 						this.state = STATE_CONNECTED; //FINALLY!
 						this.isTemporal = false;
 						this.sessionManager.openSession(this);
@@ -512,7 +512,7 @@ public class Session {
 				this.state = STATE_CONNECTING_1;
 			} else if (this.state == STATE_CONNECTING_1 && packet instanceof OPEN_CONNECTION_REQUEST_2) {
 				this.id = ((OPEN_CONNECTION_REQUEST_2) packet).clientID;
-				if (((OPEN_CONNECTION_REQUEST_2) packet).serverPort == this.sessionManager.getPort() || !this.sessionManager.portChecking) {
+				if (Server.allowFromDifferentPort || ((OPEN_CONNECTION_REQUEST_2) packet).serverPort == this.sessionManager.getPort()) {
 					this.mtuSize = Math.min(Math.abs(((OPEN_CONNECTION_REQUEST_2) packet).mtuSize), Server.maxMTUSize); //Max size, do not allow creating large buffers to fill server memory
 					OPEN_CONNECTION_REPLY_2 pk = new OPEN_CONNECTION_REPLY_2();
 					pk.mtuSize = (short) this.mtuSize;

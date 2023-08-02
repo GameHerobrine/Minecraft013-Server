@@ -47,7 +47,9 @@ public final class Server {
 	public static volatile int port = 19132;
 	public static volatile boolean saveWorld = true;
 	public static volatile boolean savePlayerData = true;
+	public static volatile boolean allowFromDifferentPort = true;
 	public static volatile int maxMTUSize = 1000;
+	public static volatile boolean enableColors = true;
 	public static long nextTick = 0;
 	public static int tps = 0;
 	public static volatile String serverName = "MCCPP;Demo;Minecraft 0.1.3 Server";
@@ -58,9 +60,13 @@ public final class Server {
 		running = false;
 		handler.notifyShutdown();
 	}
-	
+	public static String execCmd(String cmd) throws java.io.IOException {
+	    java.util.Scanner s = new java.util.Scanner(Runtime.getRuntime().exec(cmd).getInputStream()).useDelimiter("\\A");
+	    return s.hasNext() ? s.next() : "";
+	}
 	public static void main(String[] args) throws IOException {
 		Logger.info("Starting Server...");
+		
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			public void run() {
 				if(Server.saveWorld && Server.world != null) {
@@ -85,20 +91,28 @@ public final class Server {
 		pluginsPath.mkdirs();
 		Logger.info("Loading properties...");
 		properties = new PropertiesFile("server.properties", new String[][] {
-			{"server-port", "19132"},
-			{"save-world", "true"},
-			{"save-player-data", "true"},
-			{"generate-world", "false"},
+			{"server-port", String.valueOf(Server.port)},
+			{"save-world", String.valueOf(Server.saveWorld)},
+			{"save-player-data", String.valueOf(Server.savePlayerData)},
+			{"generate-world", "true"},
 			{"world-generator", "NORMAL"},
-			{"server-name", "MCCPP;Demo;Minecraft 0.1.3 Server"},
+			{"server-name", Server.serverName},
 			{"world-seed", ""},
-			{"max-mtu-size", String.valueOf(maxMTUSize)}
+			{"max-mtu-size", String.valueOf(maxMTUSize)},
+			{"allow-from-different-port", String.valueOf(Server.allowFromDifferentPort)},
+			{"enable-terminal-colors", String.valueOf(Server.enableColors)}
 		});
-		Server.serverName = properties.getString("server-name", "MCCPP;Demo;Minecraft 0.1.3 server");
-		Server.port = properties.getInteger("server-port", 19132);
-		Server.saveWorld = properties.getBoolean("save-world", true);
-		Server.savePlayerData = properties.getBoolean("save-player-data", true);
-		Server.maxMTUSize = properties.getInteger("max-mtu-size", maxMTUSize);
+		Server.enableColors = properties.getBoolean("enable-terminal-colors", Server.enableColors);
+		Server.serverName = properties.getString("server-name", Server.serverName);
+		Server.port = properties.getInteger("server-port", Server.port);
+		Server.saveWorld = properties.getBoolean("save-world", Server.saveWorld);
+		Server.savePlayerData = properties.getBoolean("save-player-data", Server.savePlayerData);
+		Server.maxMTUSize = properties.getInteger("max-mtu-size", Server.maxMTUSize);
+		Server.allowFromDifferentPort = properties.getBoolean("allow-from-different-port", Server.allowFromDifferentPort);
+		Logger.info("Running server on port "+Server.port);
+		if(Server.port != 19132 && !Server.allowFromDifferentPort) {
+			Logger.warn("Server port is not default and clients are not allowed to connect from different port. Vanilla users may be not able to connect!");
+		}
 		try {
 			ServerClassLoader classLoader = new ServerClassLoader(new URL[] {}, Server.class.getClassLoader());
 			for(int i = 0; i < args.length; ++i) {
