@@ -39,6 +39,8 @@ public class LevelDatParser extends WorldNBTFile{
 	
 	@Override
 	public void save(World world) {
+		this.putInt(0x01000000); //dat version
+		this.putInt(8*4+2+world.name.length()); //data size
 		this.putInt(world.worldSeed);
 		this.putInt(world.spawnX);
 		this.putInt(world.spawnY);
