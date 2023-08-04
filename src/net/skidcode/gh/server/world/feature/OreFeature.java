@@ -16,11 +16,11 @@ public class OreFeature extends Feature{
 
 	@Override
 	public boolean place(World world, BedrockRandom rand, int x, int y, int z) {
-		float nextFloat = rand.nextFloat() * 3.1415927f;
-        float sin = (float) (x + 8 + ((Math.sin(nextFloat) * this.amount) / 8.0f));
-        float sin2 = (float) ((x + 8) - ((Math.sin(nextFloat) * this.amount) / 8.0f));
-        float cos = (float) (z + 8 + ((Math.cos(nextFloat) * this.amount) / 8.0f));
-        float cos2 = (float) ((z + 8) - ((Math.cos(nextFloat) * this.amount) / 8.0f));
+		float nextFloat = rand.nextFloat() * 3.1416f;
+        float sin = (float) (x + 8 + ((MathUtils.sin(nextFloat) * this.amount) / 8.0f));
+        float sin2 = (float) ((x + 8) - ((MathUtils.sin(nextFloat) * this.amount) / 8.0f));
+        float cos = (float) (z + 8 + ((MathUtils.cos(nextFloat) * this.amount) / 8.0f));
+        float cos2 = (float) ((z + 8) - ((MathUtils.cos(nextFloat) * this.amount) / 8.0f));
         float nextInt = y + rand.nextInt(3) + 2;
         float nextInt2 = y + rand.nextInt(3) + 2;
         for (int i = 0; i <= this.amount; i++) {
@@ -28,8 +28,8 @@ public class OreFeature extends Feature{
             float d2 = nextInt + (((nextInt2 - nextInt) * i) / this.amount);
             float d3 = cos + (((cos2 - cos) * i) / this.amount);
             nextFloat = (rand.nextFloat() * this.amount) / 16.0f;
-            float sin3 = (float) (((Math.sin((i * 3.1415927f) / this.amount) + 1.0f) * nextFloat) + 1.0f);
-            float sin4 = (float) (((Math.sin((i * 3.1415927f) / this.amount) + 1.0f) * nextFloat) + 1.0f);
+            float sin3 = (float) (((MathUtils.sin((i * 3.1416f) / this.amount) + 1.0f) * nextFloat) + 1.0f);
+            float sin4 = (float) (((MathUtils.sin((i * 3.1416f) / this.amount) + 1.0f) * nextFloat) + 1.0f);
             int floor = MathUtils.ffloor(d - (sin3 / 2.0f));
             int floor2 = MathUtils.ffloor(d2 - (sin4 / 2.0f));
             int floor3 = MathUtils.ffloor(d3 - (sin3 / 2.0f));

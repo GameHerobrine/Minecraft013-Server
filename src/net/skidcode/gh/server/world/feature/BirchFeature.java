@@ -10,7 +10,7 @@ public class BirchFeature extends Feature{
 	public boolean place(World world, BedrockRandom rand, int x, int y, int z) {
 		int nextInt = rand.nextInt(3) + 5;
         boolean z2 = true;
-        if (y < 1 || y + nextInt + 1 > 128) {
+        if (y <= 0 || y + nextInt + 1 > 128) {
             return false;
         }
         for (int i = y; i <= y + 1 + nextInt; i++) {

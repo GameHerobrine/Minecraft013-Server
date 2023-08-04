@@ -49,21 +49,21 @@ public class ImprovedNoise {
 		return this.getValue(d, d1, 0);
 	}
 	public float getValue(float d, float d1, float d2) {
-		float d3 = d + xCoord;
-		float d4 = d1 + yCoord;
-		float d5 = d2 + zCoord;
-		int i = MathUtils.ffloor(d3);
-		int j = MathUtils.ffloor(d4);
-		int k = MathUtils.ffloor(d5);
+		float f3 = d + xCoord;
+		float f4 = d1 + yCoord;
+		float f5 = d2 + zCoord;
+		int i = MathUtils.ffloor(f3);
+		int j = MathUtils.ffloor(f4);
+		int k = MathUtils.ffloor(f5);
 		int l = i & 0xff;
 		int i1 = j & 0xff;
 		int j1 = k & 0xff;
-		d3 -= i;
-		d4 -= j;
-		d5 -= k;
-		float d6 = d3 * d3 * d3 * (d3 * (d3 * 6f - 15f) + 10f);
-		float d7 = d4 * d4 * d4 * (d4 * (d4 * 6f - 15f) + 10f);
-		float d8 = d5 * d5 * d5 * (d5 * (d5 * 6f - 15f) + 10f);
+		f3 -= i;
+		f4 -= j;
+		f5 -= k;
+		float d6 = f3 * f3 * f3 * (f3 * (f3 * 6f - 15f) + 10f);
+		float d7 = f4 * f4 * f4 * (f4 * (f4 * 6f - 15f) + 10f);
+		float d8 = f5 * f5 * f5 * (f5 * (f5 * 6f - 15f) + 10f);
 		int k1 = permutations[l] + i1;
 		int l1 = permutations[k1] + j1;
 		int i2 = permutations[k1 + 1] + j1;
@@ -72,12 +72,12 @@ public class ImprovedNoise {
 		int l2 = permutations[j2 + 1] + j1;
 		return lerp(d8, 
 				lerp(d7, 
-						lerp(d6, grad(permutations[l1], d3, d4, d5), grad(permutations[k2], d3 - 1.0f, d4, d5)), 
-						lerp(d6, grad(permutations[i2], d3, d4 - 1.0f, d5), grad(permutations[l2], d3 - 1.0f, d4 - 1.0f, d5))
+						lerp(d6, grad(permutations[l1], f3, f4, f5), grad(permutations[k2], f3 - 1.0f, f4, f5)), 
+						lerp(d6, grad(permutations[i2], f3, f4 - 1.0f, f5), grad(permutations[l2], f3 - 1.0f, f4 - 1.0f, f5))
 				), 
 				lerp(d7, 
-						lerp(d6, grad(permutations[l1 + 1], d3, d4, d5 - 1.0f), grad(permutations[k2 + 1], d3 - 1.0f, d4, d5 - 1.0f)),
-						lerp(d6, grad(permutations[i2 + 1], d3, d4 - 1.0f, d5 - 1.0f), grad(permutations[l2 + 1], d3 - 1.0f, d4 - 1.0f, d5 - 1.0f))
+						lerp(d6, grad(permutations[l1 + 1], f3, f4, f5 - 1.0f), grad(permutations[k2 + 1], f3 - 1.0f, f4, f5 - 1.0f)),
+						lerp(d6, grad(permutations[i2 + 1], f3, f4 - 1.0f, f5 - 1.0f), grad(permutations[l2 + 1], f3 - 1.0f, f4 - 1.0f, f5 - 1.0f))
 				)
 		);
 	}

@@ -148,12 +148,13 @@ public class World {
 	}
 	
 	public int getBlockIDAt(int x, int y, int z) {
-		if(x > 255 || y > 127 || z > 255 || y < 0 || z < 0 || x < 0) return 0; //TODO return invisBedrock for 255+?
+		if(x > 255 || z > 255 || z < 0 || x < 0) return Block.invisibleBedrock.blockID; //TODO return invisBedrock for 255+?
+		if(y < 0 || y > 127) return 0;
 		return this.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf][y] & 0xff;
 	}
 	
 	public int getBlockMetaAt(int x, int y, int z) {
-		if(x > 255 || y > 127 || z > 255 || y < 0 || z < 0 || x < 0) return 0; //TODO return invisBedrock for 255+?
+		if(x > 255 || y > 127 || z > 255 || y < 0 || z < 0 || x < 0) return 0;
 		return this.chunks[x >> 4][z >> 4].blockMetadata[x & 0xf][z & 0xf][y];
 	}
 	

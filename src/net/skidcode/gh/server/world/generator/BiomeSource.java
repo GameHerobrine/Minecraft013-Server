@@ -17,7 +17,7 @@ public class BiomeSource {
 	public BiomeSource(World w) {
 		this.temperatureNoise = new PerlinNoise(new BedrockRandom((int)w.worldSeed * 9871), 4);
         this.rainfallNoise = new PerlinNoise(new BedrockRandom((int)w.worldSeed * 39811), 4);
-        this.detailNoise = new PerlinNoise(new BedrockRandom((int)w.worldSeed * 543321), 2);
+        this.detailNoise = new PerlinNoise(new BedrockRandom(w.worldSeed * 543321), 2);
 	}
 	
 	public Biome getBiome(int x, int z) {

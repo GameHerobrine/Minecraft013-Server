@@ -20,10 +20,10 @@ public class ClayFeature extends Feature{
 			return false;
 		}
 		float nextFloat = rand.nextFloat() * 3.1416f;
-		float sin = (float) (x + 8 + ((Math.sin(nextFloat) * this.size) / 8.0f));
-		float sin2 = (float) ((x + 8) - ((Math.sin(nextFloat) * this.size) / 8.0f));
-		float cos = (float) (z + 8 + ((Math.cos(nextFloat) * this.size) / 8.0f));
-		float cos2 = (float) ((z + 8) - ((Math.cos(nextFloat) * this.size) / 8.0f));
+		float sin = (float) (x + 8 + ((MathUtils.sin(nextFloat) * this.size) / 8.0f));
+		float sin2 = (float) ((x + 8) - ((MathUtils.sin(nextFloat) * this.size) / 8.0f));
+		float cos = (float) (z + 8 + ((MathUtils.cos(nextFloat) * this.size) / 8.0f));
+		float cos2 = (float) ((z + 8) - ((MathUtils.cos(nextFloat) * this.size) / 8.0f));
 		float nextInt = y + rand.nextInt(3) + 2;
 		float nextInt2 = y + rand.nextInt(3) + 2;
 		for (int i = 0; i <= this.size; i++) {
@@ -31,8 +31,8 @@ public class ClayFeature extends Feature{
 			float d2 = nextInt + (((nextInt2 - nextInt) * i) / this.size);
 			float d3 = cos + (((cos2 - cos) * i) / this.size);
 			nextFloat = (rand.nextFloat() * this.size) / 16.0f;
-			float sin3 = (float) (((Math.sin((i * 3.1416f) / this.size) + 1.0f) * nextFloat) + 1.0f);
-			float sin4 = (float) (((Math.sin((i * 3.1416f) / this.size) + 1.0f) * nextFloat) + 1.0f);
+			float sin3 = (float) (((MathUtils.sin((i * 3.1416f) / this.size) + 1.0f) * nextFloat) + 1.0f);
+			float sin4 = (float) (((MathUtils.sin((i * 3.1416f) / this.size) + 1.0f) * nextFloat) + 1.0f);
 			int floor = MathUtils.ffloor(d - (sin3 / 2.0f));
 			int floor2 = MathUtils.ffloor(d + (sin3 / 2.0f));
 			int floor3 = MathUtils.ffloor(d2 - (sin4 / 2.0f));
