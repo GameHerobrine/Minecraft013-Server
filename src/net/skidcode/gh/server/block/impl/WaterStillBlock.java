@@ -8,7 +8,7 @@ public class WaterStillBlock extends LiquidStaticBlock{
 	public WaterStillBlock(int id) {
 		super(id, Material.water);
 		this.name = "Still Water";
-		this.tickrate = 5;
+		this.tickDelay = 5;
 	}
 
 }

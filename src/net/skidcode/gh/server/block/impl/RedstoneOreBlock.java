@@ -8,6 +8,7 @@ public class RedstoneOreBlock extends OreBlock{
 	public RedstoneOreBlock(int id) {
 		super(id, Material.stone);
 		this.name = "Redstone Ore";
+		this.tickDelay = 30;
 	}
 
 }

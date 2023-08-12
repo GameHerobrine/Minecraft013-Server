@@ -69,8 +69,11 @@ public class Player extends Entity implements CommandIssuer{
 	public void handlePacket(MinecraftDataPacket dp) {
 		
 		EventRegistry.handleEvent(new DataPacketReceive(this, dp));
-		
+		Logger.info(dp.pid());
 		switch(dp.pid()) {
+			case ProtocolInfo.MESSAGE_PACKET:
+				Server.broadcastMessage(this.nickname+" : "+(((MessagePacket)dp).message));
+				break;
 			case ProtocolInfo.LOGIN_PACKET:
 				LoginPacket loginpacket = (LoginPacket)dp;
 				this.nickname = loginpacket.nickname;
@@ -162,12 +165,15 @@ public class Player extends Entity implements CommandIssuer{
 				Chunk c = this.world.chunks[rcp.chunkX][rcp.chunkZ];
 				for (int z = 0; z < 16; ++z) {
 					for (int x = 0; x < 16; ++x) {
-						cd[l++] = (byte) 0xff;
+						cd[l++] = Server.sendFullChunks ? (byte) 0xff : c.updateMap[x][z];
 						for(int y = 0; y < 8; ++y) {
-							System.arraycopy(c.blockData[x][z], y << 4, cd, l, 16);
-							l += 16;
-							for(int bY = 0; bY < 8; ++bY) {
-								cd[l++] = (byte) (c.blockMetadata[x][z][(y << 4) + (bY * 2)] + (c.blockMetadata[x][z][(y << 4) + (bY * 2) + 1] << 4));
+							if (Server.sendFullChunks || (((c.updateMap[x][z] >> y) & 1) == 1))
+							{
+								System.arraycopy(c.blockData[x][z], y << 4, cd, l, 16);
+								l += 16;
+								for(int bY = 0; bY < 8; ++bY) {
+									cd[l++] = (byte) (c.blockMetadata[x][z][(y << 4) + (bY * 2)] + (c.blockMetadata[x][z][(y << 4) + (bY * 2) + 1] << 4));
+								}
 							}
 						}
 					}

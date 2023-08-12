@@ -7,7 +7,7 @@ public class LavaStillBlock extends LiquidStaticBlock{
 	public LavaStillBlock(int id) {
 		super(id, Material.lava);
 		this.name = "Still Lava";
-		this.tickrate = 30;
+		this.tickDelay = 30;
 	}
 
 }

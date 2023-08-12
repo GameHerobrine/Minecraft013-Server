@@ -8,6 +8,7 @@ public class Chunk {
 	public byte[][][] blockLight = new byte[16][16][128];
 	public byte[][][] blockSkyLight = new byte[16][16][128];
 	public byte[][] heightMap = new byte[16][16];
+	public byte[][] updateMap = new byte[16][16];
 	public int posX;
 	public int posZ;
 	
@@ -21,10 +22,12 @@ public class Chunk {
 		if(id != 0 && this.heightMap[x][z] < y) {
 			this.heightMap[x][z] = (byte) y;
 		}
+		this.updateMap[x][z] |= 1 << (y >> 4);
 	}
 	
 	public void setBlockMetadata(int x, int y, int z, byte meta) {
 		this.blockMetadata[x][z][y] = meta;
+		this.updateMap[x][z] |= 1 << (y >> 4);
 	}
 	
 	public void setBlock(int x, int y, int z, byte id) {
@@ -33,6 +36,7 @@ public class Chunk {
 		if(id != 0 && this.heightMap[x][z] < y) {
 			this.heightMap[x][z] = (byte) y;
 		}
+		this.updateMap[x][z] |= 1 << (y >> 4);
 	}
 	
 	public void setBlock(int x, int y, int z, byte id, byte meta) {
@@ -41,10 +45,15 @@ public class Chunk {
 		if(id != 0 && this.heightMap[x][z] < y) {
 			this.heightMap[x][z] = (byte) y;
 		}
+		this.updateMap[x][z] |= 1 << (y >> 4);
 	}
 	public Chunk(byte[][][] blockData, int cx, int cz) {
 		this(cx, cz);
 		this.blockData = blockData;
+	}
+	
+	public void clearUpdateMap() {
+		this.updateMap = new byte[16][16];
 	}
 	
 	public void generateHeightMap() {

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 import net.skidcode.gh.server.Server;
 import net.skidcode.gh.server.block.Block;

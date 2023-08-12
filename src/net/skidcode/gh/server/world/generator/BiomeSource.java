@@ -36,13 +36,13 @@ public class BiomeSource {
 		
 		for(int blockX = 0; blockX < xSize; ++blockX) {
 			for(int blockZ = 0; blockZ < zSize; ++blockZ) {
-				float blockRainfall = (((this.detailNoises[index] * 1.1F) + 0.5F) * 0.002F) + (((this.rainfallNoises[index] * 0.15F) + 0.5F) * 0.998F);
-				float f1 = 1 - ((((this.detailNoises[index] * 1.1f) + 0.5f) * 0.01f) + (((this.temperatureNoises[index] * 0.15f) + 0.7f) * 0.99f));
-				float blockTemperature = 1 - (f1 * f1);
-
+				float v14 = (this.detailNoises[index] * 1.1f) + 0.5f;
+				float v12 = (((this.temperatureNoises[index] * 0.15f) + 0.7f) * (1.0f - 0.01f)) + (v14 * 0.01f);
+				float blockRainfall = (((this.rainfallNoises[index] * 0.15f) + 0.5f) * (1.0f - 0.002f)) + ((v14 * 0.002f));
+				float blockTemperature = 1.0f - ((1.0f - v12) * (1.0f - v12));
+				
 				if(blockTemperature < 0) {
 					blockTemperature = 0;
-					
 				}else if(blockTemperature > 1) {
 					blockTemperature = 1;
 				}
@@ -53,8 +53,10 @@ public class BiomeSource {
 					blockRainfall = 1;
 				}
 				
+				
 				this.temperatureNoises[index] = blockTemperature;
 				this.rainfallNoises[index] = blockRainfall;
+				
 				localBiomeArray[index++] = Biome.getBiome(blockTemperature, blockRainfall);
 			}
 		}
@@ -67,16 +69,17 @@ public class BiomeSource {
 		this.detailNoises = this.detailNoise.getRegion(null, x, z, xSize, zSize, 0.25f, 0.25f, 0.588f);
 		
 		int index = 0;
-
+		
 		for(int blockX = 0; blockX < xSize; ++blockX) {
 			for(int blockZ = 0; blockZ < zSize; ++blockZ) {
-				float f = 1.0f - ((((this.detailNoises[index] * 1.1f) + 0.5f) * 0.01f) + (((this.temperatureNoises[index] * 0.15f) + 0.7f) * 0.99f));
-				float f1 = 1.0f - (f*f);
 				
-				if(f1 < 0) f1 = 0;
-				else if(f1 > 1) f1 = 1;
+				float v10 = (((this.temperatureNoises[index] * 0.15f) + 0.7f) * (1.0f - 0.01f)) + (((this.detailNoises[index] * 1.1f) + 0.5f) * 0.01f);
+				float temp = 1.0f - ((1.0f - v10) * (1.0f - v10));
 				
-				this.temperatureNoises[index++] = f1;
+				if(temp < 0) temp = 0f;
+				else if(temp > 1) temp = 1f;
+				
+				this.temperatureNoises[index++] = temp;
 			}
 		}
 		

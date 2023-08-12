@@ -46,6 +46,7 @@ public final class Server {
 	public static final File pluginsPath = new File("plugins/");
 	public static volatile int port = 19132;
 	public static volatile boolean saveWorld = true;
+	public static volatile boolean sendFullChunks = true;
 	public static volatile boolean savePlayerData = true;
 	public static volatile boolean allowFromDifferentPort = true;
 	public static volatile int maxMTUSize = 1000;
@@ -60,10 +61,7 @@ public final class Server {
 		running = false;
 		handler.notifyShutdown();
 	}
-	public static String execCmd(String cmd) throws java.io.IOException {
-	    java.util.Scanner s = new java.util.Scanner(Runtime.getRuntime().exec(cmd).getInputStream()).useDelimiter("\\A");
-	    return s.hasNext() ? s.next() : "";
-	}
+
 	public static void main(String[] args) throws IOException {
 		Logger.info("Starting Server...");
 		
@@ -100,7 +98,8 @@ public final class Server {
 			{"world-seed", ""},
 			{"max-mtu-size", String.valueOf(maxMTUSize)},
 			{"allow-from-different-port", String.valueOf(Server.allowFromDifferentPort)},
-			{"enable-terminal-colors", String.valueOf(Server.enableColors)}
+			{"enable-terminal-colors", String.valueOf(Server.enableColors)},
+			{"send-full-chunks", String.valueOf(Server.sendFullChunks)}
 		});
 		Server.enableColors = properties.getBoolean("enable-terminal-colors", Server.enableColors);
 		Server.serverName = properties.getString("server-name", Server.serverName);
@@ -109,9 +108,13 @@ public final class Server {
 		Server.savePlayerData = properties.getBoolean("save-player-data", Server.savePlayerData);
 		Server.maxMTUSize = properties.getInteger("max-mtu-size", Server.maxMTUSize);
 		Server.allowFromDifferentPort = properties.getBoolean("allow-from-different-port", Server.allowFromDifferentPort);
+		Server.sendFullChunks = properties.getBoolean("send-full-chunks", (Server.sendFullChunks));
 		Logger.info("Running server on port "+Server.port);
 		if(Server.port != 19132 && !Server.allowFromDifferentPort) {
 			Logger.warn("Server port is not default and clients are not allowed to connect from different port. Vanilla users may be not able to connect!");
+		}
+		if(!Server.sendFullChunks){
+			Logger.warn("Server will not send full chunks. Server and clients world may be desynchronized!");
 		}
 		try {
 			ServerClassLoader classLoader = new ServerClassLoader(new URL[] {}, Server.class.getClassLoader());

@@ -7,8 +7,6 @@ import net.skidcode.gh.server.world.World;
 
 public class LiquidStaticBlock extends LiquidBaseBlock{
 	
-	public int tickrate;
-	
 	public LiquidStaticBlock(int id, Material m) {
 		super(id, m);
 		this.isSolid = false;
@@ -19,7 +17,7 @@ public class LiquidStaticBlock extends LiquidBaseBlock{
 		int meta = world.getBlockMetaAt(x, y, z);
 		world.editingBlocks = true;
 		world.placeBlock(x, y, z, (byte)(this.blockID - 1), (byte) meta);
-		world.addToTickNextTick(x, y, z, this.blockID - 1, this.tickrate);
+		world.addToTickNextTick(x, y, z, this.blockID - 1, this.tickDelay);
 		world.editingBlocks = false;
 	}
 	@Override

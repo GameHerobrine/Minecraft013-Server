@@ -148,7 +148,7 @@ public class World {
 	}
 	
 	public int getBlockIDAt(int x, int y, int z) {
-		if(x > 255 || z > 255 || z < 0 || x < 0) return Block.invisibleBedrock.blockID; //TODO return invisBedrock for 255+?
+		if(x > 255 || z > 255 || z < 0 || x < 0) return Block.invisibleBedrock.blockID;
 		if(y < 0 || y > 127) return 0;
 		return this.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf][y] & 0xff;
 	}
@@ -270,15 +270,13 @@ public class World {
 
 	public int findTopSolidBlock(int x, int z) {
 		if(x < 256 && z < 256 && x >= 0 && z >= 0) {
-			byte[] idsY = this.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf];
 			int k = 127;
-			byte id;
-			
-			do {
-				id = (byte) (idsY[k] & 0xff);
-				Material m = id == 0 ? Material.air : Block.blocks[id].material;
-				if(m.isSolid || m.isLiquid) return k + 1;
-			}while(k-- > 0); //TODO why did i change it?
+			do {}while(this.getMaterial(x, k, z).isSolid && --k > 0);
+			while(k > 0) {
+				int id = this.getBlockIDAt(x, k, z);
+				if(id == 0 || !Block.blocks[id].material.isSolid && !Block.blocks[id].material.isLiquid) --k;
+				else return k + 1;
+			}
 		}
 		return -1;
 	}

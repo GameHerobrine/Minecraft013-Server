@@ -3,6 +3,7 @@ package net.skidcode.gh.server.world.generator;
 
 import net.skidcode.gh.server.block.Block;
 import net.skidcode.gh.server.block.material.Material;
+import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.utils.noise.PerlinNoise;
 import net.skidcode.gh.server.utils.random.BedrockRandom;
 import net.skidcode.gh.server.world.World;
@@ -295,7 +296,7 @@ public class RandomLevelSource implements LevelSource{ //TODO all public?, try t
 		this.rand.setSeed(this.world.worldSeed);
 		int i1 = (rand.nextInt() / 2) * 2 + 1;
 		int j1 = (rand.nextInt() / 2) * 2 + 1;
-		rand.setSeed(chunkX * i1 + chunkZ * j1 ^ (int)world.worldSeed);
+		rand.setSeed(chunkX * i1 + chunkZ * j1 ^ world.worldSeed);
 		for (int i2 = 0; i2 < 10; i2++) {
 			new ClayFeature(32).place(this.world, this.rand, chunkXWorld + this.rand.nextInt(16), this.rand.nextInt(128), chunkZWorld + this.rand.nextInt(16));
 		}
@@ -358,9 +359,6 @@ public class RandomLevelSource implements LevelSource{ //TODO all public?, try t
 		{
 			int l12 = chunkXWorld + rand.nextInt(16) + 8;
 			int j15 = chunkZWorld + rand.nextInt(16) + 8;
-			if(chunkX == chunkZ && chunkX == 15) {
-            	System.out.println("C: "+l12+":"+j15+":"+((BedrockRandom)rand).mti);
-            }
 			Feature tree = biome.getTreeFeature(rand);
 			//tree.func_517_a(1.0D, 1.0D, 1.0D);
 			tree.place(this.world, rand, l12, this.world.getHeightValue(l12, j15), j15);

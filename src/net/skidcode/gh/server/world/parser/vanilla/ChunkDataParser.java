@@ -42,7 +42,7 @@ public class ChunkDataParser extends WorldNBTFile{
 				
 				
 				int ch = this.getInt();
-				assert ch == CHUNK_HEADER; //71368960 - chunk header(04 41 01 20)
+				//assert ch == CHUNK_HEADER; //71368960 - chunk header(04 41 01 20)
 				Chunk c = new Chunk(chunkX, chunkZ);
 				for(int x = 0; x < 16; ++x) {
 					for(int z = 0; z < 16; ++z) {
@@ -78,7 +78,15 @@ public class ChunkDataParser extends WorldNBTFile{
 						}
 					}
 				}
+				
+				for(int x = 0; x < 16; ++x) {
+					for(int z = 0; z < 16; ++z) {
+						c.updateMap[x][z] = this.getByte();
+					}
+				}
+				
 				world.chunks[chunkX][chunkZ] = c;
+				c.generateHeightMap();
 			}
 		}
 	}
@@ -129,6 +137,13 @@ public class ChunkDataParser extends WorldNBTFile{
 						}
 					}
 				}
+				
+				for(int x = 0; x < 16; ++x) { //taken from 0.1.0 decomp project (ReMinecraftPE)
+					for(int z = 0; z < 16; ++z) {
+						this.putByte(c.updateMap[x][z]);
+					}
+				}
+				
 			}
 		}
 		

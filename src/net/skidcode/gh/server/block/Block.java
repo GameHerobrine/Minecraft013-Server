@@ -12,7 +12,6 @@ import net.skidcode.gh.server.utils.random.BedrockRandom;
 import net.skidcode.gh.server.world.World;
 //TODO block properties
 public abstract class Block {
-	
 	public static Block[] blocks = new Block[256];
 	public static boolean[] shouldTick = new boolean[256];
 	public static int[] lightOpacity = new int[256];
@@ -131,4 +130,5 @@ public abstract class Block {
 	public Material material;
 	public boolean isSolid = true; //isRenderSolid method in 0.1.3
 	public boolean isOpaque = true;
+	public int tickDelay = 10;
 }

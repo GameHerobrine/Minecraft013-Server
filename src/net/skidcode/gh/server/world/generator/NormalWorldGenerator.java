@@ -18,6 +18,13 @@ public class NormalWorldGenerator {
 				w.levelSource.postProcess(x, z);
 			}
 		}
+		
+		for(int x = 0; x < 16; ++x) {
+			for(int z = 0; z < 16; ++z) {
+				w.chunks[x][z].clearUpdateMap();
+			}
+		}
+		
 		w.locationTable = new int[32][32]; //TODO comp with vanilla
 	}
 	
