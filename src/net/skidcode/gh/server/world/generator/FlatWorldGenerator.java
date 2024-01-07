@@ -6,6 +6,7 @@ import net.skidcode.gh.server.block.Block;
 import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.world.World;
 import net.skidcode.gh.server.world.chunk.Chunk;
+import net.skidcode.gh.server.world.parser.vanilla.ChunkDataParser;
 
 public class FlatWorldGenerator {
 	public static void generateChunks(World w) {
@@ -18,7 +19,7 @@ public class FlatWorldGenerator {
 			Logger.info("Generating "+x+": [0-15] chunks");
 		}
 		
-		w.locationTable = new int[32][32]; //TODO comp with vanilla
+		w.locationTable = ChunkDataParser.locTable;
 	}
 	
 	public static void generateChunk(Chunk c) {
