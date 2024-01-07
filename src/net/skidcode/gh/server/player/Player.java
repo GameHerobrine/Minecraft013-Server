@@ -69,7 +69,6 @@ public class Player extends Entity implements CommandIssuer{
 	public void handlePacket(MinecraftDataPacket dp) {
 		
 		EventRegistry.handleEvent(new DataPacketReceive(this, dp));
-		Logger.info(dp.pid());
 		switch(dp.pid()) {
 			case ProtocolInfo.MESSAGE_PACKET:
 				Server.broadcastMessage(this.nickname+" : "+(((MessagePacket)dp).message));
