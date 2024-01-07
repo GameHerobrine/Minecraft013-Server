@@ -1,4 +1,4 @@
-name: Bad Build Action
+name: Bad Build Action 
 run-name: Build
 on: [push, workflow_dispatch]
 jobs:
