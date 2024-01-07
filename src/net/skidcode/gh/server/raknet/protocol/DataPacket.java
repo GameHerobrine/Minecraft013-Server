@@ -40,7 +40,14 @@ public abstract class DataPacket extends Packet {
 
         while (!this.feof()) {
             byte[] data = Binary.subBytes(this.buffer, this.offset);
-            EncapsulatedPacket packet = EncapsulatedPacket.fromBinary(data, false);
+            EncapsulatedPacket packet;
+            try {
+            	packet = EncapsulatedPacket.fromBinary(data, false);
+            }catch(Exception e) {
+            	e.printStackTrace();
+            	return;
+            }
+            
             this.offset += packet.getOffset();
             if (packet.buffer.length == 0) {
                 break;

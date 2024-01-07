@@ -97,7 +97,7 @@ public class SessionManager {
 			String address = entry.getKey();
 			int count = entry.getValue();
 			if (count >= this.packetLimit) {
-				this.blockAddress(address);
+				//this.blockAddress(address);
 			}
 		}
 		this.ipSec.clear();

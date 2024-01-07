@@ -11,7 +11,7 @@ public class MathUtils {
     {
         return SIN_TABLE[(int)(f * 10430f + 16384F) & 0xffff];
     }
-	
+
 	public static int ffloor(float f){
 		return ((int)f) + (Float.floatToRawIntBits(f - (int)f) >> 31);
 	}

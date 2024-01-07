@@ -276,7 +276,7 @@ public final class Server {
 		tc.start();
 		while(Server.running) {
 			long tickTime = System.currentTimeMillis();
-			if(Server.nextTick - tickTime <= 0) {
+			if(true || Server.nextTick - tickTime <= 0) {
 				Server.handler.process();
 				if(tc.msg != null) {
 					try {

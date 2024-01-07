@@ -1,7 +1,5 @@
 package net.skidcode.gh.server.world.chunk;
 
-import net.skidcode.gh.server.utils.Logger;
-
 public class Chunk {
 	public byte[][][] blockData = new byte[16][16][128]; //xzy all
 	public byte[][][] blockMetadata = new byte[16][16][128];
