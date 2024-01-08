@@ -19,6 +19,7 @@ public class PlayerData extends NBTFile{
 		this.player = player;
 		if(!this.created && Server.savePlayerData) {
 			Logger.info("Creating playerdata for "+this.player.nickname);
+			this.player.setPosition(128, 64, 128);
 			Files.createFile(Paths.get(this.filename));
 			this.save();
 		}
@@ -29,9 +30,7 @@ public class PlayerData extends NBTFile{
 		if(!Server.savePlayerData) return;
 		this.fileVersion = this.getByte();
 		if(this.fileVersion == PLAYER_DATA_VERSION) {
-			this.player.posX = this.getFloat();
-			this.player.posY = this.getFloat();
-			this.player.posZ = this.getFloat();
+			this.player.setPosition(this.getFloat(), this.getFloat(), this.getFloat());
 		}else {
 			Logger.warn(player.nickname+"'s data has different version, aborting reading...");
 		}

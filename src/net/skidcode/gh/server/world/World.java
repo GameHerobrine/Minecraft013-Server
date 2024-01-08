@@ -6,8 +6,10 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.TreeSet;
 
+import net.skidcode.gh.server.Server;
 import net.skidcode.gh.server.block.Block;
 import net.skidcode.gh.server.block.material.Material;
+import net.skidcode.gh.server.entity.Entity;
 import net.skidcode.gh.server.network.MinecraftDataPacket;
 import net.skidcode.gh.server.network.protocol.PlaceBlockPacket;
 import net.skidcode.gh.server.network.protocol.RemoveEntityPacket;
@@ -24,7 +26,8 @@ import net.skidcode.gh.server.world.generator.RandomLevelSource;
 public class World {
 	
 	public HashMap<Integer, Player> players = new HashMap<>();
-	private int freeEID = 1;
+	public HashMap<Integer, Entity> entities = new HashMap<>();
+	private static int freeEID = 1;
 	public int worldSeed = 0x256512;
 	public BedrockRandom random;
 	public Chunk[][] chunks = new Chunk[16][16];
@@ -51,6 +54,11 @@ public class World {
 		this.scheduledTickSet = new HashSet<>();
 		this.randInt1 = 0x283AE83; //it is static in 0.1
 		this.randInt2 = 0x3C6EF35F;
+	}
+	
+	public void addEntity(Entity entity) {
+		entity.world = this;
+		this.entities.put(entity.eid, entity);
 	}
 	
 	public void addToTickNextTick(int x, int y, int z, int id, int delay) {
@@ -245,7 +253,7 @@ public class World {
 		}
 	}
 	
-	public int incrementAndGetNextFreeEID() {
+	public static int incrementAndGetNextFreeEID() {
 		return ++freeEID;
 	}
 
@@ -285,6 +293,11 @@ public class World {
 		
 		/*Timer*/
 		this.worldTime++;
+		if(Server.superSecretSettings) {
+			for(Entity e : this.entities.values()) {
+				e.tick();
+			}
+		}
 		
 		 //Normal Ticking: Water/Lava
 		int ticksAmount = scheduledTickTreeSet.size();
@@ -303,7 +316,6 @@ public class World {
 				}
 			}
 		}
-		
 		//Random Ticking
 		
 		for(int chunkX = 0; chunkX < 16; ++chunkX) {

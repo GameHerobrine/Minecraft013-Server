@@ -36,13 +36,11 @@ public class Player extends Entity implements CommandIssuer{
 	
 	public Player(String identifier, long clientID, String ip, int port) {
 		super();
+		this.setSize(0.6f, 1.8f);
 		this.clientID = clientID;
 		this.port = port;
 		this.ip = ip;
 		this.identifier = identifier;
-		this.posX = this.world.spawnX;
-		this.posY = this.world.spawnY;
-		this.posZ = this.world.spawnZ;
 	}
 	
 	public void sendMessage(String message) {
@@ -69,6 +67,7 @@ public class Player extends Entity implements CommandIssuer{
 	public void handlePacket(MinecraftDataPacket dp) {
 		
 		EventRegistry.handleEvent(new DataPacketReceive(this, dp));
+		//Logger.info(dp.pid());
 		switch(dp.pid()) {
 			case ProtocolInfo.MESSAGE_PACKET:
 				Server.broadcastMessage(this.nickname+" : "+(((MessagePacket)dp).message));
@@ -93,7 +92,9 @@ public class Player extends Entity implements CommandIssuer{
 					e.printStackTrace();
 					Logger.error("Failed to parse playerdata!");
 				}
+				Server.world.addEntity(this);
 				this.world.addPlayer(this);
+				
 				StartGamePacket pk = new StartGamePacket();
 				pk.seed = this.world.worldSeed;
 				pk.eid = this.eid;
@@ -130,15 +131,10 @@ public class Player extends Entity implements CommandIssuer{
 				}else {
 					Logger.warn(this.nickname+" tried to place invalid block id("+(pbp.id & 0xff)+")!");
 				}
-				
 				break;
 			case ProtocolInfo.MOVE_PLAYER_PACKET_PACKET:
 				MovePlayerPacket moveplayerpacket = (MovePlayerPacket)dp;
-				this.posX = moveplayerpacket.posX;
-				this.posY = moveplayerpacket.posY;
-				this.posZ = moveplayerpacket.posZ;
-				this.pitch = moveplayerpacket.pitch;
-				this.yaw = moveplayerpacket.yaw;
+				this.setPosition(moveplayerpacket.posX, moveplayerpacket.posY, moveplayerpacket.posZ, moveplayerpacket.yaw, moveplayerpacket.pitch);
 				moveplayerpacket.eid = this.eid;
 				moveplayerpacket.setBuffer(new byte[] {});
 				this.world.broadcastPacketFromPlayer(moveplayerpacket, this);

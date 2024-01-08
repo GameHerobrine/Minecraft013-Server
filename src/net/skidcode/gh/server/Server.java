@@ -36,7 +36,7 @@ import net.skidcode.gh.server.world.generator.NormalWorldGenerator;
 import net.skidcode.gh.server.world.parser.vanilla.VanillaParser;
 
 public final class Server {
-	
+	public static final boolean superSecretSettings = false;
 	public static volatile boolean running = true;
 	public static RakNetHandler handler;
 	public static World world;
