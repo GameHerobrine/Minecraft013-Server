@@ -1,4 +1,4 @@
-name: Bad Build Action
+name: Bad Build Action 
 run-name: Build
 on: [push, workflow_dispatch]
 jobs:
@@ -26,7 +26,8 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: build-${{ github.sha }}
+          tag_name: "build-${{github.run_number}}"
+          body: "### Commit: ${{github.sha}}"
           repository: GameHerobrine/MCPE013CoreArtifacts
           token: ${{ secrets.TOKEN }}
           files: src/classes/build.jar
