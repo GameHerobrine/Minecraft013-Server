@@ -4,6 +4,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.UUID;
 
+import net.skidcode.gh.server.network.MinecraftDataPacket;
+
 /**
  * author: MagicDroidX
  * Nukkit Project

@@ -54,6 +54,7 @@ public class RakNetHandler implements ServerInstance{
 	}
 	
 	public void sendPacket(Player player, MinecraftDataPacket packet) {
+		packet.buffer = new byte[packet.getSize()];
 		packet.encode();
 		EncapsulatedPacket pk = new EncapsulatedPacket();
 		pk.buffer = packet.getBuffer();

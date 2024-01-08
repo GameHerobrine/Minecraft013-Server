@@ -16,7 +16,7 @@ public abstract class MinecraftDataPacket extends BinaryStream implements Clonea
     public abstract void decode();
 
     public abstract void encode();
-    
+    public abstract int getSize();
     @Override
     public MinecraftDataPacket clone() {
     	try {

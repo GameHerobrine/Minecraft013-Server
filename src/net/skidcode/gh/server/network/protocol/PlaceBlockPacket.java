@@ -33,5 +33,9 @@ public class PlaceBlockPacket extends MinecraftDataPacket{
 		this.putByte(this.face);
 		this.putByte(this.id);
 	}
-
+	
+	@Override
+	public int getSize() {
+		return 1 + 4 + 4 + 4 + 1 + 1 + 1;
+	}
 }

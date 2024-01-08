@@ -25,5 +25,9 @@ public class PlayerEquipmentPacket extends MinecraftDataPacket{
 		this.putInt(this.eid);
 		this.putByte(this.itemID);
 	}
-
+	
+	@Override
+	public int getSize() {
+		return 1 + 4 + 1;
+	}
 }

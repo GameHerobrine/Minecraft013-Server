@@ -24,5 +24,9 @@ public class RequestChunkPacket extends MinecraftDataPacket{
 		this.putInt(this.chunkX);
 		this.putInt(this.chunkZ);
 	}
-
+	
+	@Override
+	public int getSize() {
+		return 1 + 4 + 4;
+	}
 }

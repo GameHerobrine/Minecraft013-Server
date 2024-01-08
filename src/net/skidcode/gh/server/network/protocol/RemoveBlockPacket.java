@@ -29,5 +29,9 @@ public class RemoveBlockPacket extends MinecraftDataPacket{
 		this.putInt(this.posZ);
 		this.putByte(this.posY);
 	}
-
+	
+	@Override
+	public int getSize() {
+		return 1 + 4 + 4 + 4 + 1;
+	}
 }

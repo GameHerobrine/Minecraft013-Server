@@ -60,7 +60,7 @@ public class Chunk {
 		for(int x = 0; x < 16; ++x) {
 			for(int z = 0; z < 16; ++z) {
 				byte l = 127;
-				for(;l > 0 && (blockData[x][z][l-1] & 0xff) == 0;l--);
+				for(;l > 0 && (blockData[x][z][l-1] & 0xff) == 0;--l);
 				
 				heightMap[x][z] = l;
 			}

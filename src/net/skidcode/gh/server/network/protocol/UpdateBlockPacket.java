@@ -31,5 +31,8 @@ public class UpdateBlockPacket extends MinecraftDataPacket{
 		this.putByte(this.id);
 		this.putByte(this.metadata);
 	}
-
+	@Override
+	public int getSize() {
+		return 1 + 4 + 4 + 1 + 1 + 1;
+	}
 }

@@ -21,12 +21,16 @@ public class StartGamePacket extends MinecraftDataPacket{
 	@Override
 	public void encode() {
 		this.putByte(pid());
-		this.putInt(seed); //fun fact: mcpe 1.0 RakNet::BitStream::Write<long> actually only writes 32 bits, which is 32/8=4bytes(or int here)
+		this.putInt(seed);
 		this.putInt(eid);
 		this.putInt(eid); //i wish to know wth is this
 		this.putFloat(posX);
 		this.putFloat(posY);
 		this.putFloat(posZ);
 	}
-
+	
+	@Override
+	public int getSize() {
+		return 1 + 4 + 4 + 4 + 4 + 4 + 4;
+	}
 }

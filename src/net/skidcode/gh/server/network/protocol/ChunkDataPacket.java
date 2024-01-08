@@ -25,5 +25,8 @@ public class ChunkDataPacket extends MinecraftDataPacket{
 		this.put(data);
 	}
 	
-	
+	@Override
+	public int getSize() {
+		return 1 + 4 + 4 + data.length;
+	}
 }

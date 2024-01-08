@@ -22,5 +22,9 @@ public class RemoveEntityPacket extends MinecraftDataPacket{
 		this.putByte(this.pid());
 		this.putInt(this.eid);
 	}
-
+	
+	@Override
+	public int getSize() {
+		return 1 + 4;
+	}
 }
