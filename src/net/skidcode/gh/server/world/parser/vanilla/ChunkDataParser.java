@@ -136,7 +136,7 @@ public class ChunkDataParser extends WorldNBTFile{
 			}
 		}
 		
-		for(int chunkX = 0; chunkX < 16; ++chunkX) { //TODO should save 32x32?
+		for(int chunkX = 0; chunkX < 16; ++chunkX) {
 			for(int chunkZ = 0; chunkZ < 16; ++chunkZ) {
 				this.count = 4096+(chunkX*21*4096)+(chunkZ*21*16*4096);
 				Chunk c = world.chunks[chunkX][chunkZ];

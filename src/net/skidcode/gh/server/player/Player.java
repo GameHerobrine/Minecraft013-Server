@@ -29,7 +29,7 @@ public class Player extends Entity implements CommandIssuer{
 	public int port;
 	public int mtuSize;
 	public byte itemID;
-	public String ip, identifier, nickname;
+	public String ip, identifier, nickname = "";
 	public boolean firstChunkData = true;
 	public PlayerData playerdata;
 	
@@ -75,7 +75,12 @@ public class Player extends Entity implements CommandIssuer{
 				break;
 			case ProtocolInfo.LOGIN_PACKET:
 				LoginPacket loginpacket = (LoginPacket)dp;
+				if(Server.getPlayerByNickname(loginpacket.nickname) != null) {
+					Logger.info(String.format("%s was prevented to join because player with nickname %s is already in game.", this.identifier, loginpacket.nickname));
+					break;
+				}
 				this.nickname = loginpacket.nickname;
+				
 				try {
 					this.playerdata = new PlayerData(this);
 				} catch (IOException e) {
