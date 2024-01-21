@@ -7,9 +7,9 @@ import java.util.Arrays;
 import net.skidcode.gh.server.block.Block;
 import net.skidcode.gh.server.world.World;
 import net.skidcode.gh.server.world.chunk.Chunk;
-import net.skidcode.gh.server.world.nbt.WorldNBTFile;
+import net.skidcode.gh.server.world.data.WorldDataFile;
 
-public class ChunkDataParser extends WorldNBTFile{
+public class ChunkDataParser extends WorldDataFile{
 	public Chunk[] chunks = new Chunk[256];
 	public static int[][] locTable = new int[][] { //TODO understand how it works and what it means
 		{0x15010000, 0x15160000, 0x152b0000, 0x15400000, 0x15550000, 0x156a0000, 0x157f0000, 0x15940000, 0x15a90000, 0x15be0000, 0x15d30000, 0x15e80000, 0x15fd0000, 0x15120100, 0x15270100, 0x153c0100, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000},

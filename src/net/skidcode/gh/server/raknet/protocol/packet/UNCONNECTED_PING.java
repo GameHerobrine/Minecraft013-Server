@@ -8,25 +8,25 @@ import net.skidcode.gh.server.raknet.protocol.Packet;
  * Nukkit Project
  */
 public class UNCONNECTED_PING extends Packet {
-    public static byte ID = (byte) 0x01;
+	public static byte ID = (byte) 0x01;
 
-    @Override
-    public byte getID() {
-        return ID;
-    }
+	@Override
+	public byte getID() {
+		return ID;
+	}
 
-    public long pingID;
+	public long pingID;
 
-    @Override
-    public void encode() {
-        super.encode();
-        this.putLong(this.pingID);
-        this.put(RakNet.MAGIC);
-    }
+	@Override
+	public void encode() {
+		super.encode();
+		this.putLong(this.pingID);
+		this.put(RakNet.MAGIC);
+	}
 
-    @Override
-    public void decode() {
-        super.decode();
-        this.pingID = this.getLong();
-    }
+	@Override
+	public void decode() {
+		super.decode();
+		this.pingID = this.getLong();
+	}
 }

@@ -7,11 +7,10 @@ import net.skidcode.gh.server.raknet.protocol.DataPacket;
  * Nukkit Project
  */
 public class DATA_PACKET_C extends DataPacket {
-    public static byte ID = (byte) 0x8c;
+	public static byte ID = (byte) 0x8c;
 
-    @Override
-    public byte getID() {
-        return ID;
-    }
-
+	@Override
+	public byte getID() {
+		return ID;
+	}
 }

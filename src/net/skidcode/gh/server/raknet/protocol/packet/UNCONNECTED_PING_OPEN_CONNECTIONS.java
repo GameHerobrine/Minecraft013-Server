@@ -5,10 +5,10 @@ package net.skidcode.gh.server.raknet.protocol.packet;
  * Nukkit Project
  */
 public class UNCONNECTED_PING_OPEN_CONNECTIONS extends UNCONNECTED_PING {
-    public static byte ID = (byte) 0x02;
+	public static byte ID = (byte) 0x02;
 
-    @Override
-    public byte getID() {
-        return ID;
-    }
+	@Override
+	public byte getID() {
+		return ID;
+	}
 }

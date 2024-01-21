@@ -7,9 +7,9 @@ import java.nio.file.Paths;
 import net.skidcode.gh.server.Server;
 import net.skidcode.gh.server.player.Player;
 import net.skidcode.gh.server.utils.Logger;
-import net.skidcode.gh.server.world.nbt.NBTFile;
+import net.skidcode.gh.server.world.data.RawBytesFile;
 
-public class PlayerData extends NBTFile{
+public class PlayerData extends RawBytesFile{
 	
 	public final Player player;
 	private static final byte PLAYER_DATA_VERSION = 1;

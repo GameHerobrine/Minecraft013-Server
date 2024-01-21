@@ -1,4 +1,4 @@
-package net.skidcode.gh.server.world.nbt;
+package net.skidcode.gh.server.world.data;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,16 +8,16 @@ import java.nio.file.Paths;
 import net.skidcode.gh.server.utils.BinaryStream;
 import net.skidcode.gh.server.world.World;
 
-public abstract class NBTFile extends BinaryStream{
+public abstract class RawBytesFile extends BinaryStream{
 	public boolean created = true;
 	public String filename;
-	public NBTFile(byte[] buffer, int offset) {
+	public RawBytesFile(byte[] buffer, int offset) {
 		super(buffer, offset);
 	}
-	public NBTFile(byte[] buffer) {
+	public RawBytesFile(byte[] buffer) {
 		super(buffer, 0);
 	}
-	public NBTFile(String filename, int offset) throws IOException {
+	public RawBytesFile(String filename, int offset) throws IOException {
 		super();
 		this.filename = filename;
 		Path p = Paths.get(filename);

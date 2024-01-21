@@ -7,24 +7,24 @@ import net.skidcode.gh.server.raknet.protocol.Packet;
  * Nukkit Project
  */
 public class PING_DataPacket extends Packet {
-    public static byte ID = (byte) 0x00;
+	public static byte ID = (byte) 0x00;
 
-    @Override
-    public byte getID() {
-        return ID;
-    }
+	@Override
+	public byte getID() {
+		return ID;
+	}
 
-    public long pingID;
+	public long pingTime;
 
-    @Override
-    public void encode() {
-        super.encode();
-        this.putLong(this.pingID);
-    }
+	@Override
+	public void encode() {
+		super.encode();
+		this.putLong(this.pingTime);
+	}
 
-    @Override
-    public void decode() {
-        super.decode();
-        this.pingID = this.getLong();
-    }
+	@Override
+	public void decode() {
+		super.decode();
+		this.pingTime = this.getLong();
+	}
 }

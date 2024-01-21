@@ -4,7 +4,7 @@ import net.skidcode.gh.server.block.Block;
 import net.skidcode.gh.server.utils.random.BedrockRandom;
 import net.skidcode.gh.server.world.World;
 
-//TODO
+
 public class TreeFeature extends Feature{
 	
 	@Override
