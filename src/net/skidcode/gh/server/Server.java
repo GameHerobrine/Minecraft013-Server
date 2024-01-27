@@ -245,7 +245,6 @@ public final class Server {
 	}
 	
 	public static Player getPlayer(String id) {
-		
 		return id2Player.getOrDefault(id, null);
 	}
 	
@@ -291,7 +290,6 @@ public final class Server {
 								if(out.length() > 0) ConsoleIssuer.INSTANCE.sendOutput(out);
 							}
 						}
-						
 					}catch(Exception e) {
 						e.printStackTrace();
 					}finally {

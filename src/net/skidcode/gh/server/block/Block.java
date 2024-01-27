@@ -87,7 +87,7 @@ public abstract class Block {
 	
 	public void onNeighborBlockChanged(World world, int x, int y, int z, int meta) {}
 	public void onBlockRemoved(World world, int x, int y, int z) {
-		world.removeBlock(x, y, z);
+		world.placeBlock(x, y, z, (byte)0, (byte)0);
 		UpdateBlockPacket pk = new UpdateBlockPacket();
 		pk.posX = x;
 		pk.posY = (byte) y;
@@ -97,7 +97,7 @@ public abstract class Block {
 		world.broadcastPacket(pk);
 	}
 	public void onBlockRemovedByPlayer(World world, int x, int y, int z, Player player) {
-		world.removeBlock(x, y, z);
+		world.placeBlock(x, y, z, (byte)0, (byte)0);
 	}
 	
 	public void tick(World world, int x, int y, int z, BedrockRandom random) {

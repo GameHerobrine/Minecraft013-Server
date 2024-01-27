@@ -39,14 +39,10 @@ public class FlatWorldGenerator {
 				}
 			}*/
 			// Why would we need loops for flat world?
-			c.blockData[x][z][3] = (byte) Block.grass.blockID;
-			c.blockMetadata[x][z][3] = 0;
-			c.blockData[x][z][2] = (byte) Block.dirt.blockID;
-			c.blockMetadata[x][z][2] = 0;
-			c.blockData[x][z][1] = (byte) Block.dirt.blockID;
-			c.blockMetadata[x][z][1] = 0;
-			c.blockData[x][z][0] = (byte) Block.bedrock.blockID;
-			c.blockMetadata[x][z][0] = 0;
+			c.setBlock(x, 3, z, (byte)Block.grass.blockID, (byte)0);
+			c.setBlock(x, 2, z, (byte)Block.dirt.blockID, (byte)0);
+			c.setBlock(x, 1, z, (byte)Block.dirt.blockID, (byte)0);
+			c.setBlock(x, 0, z, (byte)Block.bedrock.blockID, (byte)0);
 		});
 	}
 }

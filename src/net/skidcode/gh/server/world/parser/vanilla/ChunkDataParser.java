@@ -79,36 +79,30 @@ public class ChunkDataParser extends WorldDataFile{
 				Chunk c = new Chunk(chunkX, chunkZ);
 				for(int x = 0; x < 16; ++x) {
 					for(int z = 0; z < 16; ++z) {
-						for(int y = 0; y < 128; ++y) {
-							c.blockData[x][z][y] = this.getByte();
-						}
+						int index = x << 11 | z << 7;
+						System.arraycopy(this.buffer, this.offset, c.blockData, index, 128);
+						this.offset += 128;
 					}
 				}
 				for(int x = 0; x < 16; ++x) { //TODO make more beautiful
 					for(int z = 0; z < 16; ++z) {
-						for(int y = 0; y < 64; ++y) {
-							byte dd = this.getByte();
-							c.blockMetadata[x][z][y*2] = (byte) (dd & 0xf);
-							c.blockMetadata[x][z][y*2+1] = (byte) (dd >> 0x4);
-						}
+						int index = x << 11 | z << 7;
+						System.arraycopy(this.buffer, this.offset, c.blockMetadata, index >> 1, 64);
+						this.offset += 64;
 					}
 				}
 				for(int x = 0; x < 16; ++x) { //TODO make more beautiful
 					for(int z = 0; z < 16; ++z) {
-						for(int y = 0; y < 64; ++y) {
-							byte dd = this.getByte();
-							c.blockSkyLight[x][z][y*2] = (byte) (dd & 0xf);
-							c.blockSkyLight[x][z][y*2+1] = (byte) (dd >> 0x4);
-						}
+						int index = x << 11 | z << 7;
+						System.arraycopy(this.buffer, this.offset, c.blockSkyLight, index >> 1, 64);
+						this.offset += 64;
 					}
 				}
 				for(int x = 0; x < 16; ++x) { //TODO make more beautiful
 					for(int z = 0; z < 16; ++z) {
-						for(int y = 0; y < 64; ++y) {
-							byte dd = this.getByte();
-							c.blockLight[x][z][y*2] = (byte) (dd & 0xf);
-							c.blockLight[x][z][y*2+1] = (byte) (dd >> 0x4);
-						}
+						int index = x << 11 | z << 7;
+						System.arraycopy(this.buffer, this.offset, c.blockLight, index >> 1, 64);
+						this.offset += 64;
 					}
 				}
 				
@@ -144,30 +138,30 @@ public class ChunkDataParser extends WorldDataFile{
 				
 				for(int x = 0; x < 16; ++x) {
 					for(int z = 0; z < 16; ++z) {
-						for(int y = 0; y < 128; ++y) {
-							this.putByte(c.blockData[x][z][y]);
-						}
+						int index = x << 11 | z << 7;
+						System.arraycopy(c.blockData, index, this.buffer, this.count, 128);
+						this.count += 128;
 					}
 				}
 				for(int x = 0; x < 16; ++x) {
 					for(int z = 0; z < 16; ++z) {
-						for(int y = 0; y < 64; ++y) {
-							this.putByte((byte) (c.blockMetadata[x][z][y*2] + (c.blockMetadata[x][z][y*2+1] << 4)));
-						}
+						int index = x << 11 | z << 7;
+						System.arraycopy(c.blockMetadata, index >> 1, this.buffer, this.count, 64);
+						this.count += 64;
 					}
 				}
 				for(int x = 0; x < 16; ++x) {
 					for(int z = 0; z < 16; ++z) {
-						for(int y = 0; y < 64; ++y) {
-							this.putByte((byte) (c.blockSkyLight[x][z][y*2] + (c.blockSkyLight[x][z][y*2+1] << 4)));
-						}
+						int index = x << 11 | z << 7;
+						System.arraycopy(c.blockSkyLight, index >> 1, this.buffer, this.count, 64);
+						this.count += 64;
 					}
 				}
-				for(int x = 0; x < 16; ++x) { //TODO make more beautiful
+				for(int x = 0; x < 16; ++x) {
 					for(int z = 0; z < 16; ++z) {
-						for(int y = 0; y < 64; ++y) {
-							this.putByte((byte) (c.blockLight[x][z][y*2] + (c.blockLight[x][z][y*2+1] << 4)));
-						}
+						int index = x << 11 | z << 7;
+						System.arraycopy(c.blockLight, index >> 1, this.buffer, this.count, 64);
+						this.count += 64;
 					}
 				}
 				

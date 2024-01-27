@@ -107,16 +107,16 @@ public class World {
 	public void setSaveSpawn(int x, int z) {
 		this.spawnX = x;
 		this.spawnZ = z;
-		Chunk c = this.chunks[x >> 4][z >> 4];
+		Chunk c = this.getChunk(x >> 4, z >> 4);
 		int cBX = x & 0xf;
 		int cBZ = z & 0xf;
 		for(int y = 125; y >= 0; --y) {
-			int id = c.blockData[cBX][cBZ][y] & 0xff;
+			int id = c.getBlockID(cBX, y, cBZ);
 			if(id > 0) {
 				Block b = Block.blocks[id];
 				if(b.material.isSolid) {
-					int idup = c.blockData[cBX][cBZ][y+1];
-					int idupper = c.blockData[cBX][cBZ][y+2];
+					int idup = c.getBlockID(cBX, y + 1, cBZ);
+					int idupper = c.getBlockID(cBX, y + 2, cBZ);
 					if(idup == 0 && idupper == 0) { //TODO isSolid & isLiquid checks
 						this.spawnY = y+2;
 						return;
@@ -137,15 +137,6 @@ public class World {
 		this.notifyNeighbor(x, y, z + 1, cid);
 	}
 	
-	public void removeBlock(int x, int y, int z) {
-		if(x < 256 && y < 128 && z < 256 && y >= 0 && x >= 0 && z >= 0) {
-			this.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf][y] = 0;
-			this.chunks[x >> 4][z >> 4].blockMetadata[x & 0xf][z & 0xf][y] = 0;
-			
-			this.notifyNearby(x, y, z, 0);
-		}
-	}
-	
 	public void notifyNeighbor(int x, int y, int z, int cid) {
 		if(!editingBlocks) {
 			int id = this.getBlockIDAt(x, y, z);
@@ -156,23 +147,20 @@ public class World {
 	}
 	
 	public int getBlockIDAt(int x, int y, int z) {
-		if(x > 255 || z > 255 || z < 0 || x < 0) return Block.invisibleBedrock.blockID;
-		if(y < 0 || y > 127) return 0;
-		return this.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf][y] & 0xff;
+		return this.getChunk(x >> 4, z >> 4).getBlockID(x & 0xf, y, z & 0xf) & 0xff;
 	}
 	
 	public int getBlockMetaAt(int x, int y, int z) {
-		if(x > 255 || y > 127 || z > 255 || y < 0 || z < 0 || x < 0) return 0;
-		return this.chunks[x >> 4][z >> 4].blockMetadata[x & 0xf][z & 0xf][y];
+		return this.getChunk(x >> 4, z >> 4).getBlockMetadata(x & 0xf, y, z & 0xf) & 0xff;
 	}
 	
-	public void sendBlockPlace(int x, int y, int z, byte id, byte meta) {
+	public void sendBlockPlace(int x, int y, int z, int id, int meta) {
 		UpdateBlockPacket pk = new UpdateBlockPacket();
 		pk.posX = x;
 		pk.posY = (byte) y;
 		pk.posZ = z;
-		pk.id = id;
-		pk.metadata = meta;
+		pk.id = (byte) id;
+		pk.metadata = (byte) meta;
 		
 		for(Player p : this.players.values()) {
 			p.dataPacket(pk);
@@ -192,14 +180,17 @@ public class World {
 	}
 	
 	public void placeBlockMetaAndNotifyNearby(int x, int y, int z, byte meta) {
-		if(x < 256 && y < 128 && z < 256 && y >= 0 && x >= 0 && z >= 0) {
-			Chunk c = this.chunks[x >> 4][z >> 4];
-			c.setBlockMetadata(x & 0xf, y, z & 0xf, meta);
-			
-			this.notifyNearby(x, y, z, c.blockData[x & 0xf][z & 0xf][y]);
-			this.sendBlockPlace(x, y, z, c.blockData[x & 0xf][z & 0xf][y], meta);
-		}
+		Chunk c = this.getChunk(x / 16, z / 16);
+		c.setBlockMetadata(x & 0xf, y, z & 0xf, meta);
+		this.notifyNearby(x, y, z, c.getBlockID(x & 0xf, y, z & 0xf));
+		this.sendBlockPlace(x, y, z, c.getBlockID(x & 0xf, y, z & 0xf), meta);
 	}
+	
+	public Chunk getChunk(int x, int z) {
+		if(x <= 15 && x >= 0 && z <= 15 && z >= 0) return this.chunks[x][z];
+		return Chunk.emptyChunk;
+	}
+	
 	public void placeBlockAndNotifyNearby(int x, int y, int z, byte id) {
 		if(x < 256 && y < 128 && z < 256 && y >= 0 && x >= 0 && z >= 0) {
 			Chunk c = this.chunks[x >> 4][z >> 4];
@@ -270,10 +261,7 @@ public class World {
 	}
 
 	public boolean isAirBlock(int x, int y, int z) {
-		if(x < 256 && y < 128 && z < 256 && y >= 0 && x >= 0 && z >= 0) {
-			return this.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf][y] == 0;
-		}
-		return false;
+		return this.getBlockIDAt(x, y, z) == 0;
 	}
 
 	public int findTopSolidBlock(int x, int z) {
@@ -328,7 +316,7 @@ public class World {
 					int x = xyz & 0xf;
 					int z = xyz >>> 8 & 0xf;
 					int y = xyz >>> 16 & 0x7f;
-					int id = c.blockData[x][z][y] & 0xff;
+					int id = c.blockData[x << 11 | z << 7 | y] & 0xff;
 					if(Block.shouldTick[id]) {
 						Block.blocks[id].tick(this, x + (c.posX << 4), y, z + (c.posZ << 4), random);
 					}

@@ -159,7 +159,7 @@ public class RandomLevelSource implements LevelSource{ //TODO all public?, try t
 	@Override
 	public Chunk getChunk(int chunkX, int chunkZ) {
 		this.rand.setSeed((int) (341872712 * chunkX + 132899541 * chunkZ));
-		byte[][][] bArr = new byte[16][16][128];
+		byte[] bArr = new byte[32768];
 		this.biomes = this.world.biomeSource.getBiomeBlock(chunkX * 16, chunkZ * 16, 16, 16);
 		this.prepareHeights(chunkX, chunkZ, bArr, this.biomes, this.world.biomeSource.temperatureNoises);
 		this.buildSurfaces(chunkX, chunkZ, bArr, this.biomes);
@@ -168,7 +168,7 @@ public class RandomLevelSource implements LevelSource{ //TODO all public?, try t
 		return c;
 	}
 
-	public void buildSurfaces(int chunkX, int chunkZ, byte[][][] blockIDS, Biome[] biomes) {
+	public void buildSurfaces(int chunkX, int chunkZ, byte[] blockIDS, Biome[] biomes) {
 		this.sandNoises = this.beachNoise.getRegion(null, chunkX * 16, chunkZ * 16, 0f, 16, 16, 1, 0.03125f, 0.03125f, 1);
 		this.gravelNoises = this.beachNoise.getRegion(null, chunkX * 16, 109.01f, chunkZ * 16, 16, 1, 16, 0.03125f, 1, 0.03125f);
 		this.surfaceDepthNoises = this.surfaceDepthNoise.getRegion(null, chunkX * 16, chunkZ * 16, 0, 16, 16, 1, 0.0625f, 0.0625f, 0.0625f);
@@ -182,10 +182,11 @@ public class RandomLevelSource implements LevelSource{ //TODO all public?, try t
 				byte b = biome.topBlock;
 				byte b2 = biome.fillerBlock;
 				for (int blockY = 127; blockY >= 0; --blockY) {
+					int index = (blockZ * 16 + blockX) * 128 + blockY;
 					if (this.rand.nextInt(5) >= blockY) {
-						blockIDS[blockZ][blockX][blockY] = (byte) Block.bedrock.blockID;
+						blockIDS[index] = (byte) Block.bedrock.blockID;
 					}else {
-						byte b3 = blockIDS[blockZ][blockX][blockY];
+						byte b3 = blockIDS[index];
 						if (b3 == 0) {
 							i = -1;
 						} else if (b3 == Block.stone.blockID) {
@@ -214,13 +215,13 @@ public class RandomLevelSource implements LevelSource{ //TODO all public?, try t
 								}
 								i = nextFloat;
 								if (blockY >= 64 - 1) {
-									blockIDS[blockZ][blockX][blockY] = b;
+									blockIDS[index] = b;
 								} else {
-									blockIDS[blockZ][blockX][blockY] = b2;
+									blockIDS[index] = b2;
 								}
 							} else if (i > 0) {
 								i--;
-								blockIDS[blockZ][blockX][blockY] = b2; //dont ask me why
+								blockIDS[index] = b2;
 								if (i == 0 && b2 == Block.sand.blockID) {
 									i = this.rand.nextInt(4);
 									b2 = (byte) Block.sandStone.blockID;
@@ -236,7 +237,7 @@ public class RandomLevelSource implements LevelSource{ //TODO all public?, try t
 	}
 
 	@Override
-	public void prepareHeights(int chunkX, int chunkZ, byte[][][] blockIDS, Biome[] biomes, float[] temperatures) {
+	public void prepareHeights(int chunkX, int chunkZ, byte[] blockIDS, Biome[] biomes, float[] temperatures) {
 		this.heights = getHeights(null, chunkX * 4, 0, chunkZ * 4, 5, 17, 5);
 		
 		for (int unkX = 0; unkX < 4; unkX++) {
@@ -257,6 +258,7 @@ public class RandomLevelSource implements LevelSource{ //TODO all public?, try t
 						float f11 = (f3 - f) * 0.25f;
 						float f12 = (f4 - f2) * 0.25f;
 						for (int unkXX = 0; unkXX < 4; unkXX++) {
+							int index = (unkXX + (unkX * 4)) << 11 | unkZ*4 << 7 | unkY*8+unkYY;
 							float f13 = f9;
 							float f14 = (f10 - f9) * 0.25f;
 							for (int unkZZ = 0; unkZZ < 4; unkZZ++) {
@@ -272,7 +274,8 @@ public class RandomLevelSource implements LevelSource{ //TODO all public?, try t
 								if (f13 > 0.0f) {
 									i3 = Block.stone.blockID;
 								}
-								blockIDS[(unkXX + (unkX * 4))][(unkZZ + (unkZ * 4))][((unkY * 8) + unkYY)] = (byte) i3;
+								blockIDS[index] = (byte) i3;
+								index += 128;
 								f13 += f14;
 							}
 							f9 += f11;

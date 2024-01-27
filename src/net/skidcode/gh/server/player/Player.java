@@ -119,7 +119,7 @@ public class Player extends Entity implements CommandIssuer{
 				break;
 			case ProtocolInfo.REMOVE_BLOCK_PACKET:
 				RemoveBlockPacket rbp = (RemoveBlockPacket) dp;
-				this.world.removeBlock(rbp.posX, rbp.posY, rbp.posZ);
+				this.world.placeBlock(rbp.posX, rbp.posY, rbp.posZ, (byte)0, (byte)0);
 				this.world.broadcastPacketFromPlayer(rbp, this);
 				break;
 			case ProtocolInfo.PLACE_BLOCK_PACKET:
@@ -162,22 +162,26 @@ public class Player extends Entity implements CommandIssuer{
 				cdp.chunkZ = rcp.chunkZ;
 				byte[] cd = new byte[16*16*128+16*16*64+16*16];
 				int l = 0;
-				Chunk c = this.world.chunks[rcp.chunkX][rcp.chunkZ];
+				Chunk c = this.world.getChunk(rcp.chunkX, rcp.chunkZ);
 				for (int z = 0; z < 16; ++z) {
 					for (int x = 0; x < 16; ++x) {
-						cd[l++] = Server.sendFullChunks ? (byte) 0xff : c.updateMap[x][z];
+						byte update = Server.sendFullChunks ? (byte) 0xff : c.updateMap[x][z];
+						cd[l++] = update;
+						
 						for(int y = 0; y < 8; ++y) {
-							if (Server.sendFullChunks || (((c.updateMap[x][z] >> y) & 1) == 1))
+							if ((((update >> y) & 1) == 1))
 							{
-								System.arraycopy(c.blockData[x][z], y << 4, cd, l, 16);
+								int index = x << 11 | z << 7 | y << 4;
+								System.arraycopy(c.blockData, index, cd, l, 16);
 								l += 16;
-								for(int bY = 0; bY < 8; ++bY) {
-									cd[l++] = (byte) (c.blockMetadata[x][z][(y << 4) + (bY * 2)] | (c.blockMetadata[x][z][(y << 4) + (bY * 2) + 1] << 4));
-								}
+								System.arraycopy(c.blockMetadata, index >> 1, cd, l, 8);
+								l += 8;
 							}
 						}
+						
 					}
 				}
+				
 				cdp.data = cd; 
 				this.dataPacket(cdp);
 				break;
