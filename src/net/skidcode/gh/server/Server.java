@@ -161,7 +161,9 @@ public final class Server {
 			if(type.equalsIgnoreCase("normal")) {
 				Logger.info("Generating normal world...");
 				Server.world = new World(iWorldSeed);
+				try {
 				NormalWorldGenerator.generateChunks(Server.world);
+				}catch(StackOverflowError e) {throw new RuntimeException();}
 				Server.world.setSaveSpawn(127, 127);
 			}else {
 				Server.saveWorld = false;
@@ -258,8 +260,10 @@ public final class Server {
 		Player p = id2Player.remove(id);
 		if(p != null) {
 			p.onPlayerExit();
-			p.world.removePlayer(p.eid);
-			p.world = null;
+			if(p.world != null) {
+				p.world.removePlayer(p.eid);
+				p.world = null;
+			}
 			Logger.info(id+" closed a session.");
 		}
 		//else Logger.info(id+" closed session which doesnt exist?!");

@@ -57,8 +57,8 @@ public class Player extends Entity implements CommandIssuer{
 		try {
 			this.playerdata.save();
 		} catch (Exception e) {
-			e.printStackTrace();
 			Logger.error("Failed to save playerdata!");
+			e.printStackTrace();
 		}
 		
 		Server.broadcastMessage(this.nickname+" left the game.");
@@ -119,7 +119,7 @@ public class Player extends Entity implements CommandIssuer{
 				break;
 			case ProtocolInfo.REMOVE_BLOCK_PACKET:
 				RemoveBlockPacket rbp = (RemoveBlockPacket) dp;
-				this.world.placeBlock(rbp.posX, rbp.posY, rbp.posZ, (byte)0, (byte)0);
+				this.world.placeBlockAndNotifyNearby(rbp.posX, rbp.posY, rbp.posZ, (byte)0, (byte)0);
 				this.world.broadcastPacketFromPlayer(rbp, this);
 				break;
 			case ProtocolInfo.PLACE_BLOCK_PACKET:

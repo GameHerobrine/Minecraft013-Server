@@ -104,8 +104,18 @@ public abstract class Block {
 		
 	}
 	
-	public void onBlockAdded(World world, int x, int y, int z) {
+	public void onBlockAdded(World world, int x, int y, int z) { //TODO rename to onPlace
 		
+	}
+	
+	public void onRemove(World world, int x, int y, int z) {
+		/*
+		 * TODO ice, leaf, stairs, trunk
+			IceTile::onRemove(Level *,int,int,int)
+			LeafTile::onRemove(Level *,int,int,int)
+			StairTile::onRemove(Level *,int,int,int)
+			TreeTile::onRemove(Level *,int,int,int)
+		 */
 	}
 	
 	public boolean canSurvive(World world, int x, int y, int z) {

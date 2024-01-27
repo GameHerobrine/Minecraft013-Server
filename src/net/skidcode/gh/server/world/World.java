@@ -151,7 +151,7 @@ public class World {
 	}
 	
 	public int getBlockMetaAt(int x, int y, int z) {
-		return this.getChunk(x >> 4, z >> 4).getBlockMetadata(x & 0xf, y, z & 0xf) & 0xff;
+		return this.getChunk(x >> 4, z >> 4).getBlockMetadata(x & 0xf, y, z & 0xf) & 0xf;
 	}
 	
 	public void sendBlockPlace(int x, int y, int z, int id, int meta) {
@@ -167,21 +167,28 @@ public class World {
 		}
 	}
 	
-	public void placeBlockAndNotifyNearby(int x, int y, int z, byte id, byte meta) {
-		if(x < 256 && y < 128 && z < 256 && y >= 0 && x >= 0 && z >= 0) {
-			Chunk c = this.chunks[x >> 4][z >> 4];
-			c.setBlock(x & 0xf, y, z & 0xf, id, meta);
+	public void setBlock(int x, int y, int z, byte id, byte meta, int flags) {
+		Chunk c = this.getChunk(x >> 4, z >> 4);
+		boolean s = c.setBlock(x &0xf, y, z & 0xf, id, meta);
+		if(s) {
+			if((flags & 1) != 0) { //update neighbors
+				this.notifyNearby(x, y, z, id);
+			}
 			
-			if(id > 0) Block.blocks[id].onBlockAdded(this, x, y, z);
-			this.notifyNearby(x, y, z, id);
-			
-			this.sendBlockPlace(x, y, z, id, meta);
+			if((flags & 0x2) != 0) { //update using level listeners
+				this.sendBlockPlace(x, y, z, c.getBlockID(x & 0xf, y, z & 0xf), meta); //TODO check
+			}
 		}
+		
+	}
+	
+	public void placeBlockAndNotifyNearby(int x, int y, int z, byte id, byte meta) {
+		this.setBlock(x, y, z, id, meta, 1);
 	}
 	
 	public void placeBlockMetaAndNotifyNearby(int x, int y, int z, byte meta) {
 		Chunk c = this.getChunk(x / 16, z / 16);
-		c.setBlockMetadata(x & 0xf, y, z & 0xf, meta);
+		c.setBlockMetadataRaw(x & 0xf, y, z & 0xf, meta);
 		this.notifyNearby(x, y, z, c.getBlockID(x & 0xf, y, z & 0xf));
 		this.sendBlockPlace(x, y, z, c.getBlockID(x & 0xf, y, z & 0xf), meta);
 	}
