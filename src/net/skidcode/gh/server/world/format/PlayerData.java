@@ -19,7 +19,7 @@ public class PlayerData extends RawBytesFile{
 		this.player = player;
 		if(!this.created && Server.savePlayerData) {
 			Logger.info("Creating playerdata for "+this.player.nickname);
-			this.player.setPosition(128, 64, 128);
+			this.player.setPosition(Server.world.spawnX, Server.world.spawnY, Server.world.spawnZ);
 			Files.createFile(Paths.get(this.filename));
 			this.save();
 		}

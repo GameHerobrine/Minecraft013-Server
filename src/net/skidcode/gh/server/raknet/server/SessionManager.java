@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
+import net.skidcode.gh.server.Server;
 import net.skidcode.gh.server.raknet.RakNet;
 import net.skidcode.gh.server.raknet.protocol.EncapsulatedPacket;
 import net.skidcode.gh.server.raknet.protocol.Packet;
@@ -159,7 +160,7 @@ public class SessionManager {
 					UNCONNECTED_PONG pk = new UNCONNECTED_PONG();
 					pk.serverID = this.getID();
 					pk.pingID = ((UNCONNECTED_PING) packet).pingID;
-					pk.serverName = this.getName();
+					pk.serverName = Server.serverName;
 					this.sendPacket(pk, source, port);
 				} else if (buffer.length != 0) {
 					this.streamRAW(source, port, buffer);

@@ -1,5 +1,6 @@
 package net.skidcode.gh.server.entity;
 
+import net.skidcode.gh.server.Server;
 import net.skidcode.gh.server.utils.AxisAlignedBB;
 import net.skidcode.gh.server.world.World;
 
@@ -12,7 +13,7 @@ public abstract class Entity {
 	public AxisAlignedBB boundingBox = new AxisAlignedBB(-0.5f, 0, -0.5f, 0.5f, 1, 0.5f);
 	public float width = 1, height = 1, radius = 0.5f;
 	public Entity() {
-		this.setPosition(128, 64, 128, 0, 0);
+		this.setPosition(Server.world.spawnX, Server.world.spawnY, Server.world.spawnZ, 0, 0);
 		this.eid = World.incrementAndGetNextFreeEID(); //TODO move to entity?
 	}
 	
