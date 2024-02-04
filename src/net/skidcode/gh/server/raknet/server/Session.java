@@ -12,6 +12,7 @@ import net.skidcode.gh.server.raknet.protocol.Packet;
 import net.skidcode.gh.server.raknet.protocol.packet.*;
 import net.skidcode.gh.server.utils.Binary;
 import net.skidcode.gh.server.utils.BinaryStream;
+import net.skidcode.gh.server.utils.Logger;
 
 /**
  * author: MagicDroidX
@@ -52,14 +53,14 @@ public class Session {
 
 	private boolean isActive;
 
-	private Map<Integer, Integer> ACKQueue = new HashMap<>();
-	private Map<Integer, Integer> NACKQueue = new HashMap<>();
+	private Map<Integer, Integer> ACKQueue = new ConcurrentHashMap<>();
+	private Map<Integer, Integer> NACKQueue = new ConcurrentHashMap<>();
 
-	private Map<Integer, DataPacket> recoveryQueue = new HashMap<>();
+	private Map<Integer, DataPacket> recoveryQueue = new ConcurrentHashMap<>();
 
-	private Map<Integer, Map<Integer, EncapsulatedPacket>> splitPackets = new HashMap<>();
+	private Map<Integer, Map<Integer, EncapsulatedPacket>> splitPackets = new ConcurrentHashMap<>();
 
-	private Map<Integer, Map<Integer, Integer>> needACK = new HashMap<>();
+	private Map<Integer, Map<Integer, Integer>> needACK = new ConcurrentHashMap<>();
 
 	private DataPacket sendQueue;
 
@@ -412,16 +413,15 @@ public class Session {
 				PING_DataPacket dataPacket = new PING_DataPacket();
 				dataPacket.buffer = packet.buffer;
 				dataPacket.decode();
-
 				PONG_DataPacket pk = new PONG_DataPacket();
-				pk.pingID = dataPacket.pingID;
+				pk.pingTime = dataPacket.pingTime;
+				pk.pongTime = dataPacket.pingTime + 200; //TODO other way?
 				pk.encode();
 
 				EncapsulatedPacket sendPacket = new EncapsulatedPacket();
 				sendPacket.reliability = 0;
 				sendPacket.buffer = pk.buffer;
 				this.addToQueue(sendPacket);
-				//TODO: add PING/PONG (0x00/0x03) automatic latency measure
 			}
 		} else if (state == STATE_CONNECTED) {
 			this.sessionManager.streamEncapsulated(this, packet);

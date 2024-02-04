@@ -29,20 +29,18 @@ public class Player extends Entity implements CommandIssuer{
 	public int port;
 	public int mtuSize;
 	public byte itemID;
-	public String ip, identifier, nickname;
+	public String ip, identifier, nickname = "";
 	public boolean firstChunkData = true;
 	public PlayerData playerdata;
-	
+	public boolean chunkDataSend[] = new boolean[256];
 	
 	public Player(String identifier, long clientID, String ip, int port) {
 		super();
+		this.setSize(0.6f, 1.8f);
 		this.clientID = clientID;
 		this.port = port;
 		this.ip = ip;
 		this.identifier = identifier;
-		this.posX = this.world.spawnX;
-		this.posY = this.world.spawnY;
-		this.posZ = this.world.spawnZ;
 	}
 	
 	public void sendMessage(String message) {
@@ -59,8 +57,8 @@ public class Player extends Entity implements CommandIssuer{
 		try {
 			this.playerdata.save();
 		} catch (Exception e) {
-			e.printStackTrace();
 			Logger.error("Failed to save playerdata!");
+			e.printStackTrace();
 		}
 		
 		Server.broadcastMessage(this.nickname+" left the game.");
@@ -75,7 +73,12 @@ public class Player extends Entity implements CommandIssuer{
 				break;
 			case ProtocolInfo.LOGIN_PACKET:
 				LoginPacket loginpacket = (LoginPacket)dp;
+				if(Server.getPlayerByNickname(loginpacket.nickname) != null) {
+					Logger.info(String.format("%s was prevented to join because player with nickname %s is already in game.", this.identifier, loginpacket.nickname));
+					break;
+				}
 				this.nickname = loginpacket.nickname;
+				
 				try {
 					this.playerdata = new PlayerData(this);
 				} catch (IOException e) {
@@ -88,7 +91,9 @@ public class Player extends Entity implements CommandIssuer{
 					e.printStackTrace();
 					Logger.error("Failed to parse playerdata!");
 				}
+				Server.world.addEntity(this);
 				this.world.addPlayer(this);
+				
 				StartGamePacket pk = new StartGamePacket();
 				pk.seed = this.world.worldSeed;
 				pk.eid = this.eid;
@@ -113,8 +118,8 @@ public class Player extends Entity implements CommandIssuer{
 				break;
 			case ProtocolInfo.REMOVE_BLOCK_PACKET:
 				RemoveBlockPacket rbp = (RemoveBlockPacket) dp;
-				this.world.removeBlock(rbp.posX, rbp.posY, rbp.posZ);
-				this.world.broadcastPacketFromPlayer(rbp, this);
+				this.world.placeBlockAndNotifyNearby(rbp.posX, rbp.posY, rbp.posZ, (byte)0, (byte)0);
+				//this.world.broadcastPacketFromPlayer(rbp, this);
 				break;
 			case ProtocolInfo.PLACE_BLOCK_PACKET:
 				PlaceBlockPacket pbp = (PlaceBlockPacket) dp;
@@ -125,15 +130,10 @@ public class Player extends Entity implements CommandIssuer{
 				}else {
 					Logger.warn(this.nickname+" tried to place invalid block id("+(pbp.id & 0xff)+")!");
 				}
-				
 				break;
 			case ProtocolInfo.MOVE_PLAYER_PACKET_PACKET:
 				MovePlayerPacket moveplayerpacket = (MovePlayerPacket)dp;
-				this.posX = moveplayerpacket.posX;
-				this.posY = moveplayerpacket.posY;
-				this.posZ = moveplayerpacket.posZ;
-				this.pitch = moveplayerpacket.pitch;
-				this.yaw = moveplayerpacket.yaw;
+				this.setPosition(moveplayerpacket.posX, moveplayerpacket.posY, moveplayerpacket.posZ, moveplayerpacket.yaw, moveplayerpacket.pitch);
 				moveplayerpacket.eid = this.eid;
 				moveplayerpacket.setBuffer(new byte[] {});
 				this.world.broadcastPacketFromPlayer(moveplayerpacket, this);
@@ -143,7 +143,12 @@ public class Player extends Entity implements CommandIssuer{
 				PlayerEquipmentPacket pep = (PlayerEquipmentPacket) dp;
 				if(pep.eid == this.eid) {
 					this.itemID = pep.itemID;
-					this.world.broadcastPacketFromPlayer(pep, this);
+					
+					
+					PlayerEquipmentPacket pepe = new PlayerEquipmentPacket(); //TODO fix
+					pepe.eid = this.eid;
+					pepe.itemID = this.itemID;
+					this.world.broadcastPacketFromPlayer(pepe, this);
 				}
 				break;
 			case ProtocolInfo.REQUEST_CHUNK_PACKET:
@@ -161,24 +166,29 @@ public class Player extends Entity implements CommandIssuer{
 				cdp.chunkZ = rcp.chunkZ;
 				byte[] cd = new byte[16*16*128+16*16*64+16*16];
 				int l = 0;
-				Chunk c = this.world.chunks[rcp.chunkX][rcp.chunkZ];
+				Chunk c = this.world.getChunk(rcp.chunkX, rcp.chunkZ);
 				for (int z = 0; z < 16; ++z) {
 					for (int x = 0; x < 16; ++x) {
-						cd[l++] = Server.sendFullChunks ? (byte) 0xff : c.updateMap[x][z];
+						byte update = Server.sendFullChunks ? (byte) 0xff : c.updateMap[x][z];
+						cd[l++] = update;
+						
 						for(int y = 0; y < 8; ++y) {
-							if (Server.sendFullChunks || (((c.updateMap[x][z] >> y) & 1) == 1))
+							if ((((update >> y) & 1) == 1))
 							{
-								System.arraycopy(c.blockData[x][z], y << 4, cd, l, 16);
+								int index = x << 11 | z << 7 | y << 4;
+								System.arraycopy(c.blockData, index, cd, l, 16);
 								l += 16;
-								for(int bY = 0; bY < 8; ++bY) {
-									cd[l++] = (byte) (c.blockMetadata[x][z][(y << 4) + (bY * 2)] + (c.blockMetadata[x][z][(y << 4) + (bY * 2) + 1] << 4));
-								}
+								System.arraycopy(c.blockMetadata, index >> 1, cd, l, 8);
+								l += 8;
 							}
 						}
+						
 					}
 				}
+				
 				cdp.data = cd; 
 				this.dataPacket(cdp);
+				this.chunkDataSend[(rcp.chunkX << 4) | rcp.chunkZ] = true;
 				break;
 			default:
 				Logger.warn("Unknown PID: "+dp.pid());

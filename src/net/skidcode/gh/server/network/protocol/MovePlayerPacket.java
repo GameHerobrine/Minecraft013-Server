@@ -33,5 +33,10 @@ public class MovePlayerPacket extends MinecraftDataPacket{
 		this.putFloat(this.pitch);
 		this.putFloat(this.yaw);
 	}
+
+	@Override
+	public int getSize() {
+		return 1 + 4 + 4 + 4 + 4 + 4 + 4;
+	}
 	
 }

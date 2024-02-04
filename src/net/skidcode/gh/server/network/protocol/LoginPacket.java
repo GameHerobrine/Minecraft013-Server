@@ -21,5 +21,9 @@ public class LoginPacket extends MinecraftDataPacket{
 		this.putByte(pid());
 		this.putString(nickname);
 	}
-
+	
+	@Override
+	public int getSize() {
+		return 1 + 2+this.nickname.length();
+	}
 }

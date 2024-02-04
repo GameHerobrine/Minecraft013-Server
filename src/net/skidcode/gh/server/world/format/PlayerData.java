@@ -7,9 +7,9 @@ import java.nio.file.Paths;
 import net.skidcode.gh.server.Server;
 import net.skidcode.gh.server.player.Player;
 import net.skidcode.gh.server.utils.Logger;
-import net.skidcode.gh.server.world.nbt.NBTFile;
+import net.skidcode.gh.server.world.data.RawBytesFile;
 
-public class PlayerData extends NBTFile{
+public class PlayerData extends RawBytesFile{
 	
 	public final Player player;
 	private static final byte PLAYER_DATA_VERSION = 1;
@@ -19,6 +19,7 @@ public class PlayerData extends NBTFile{
 		this.player = player;
 		if(!this.created && Server.savePlayerData) {
 			Logger.info("Creating playerdata for "+this.player.nickname);
+			this.player.setPosition(Server.world.spawnX, Server.world.spawnY, Server.world.spawnZ);
 			Files.createFile(Paths.get(this.filename));
 			this.save();
 		}
@@ -29,9 +30,7 @@ public class PlayerData extends NBTFile{
 		if(!Server.savePlayerData) return;
 		this.fileVersion = this.getByte();
 		if(this.fileVersion == PLAYER_DATA_VERSION) {
-			this.player.posX = this.getFloat();
-			this.player.posY = this.getFloat();
-			this.player.posZ = this.getFloat();
+			this.player.setPosition(this.getFloat(), this.getFloat(), this.getFloat());
 		}else {
 			Logger.warn(player.nickname+"'s data has different version, aborting reading...");
 		}

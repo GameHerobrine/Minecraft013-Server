@@ -2,6 +2,7 @@ package net.skidcode.gh.server.world.generator;
 
 import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.world.World;
+import net.skidcode.gh.server.world.parser.vanilla.ChunkDataParser;
 
 public class NormalWorldGenerator {
 	
@@ -25,7 +26,7 @@ public class NormalWorldGenerator {
 			}
 		}
 		
-		w.locationTable = new int[32][32]; //TODO comp with vanilla
+		w.locationTable = ChunkDataParser.locTable;
 	}
 	
 	protected static float[] getHeights(float[] noises, int chunkX, int chunkY, int chunkZ, int scaleX, int scaleY, int scaleZ) {

@@ -23,4 +23,8 @@ public class MessagePacket extends MinecraftDataPacket{
 		this.putString(this.message);
 	}
 
+	@Override
+	public int getSize() {
+		return 1 + 2+this.message.length();
+	}
 }

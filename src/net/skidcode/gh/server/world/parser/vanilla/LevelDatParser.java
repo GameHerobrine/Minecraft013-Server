@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import net.skidcode.gh.server.world.World;
-import net.skidcode.gh.server.world.nbt.WorldNBTFile;
+import net.skidcode.gh.server.world.data.WorldDataFile;
 
-public class LevelDatParser extends WorldNBTFile{
+public class LevelDatParser extends WorldDataFile{
 	
 	public int seed;
 	public int spawnX, spawnY, spawnZ;

@@ -12,7 +12,9 @@ public class LiquidBlock extends Block{
 	}
 	
 	public int getTickDelay() {
-		return 10;
+		if(this.material == Material.water) return 5;
+		if(this.material == Material.lava) return 30;
+		return 0;
 	}
 	
 	public boolean isSolidRender() {

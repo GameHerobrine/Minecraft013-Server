@@ -20,7 +20,7 @@ public class AddPlayerPacket extends MinecraftDataPacket{
 	public void decode() {
 		
 	}
-
+	
 	@Override
 	public void encode() {
 		this.putByte(pid());
@@ -30,6 +30,11 @@ public class AddPlayerPacket extends MinecraftDataPacket{
 		this.putFloat(this.posX);
 		this.putFloat(this.posY);
 		this.putFloat(this.posZ);
+	}
+
+	@Override
+	public int getSize() {
+		return 1 + 8 + 2+this.nickname.length() + 4 + 4 + 4 + 4;
 	}
 
 }

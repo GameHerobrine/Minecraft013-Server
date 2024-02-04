@@ -10,7 +10,6 @@ public class LiquidBlockDynamic extends LiquidBlock{
 	public int something = 0;
 	public boolean[] boolArr = new boolean[4];
 	public int[] intArr = new int[4];
-	public int tickrate = 0;
 	
 	public LiquidBlockDynamic(int id, Material m) {
 		super(id, m);
@@ -22,7 +21,7 @@ public class LiquidBlockDynamic extends LiquidBlock{
 	public void onBlockAdded(World world, int x, int y, int z) {
 		super.onBlockAdded(world, x, y, z);
 		if(world.getBlockIDAt(x, y, z) == this.blockID) {
-			world.addToTickNextTick(x, y, z, this.blockID, this.tickrate);
+			world.addToTickNextTick(x, y, z, this.blockID, this.getTickDelay());
 		}
 		
 	}
@@ -66,7 +65,7 @@ public class LiquidBlockDynamic extends LiquidBlock{
 					world.placeBlockAndNotifyNearby(x, y, z, (byte) 0);
 				}else {
 					world.placeBlockMetaAndNotifyNearby(x, y, z, (byte) depth);
-					world.addToTickNextTick(x, y, z, this.blockID, this.tickrate);
+					world.addToTickNextTick(x, y, z, this.blockID, this.getTickDelay());
 					world.notifyNearby(x, y, z, this.blockID);
 				}
 			}else if(flag) {

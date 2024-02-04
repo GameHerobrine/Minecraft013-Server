@@ -8,10 +8,10 @@ import net.skidcode.gh.server.raknet.protocol.AcknowledgePacket;
  */
 public class ACK extends AcknowledgePacket {
 
-    public static byte ID = (byte) 0xc0;
+	public static byte ID = (byte) 0xc0;
 
-    @Override
-    public byte getID() {
-        return ID;
-    }
+	@Override
+	public byte getID() {
+		return ID;
+	}
 }

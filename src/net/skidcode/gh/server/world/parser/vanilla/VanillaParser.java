@@ -23,7 +23,7 @@ public class VanillaParser {
 		for(int x = 0; x < 256; ++x) {
 			for(int z = 0; z < 256; ++z) {
 				for(int y = 0; y < 128; ++y) {
-					int id = w.chunks[x >> 4][z >> 4].blockData[x & 0xf][z & 0xf][y];
+					int id = w.getBlockIDAt(x, y, z);
 					if(id > 0) {
 						Block.blocks[id].onBlockAdded(w, x, y, z);
 					}

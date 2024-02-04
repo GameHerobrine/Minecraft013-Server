@@ -105,7 +105,7 @@ public class Block {
 
 
 	public void onBlockRemoved(World world, int x, int y, int z) {
-		world.removeBlock(x, y, z);
+		world.placeBlock(x, y, z, (byte)0, (byte)0);
 		UpdateBlockPacket pk = new UpdateBlockPacket();
 		pk.posX = x;
 		pk.posY = (byte) y;
@@ -155,15 +155,25 @@ public class Block {
 	}
 	
 	public void onBlockRemovedByPlayer(World world, int x, int y, int z, Player player) {
-		world.removeBlock(x, y, z);
+		world.placeBlock(x, y, z, (byte)0, (byte)0);
 	}
 	
 	public void tick(World world, int x, int y, int z, BedrockRandom random) {
 		
 	}
 	
-	public void onBlockAdded(World world, int x, int y, int z) {
+	public void onBlockAdded(World world, int x, int y, int z) { //TODO rename to onPlace
 		
+	}
+	
+	public void onRemove(World world, int x, int y, int z) {
+		/*
+		 * TODO ice, leaf, stairs, trunk
+			IceTile::onRemove(Level *,int,int,int)
+			LeafTile::onRemove(Level *,int,int,int)
+			StairTile::onRemove(Level *,int,int,int)
+			TreeTile::onRemove(Level *,int,int,int)
+		 */
 	}
 	
 	public boolean canSurvive(World world, int x, int y, int z) {
@@ -175,7 +185,7 @@ public class Block {
 	}
 	
 	public void onBlockPlacedByPlayer(World world, int x, int y, int z, int face, Player player) {
-		world.placeBlockAndNotifyNearby(x, y, z, (byte) this.blockID);
+		world.placeBlockAndNotifyNearby(x, y, z, (byte) this.blockID, (byte) 0);
 	}
 	
 	public static void init() {}
