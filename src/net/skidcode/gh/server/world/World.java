@@ -161,9 +161,13 @@ public class World {
 		pk.posZ = z;
 		pk.id = (byte) id;
 		pk.metadata = (byte) meta;
-		
+		int chunkX = x / 16;
+		int chunkZ = z / 16;
 		for(Player p : this.players.values()) {
-			p.dataPacket(pk);
+			if(p.chunkDataSend[(chunkX << 4) | chunkZ]) {
+				p.dataPacket(pk);
+			}
+			
 		}
 	}
 	

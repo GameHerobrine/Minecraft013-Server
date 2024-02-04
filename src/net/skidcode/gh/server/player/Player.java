@@ -32,7 +32,7 @@ public class Player extends Entity implements CommandIssuer{
 	public String ip, identifier, nickname = "";
 	public boolean firstChunkData = true;
 	public PlayerData playerdata;
-	
+	public boolean chunkDataSend[] = new boolean[256];
 	
 	public Player(String identifier, long clientID, String ip, int port) {
 		super();
@@ -184,6 +184,7 @@ public class Player extends Entity implements CommandIssuer{
 				
 				cdp.data = cd; 
 				this.dataPacket(cdp);
+				this.chunkDataSend[(rcp.chunkX << 4) | rcp.chunkZ] = true;
 				break;
 			default:
 				Logger.warn("Unknown PID: "+dp.pid());
