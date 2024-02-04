@@ -165,7 +165,7 @@ public class World {
 		int chunkZ = z / 16;
 		for(Player p : this.players.values()) {
 			if(p.chunkDataSend[(chunkX << 4) | chunkZ]) {
-				p.dataPacket(pk);
+				p.dataPacket(pk.clone());
 			}
 			
 		}
