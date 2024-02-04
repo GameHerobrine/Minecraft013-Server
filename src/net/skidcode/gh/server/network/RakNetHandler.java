@@ -10,6 +10,7 @@ import net.skidcode.gh.server.raknet.protocol.EncapsulatedPacket;
 import net.skidcode.gh.server.raknet.server.RakNetServer;
 import net.skidcode.gh.server.raknet.server.ServerHandler;
 import net.skidcode.gh.server.raknet.server.ServerInstance;
+import net.skidcode.gh.server.raknet.server.Session;
 import net.skidcode.gh.server.utils.Logger;
 
 public class RakNetHandler implements ServerInstance{
@@ -59,11 +60,11 @@ public class RakNetHandler implements ServerInstance{
 		EncapsulatedPacket pk = new EncapsulatedPacket();
 		pk.buffer = packet.getBuffer();
 		if (packet.channel != 0) {
-			packet.reliability = 3;
-			packet.orderChannel = packet.channel;
-			packet.orderIndex = 0;
+			pk.reliability = 3;
+			pk.orderChannel = packet.channel;
+			pk.orderIndex = 0;
 		} else {
-			packet.reliability = 2;
+			pk.reliability = 2;
 		}
 
 		/*if (needACK) {
@@ -75,7 +76,16 @@ public class RakNetHandler implements ServerInstance{
 		
 		EventRegistry.handleEvent(new DataPacketSend(player, packet));
 		try {
-			this.raknet.sessionManager.getSession(player.identifier).addEncapsulatedToQueue(pk);
+			Session s = this.raknet.sessionManager.getSession(player.identifier);
+			if(s != null) {
+				synchronized (s) {
+					s.addEncapsulatedToQueue(pk);
+				}
+			}else {
+				Logger.warn("Session is null??? "+player.nickname);
+			}
+			
+			
 		} catch (Exception e) {
 			//e.printStackTrace();
 		}
