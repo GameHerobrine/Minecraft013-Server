@@ -20,10 +20,7 @@ public class BroadcastCommand extends CommandBase{
 		MessagePacket mp = new MessagePacket(); //TODO API for all kind of this stuff
 		mp.message = "[Broadcast] "+msg;
 		Logger.raw(mp.message);
-		for(Player p : Server.getPlayers()) {
-			p.dataPacket(mp);
-		}
-		
+		Server.broadcastMessage(mp.message);
 		return "";
 	}
 	
