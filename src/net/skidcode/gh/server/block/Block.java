@@ -123,7 +123,7 @@ public abstract class Block {
 	}
 	
 	public void onBlockPlacedByPlayer(World world, int x, int y, int z, int face, Player player) {
-		world.placeBlockAndNotifyNearby(x, y, z, (byte) this.blockID);
+		world.placeBlockAndNotifyNearby(x, y, z, (byte) this.blockID, (byte) 0);
 	}
 	
 	public static void init() {}

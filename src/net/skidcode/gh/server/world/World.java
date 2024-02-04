@@ -187,7 +187,7 @@ public class World {
 	}
 	
 	public void placeBlockAndNotifyNearby(int x, int y, int z, byte id, byte meta) {
-		this.setBlock(x, y, z, id, meta, 1);
+		this.setBlock(x, y, z, id, meta, 3);
 	}
 	
 	public void placeBlockMetaAndNotifyNearby(int x, int y, int z, byte meta) {
@@ -203,15 +203,7 @@ public class World {
 	}
 	
 	public void placeBlockAndNotifyNearby(int x, int y, int z, byte id) {
-		if(x < 256 && y < 128 && z < 256 && y >= 0 && x >= 0 && z >= 0) {
-			Chunk c = this.chunks[x >> 4][z >> 4];
-			c.setBlock(x & 0xf, y, z & 0xf, id, (byte) 0);
-			
-			if(id > 0) Block.blocks[id].onBlockAdded(this, x, y, z);
-			
-			this.notifyNearby(x, y, z, id);
-			this.sendBlockPlace(x, y, z, id, (byte)0);
-		}
+		this.setBlock(x, y, z, id, (byte)0, 3);
 	}
 	
 	public void placeBlock(int x, int y, int z, byte id) {
