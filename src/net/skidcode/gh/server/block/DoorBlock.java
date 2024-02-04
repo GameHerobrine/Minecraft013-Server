@@ -9,4 +9,8 @@ public class DoorBlock extends Block{
 		this.setShape(0.5f - 0.5f, 0.0f, 0.5f - 0.5f, 0.5f + 0.5f, 1.0f, 0.5f + 0.5f);
 	}
 	//TODO methods
+	
+	public boolean isSolidRender() {
+		return false;
+	}
 }

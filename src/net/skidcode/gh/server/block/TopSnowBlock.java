@@ -10,4 +10,7 @@ public class TopSnowBlock extends Block {
 		this.setTicking(true);
 	}
 	//TODO methods
+	public boolean isSolidRender() {
+		return false;
+	}
 }

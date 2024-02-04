@@ -11,4 +11,8 @@ public class FarmBlock extends Block{
 		this.setLightBlock(255);
 	}
 	//TODO methods
+	
+	public boolean isSolidRender() {
+		return false;
+	}
 }

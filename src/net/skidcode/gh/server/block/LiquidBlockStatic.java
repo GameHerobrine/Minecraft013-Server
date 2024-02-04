@@ -14,7 +14,7 @@ public class LiquidBlockStatic extends LiquidBlock{
 		int meta = world.getBlockMetaAt(x, y, z);
 		world.editingBlocks = true;
 		world.placeBlock(x, y, z, (byte)(this.blockID - 1), (byte) meta);
-		world.addToTickNextTick(x, y, z, this.blockID - 1, this.tickDelay);
+		world.addToTickNextTick(x, y, z, this.blockID - 1, this.getTickDelay());
 		world.editingBlocks = false;
 	}
 	@Override

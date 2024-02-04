@@ -32,4 +32,9 @@ public class StairBlock extends Block{
 			
 		}
 	}
+	
+	@Override
+	public boolean isSolidRender() {
+		return false;
+	}
 }

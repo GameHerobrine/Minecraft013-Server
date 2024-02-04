@@ -10,8 +10,8 @@ public class TransparentBlock extends Block{
 		
 		
 	}
-	/*int __fastcall TransparentTile::isSolidRender(TransparentTile *this)
-	{
-	  return 0;
-	}*/ //TODO solidRender method
+	
+	public boolean isSolidRender() {
+		return false;
+	}
 }

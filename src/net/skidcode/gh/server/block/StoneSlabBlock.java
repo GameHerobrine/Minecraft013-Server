@@ -10,5 +10,8 @@ public class StoneSlabBlock extends Block{
 		if(!isFull) this.setShape(0, 0, 0, 1, 0.5f, 1);
 		this.setLightBlock(255);
 	}
-
+	
+	public boolean isSolidRender() {
+		return this.isFullTile; //TODO check
+	}
 }

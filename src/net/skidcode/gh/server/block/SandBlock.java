@@ -7,5 +7,9 @@ public class SandBlock extends Block{
 	public SandBlock(int id) {
 		super(id, Material.sand);
 	}
+	
+	public int getTickDelay() {
+		return 3;
+	}
 	//TODO special methods
 }

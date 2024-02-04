@@ -52,7 +52,7 @@ public class LiquidBlockDynamic extends LiquidBlock{
 				int idBot = world.getBlockIDAt(x, y - 1, z);
 				if(idBot != 0) {
 					Block b = Block.blocks[idBot];
-					if(b.isSolid || (b.material == this.material && world.getBlockMetaAt(x, y, z) == 0)) j1 = 0;
+					if(b.isSolidRender() || (b.material == this.material && world.getBlockMetaAt(x, y, z) == 0)) j1 = 0;
 				}
 			}
 			

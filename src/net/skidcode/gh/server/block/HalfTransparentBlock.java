@@ -8,8 +8,7 @@ public class HalfTransparentBlock extends Block{
 		this.unkField_6c = f6c;
 	}
 	
-	/*int __fastcall TransparentTile::isSolidRender(TransparentTile *this)
-	{
-	  return 0;
-	}*/ //TODO solidRender method
+	public boolean isSolidRender() {
+		return false;
+	}
 }

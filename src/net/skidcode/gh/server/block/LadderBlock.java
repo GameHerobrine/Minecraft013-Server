@@ -10,7 +10,12 @@ public class LadderBlock extends Block{
 		super(id, Material.decoration);
 	}
 	
+	public boolean isSolidRender() {
+		return false;
+	}
+	
 	public void onBlockPlacedByPlayer(World world, int x, int y, int z, int face, Player player) {
 		world.placeBlock(x, y, z, (byte) this.blockID, (byte) face);
 	}
+	
 }

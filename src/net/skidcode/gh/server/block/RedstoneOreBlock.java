@@ -8,8 +8,11 @@ public class RedstoneOreBlock extends Block{
 		super(id, Material.stone);
 		this.setTicking(isTicking);
 		this.unkField_6c = isTicking;
-		
-		this.tickDelay = 30;
 	}
+	
+	public int getTickDelay() {
+		return 30;
+	}
+	
 	//TODO methods
 }

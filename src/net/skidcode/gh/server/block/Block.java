@@ -2,7 +2,6 @@ package net.skidcode.gh.server.block;
 
 import java.util.Random;
 
-import net.skidcode.gh.server.block.impl.*;
 import net.skidcode.gh.server.block.material.Material;
 import net.skidcode.gh.server.network.protocol.RemoveBlockPacket;
 import net.skidcode.gh.server.network.protocol.UpdateBlockPacket;
@@ -11,6 +10,7 @@ import net.skidcode.gh.server.utils.AABB;
 import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.utils.random.BedrockRandom;
 import net.skidcode.gh.server.world.World;
+
 //TODO block properties
 public class Block {
 	public static Block[] blocks = new Block[256];
@@ -81,25 +81,25 @@ public class Block {
 	
 	
 	//TODO
-	public static Block wool = new WoolBlock(35, -49);
-	public static Block wool_f = new WoolBlock(101, 0xf); //using ids instead of meta =/
-	public static Block wool_e = new WoolBlock(102, 0xe);
-	public static Block wool_d = new WoolBlock(103, 0xd);
-	public static Block wool_c = new WoolBlock(104, 0xc);
-	public static Block wool_b = new WoolBlock(105, 0xb);
-	public static Block wool_a = new WoolBlock(106, 0xa);
-	public static Block wool_9 = new WoolBlock(107, 0x9);
-	public static Block wool_8 = new WoolBlock(108, 0x8);
-	public static Block wool_7 = new WoolBlock(109, 0x7);
-	public static Block wool_6 = new WoolBlock(110, 0x6);
-	public static Block wool_5 = new WoolBlock(111, 0x5);
-	public static Block wool_4 = new WoolBlock(112, 0x4);
-	public static Block wool_3 = new WoolBlock(113, 0x3);
-	public static Block wool_2 = new WoolBlock(114, 0x2);
-	public static Block wool_1 = new WoolBlock(115, 0x1);
-	public static Block updateGame = new InfoUpdateBlock(248);
-	public static Block updateGame2 = new InfoUpdate2Block(249);
-	public static Block fire = new FireBlock(51);
+	public static Block wool = new ClothBlock(35, -49).setDestroyTime(0.8f);
+	public static Block wool_f = new ClothBlock(101, 0xf).setDestroyTime(0.8f); //using ids instead of meta =/
+	public static Block wool_e = new ClothBlock(102, 0xe).setDestroyTime(0.8f);
+	public static Block wool_d = new ClothBlock(103, 0xd).setDestroyTime(0.8f);
+	public static Block wool_c = new ClothBlock(104, 0xc).setDestroyTime(0.8f);
+	public static Block wool_b = new ClothBlock(105, 0xb).setDestroyTime(0.8f);
+	public static Block wool_a = new ClothBlock(106, 0xa).setDestroyTime(0.8f);
+	public static Block wool_9 = new ClothBlock(107, 0x9).setDestroyTime(0.8f);
+	public static Block wool_8 = new ClothBlock(108, 0x8).setDestroyTime(0.8f);
+	public static Block wool_7 = new ClothBlock(109, 0x7).setDestroyTime(0.8f);
+	public static Block wool_6 = new ClothBlock(110, 0x6).setDestroyTime(0.8f);
+	public static Block wool_5 = new ClothBlock(111, 0x5).setDestroyTime(0.8f);
+	public static Block wool_4 = new ClothBlock(112, 0x4).setDestroyTime(0.8f);
+	public static Block wool_3 = new ClothBlock(113, 0x3).setDestroyTime(0.8f);
+	public static Block wool_2 = new ClothBlock(114, 0x2).setDestroyTime(0.8f);
+	public static Block wool_1 = new ClothBlock(115, 0x1).setDestroyTime(0.8f);
+	public static Block info_updateGame1 = new Block(248, Material.dirt).setDestroyTime(5.0f);
+	public static Block updateGame2 = new Block(249, Material.dirt).setDestroyTime(0.8f);
+	public static Block fire = new FireBlock(51).setDestroyTime(0.0f).setLightEmmision(1.0f);
 	
 	public void onNeighborBlockChanged(World world, int x, int y, int z, int meta) {}
 
@@ -170,6 +170,10 @@ public class Block {
 		return true;
 	}
 	
+	public boolean isSolidRender() {
+		return true;
+	}
+	
 	public void onBlockPlacedByPlayer(World world, int x, int y, int z, int face, Player player) {
 		world.placeBlockAndNotifyNearby(x, y, z, (byte) this.blockID);
 	}
@@ -185,10 +189,12 @@ public class Block {
 		else Block.blocks[id] = this;
 	}
 	
+	public int getTickDelay() {
+		return 10;
+	}
+	
 	public int blockID;
 	public String name = "";
 	public Material material;
-	public boolean isSolid = true; //isRenderSolid method in 0.1.3
 	public boolean isOpaque = true;
-	public int tickDelay = 10;
 }

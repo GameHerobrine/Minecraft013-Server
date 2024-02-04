@@ -8,5 +8,8 @@ public class TorchBlock extends Block{
 		super(id, Material.decoration);
 		this.setTicking(true); //TODO ticking might be used only for clientside rendering
 	}
-
+	
+	public boolean isSolidRender() {
+		return false;
+	}
 }

@@ -6,6 +6,7 @@ public class DirtBlock extends Block{
 
 	public DirtBlock(int id) {
 		super(id, Material.dirt);
+		this.setTicking(true);
 	}
 
 }
