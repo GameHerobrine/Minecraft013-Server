@@ -74,8 +74,12 @@ public class RakNetHandler implements ServerInstance{
 		}*/ //TODO and check is neccessary
 		
 		EventRegistry.handleEvent(new DataPacketSend(player, packet));
-		
-		this.handler.sendEncapsulated(player.identifier, pk, 0 | RakNet.PRIORITY_NORMAL);
+		try {
+			this.raknet.sessionManager.getSession(player.identifier).addEncapsulatedToQueue(pk);
+		} catch (Exception e) {
+			//e.printStackTrace();
+		}
+		//this.handler.sendEncapsulated(player.identifier, pk, 0 | RakNet.PRIORITY_NORMAL);
 	}
 	
 	@Override
