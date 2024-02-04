@@ -53,14 +53,14 @@ public class Session {
 
 	private boolean isActive;
 
-	private Map<Integer, Integer> ACKQueue = new HashMap<>();
-	private Map<Integer, Integer> NACKQueue = new HashMap<>();
+	private Map<Integer, Integer> ACKQueue = new ConcurrentHashMap<>();
+	private Map<Integer, Integer> NACKQueue = new ConcurrentHashMap<>();
 
-	private Map<Integer, DataPacket> recoveryQueue = new HashMap<>();
+	private Map<Integer, DataPacket> recoveryQueue = new ConcurrentHashMap<>();
 
-	private Map<Integer, Map<Integer, EncapsulatedPacket>> splitPackets = new HashMap<>();
+	private Map<Integer, Map<Integer, EncapsulatedPacket>> splitPackets = new ConcurrentHashMap<>();
 
-	private Map<Integer, Map<Integer, Integer>> needACK = new HashMap<>();
+	private Map<Integer, Map<Integer, Integer>> needACK = new ConcurrentHashMap<>();
 
 	private DataPacket sendQueue;
 
