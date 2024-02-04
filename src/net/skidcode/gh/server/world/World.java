@@ -235,14 +235,14 @@ public class World {
 	
 	public void broadcastPacket(MinecraftDataPacket pk) {
 		for(Player pl : this.players.values()) {
-			pl.dataPacket(pk);
+			pl.dataPacket(pk.clone());
 		}
 	}
 	
 	public void broadcastPacketFromPlayer(MinecraftDataPacket pk, Player p) {
 		for(Player pl : this.players.values()) {
 			if(p.eid != pl.eid) {
-				pl.dataPacket(pk);
+				pl.dataPacket(pk.clone());
 			}
 		}
 	}

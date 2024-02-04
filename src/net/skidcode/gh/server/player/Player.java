@@ -144,7 +144,12 @@ public class Player extends Entity implements CommandIssuer{
 				PlayerEquipmentPacket pep = (PlayerEquipmentPacket) dp;
 				if(pep.eid == this.eid) {
 					this.itemID = pep.itemID;
-					this.world.broadcastPacketFromPlayer(pep, this);
+					
+					
+					PlayerEquipmentPacket pepe = new PlayerEquipmentPacket(); //TODO fix
+					pepe.eid = this.eid;
+					pepe.itemID = this.itemID;
+					this.world.broadcastPacketFromPlayer(pepe, this);
 				}
 				break;
 			case ProtocolInfo.REQUEST_CHUNK_PACKET:
