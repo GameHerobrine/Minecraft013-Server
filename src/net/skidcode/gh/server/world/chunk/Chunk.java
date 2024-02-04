@@ -2,7 +2,6 @@ package net.skidcode.gh.server.world.chunk;
 
 import net.skidcode.gh.server.Server;
 import net.skidcode.gh.server.block.Block;
-import net.skidcode.gh.server.utils.Logger;
 
 public class Chunk {
 	
