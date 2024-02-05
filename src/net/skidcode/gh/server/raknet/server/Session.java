@@ -72,7 +72,9 @@ public class Session {
 	private int reliableWindowEnd;
 	private Map<Integer, EncapsulatedPacket> reliableWindow = new HashMap<>();
 	private int lastReliableIndex = -1;
-
+	
+	private ArrayList<EncapsulatedPacket> scheducledPackets = new ArrayList<>();
+	
 	public Session(SessionManager sessionManager, String address, int port) {
 		this.sessionManager = sessionManager;
 		this.address = address;
@@ -110,6 +112,14 @@ public class Session {
 
 			return;
 		}
+		
+		synchronized(this.scheducledPackets) {
+			while(this.scheducledPackets.size() > 0) {
+				EncapsulatedPacket pk = this.scheducledPackets.remove(0);
+				this.addEncapsulatedToQueue(pk); //TODO priority?
+			}
+		}
+		
 		this.isActive = false;
 
 		if (!this.ACKQueue.isEmpty()) {
@@ -198,7 +208,7 @@ public class Session {
 			this.sendQueue = new DATA_PACKET_4();
 		}
 	}
-
+	
 	private void addToQueue(EncapsulatedPacket pk) throws Exception {
 		addToQueue(pk, RakNet.PRIORITY_NORMAL);
 	}
@@ -244,7 +254,13 @@ public class Session {
 	public void addEncapsulatedToQueue(EncapsulatedPacket packet) throws Exception {
 		addEncapsulatedToQueue(packet, RakNet.PRIORITY_NORMAL);
 	}
-
+	
+	public void scheducleEncapsulated(EncapsulatedPacket packet) {
+		synchronized (this.scheducledPackets) {
+			this.scheducledPackets.add(packet);
+		}
+	}
+	
 	public void addEncapsulatedToQueue(EncapsulatedPacket packet, int flags) throws Exception {
 		if ((packet.needACK = (flags & RakNet.FLAG_NEED_ACK) > 0)) {
 			this.needACK.put(packet.identifierACK, new HashMap<>());

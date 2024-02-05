@@ -79,7 +79,7 @@ public class RakNetHandler implements ServerInstance{
 			Session s = this.raknet.sessionManager.getSession(player.identifier);
 			if(s != null) {
 				synchronized (s) {
-					s.addEncapsulatedToQueue(pk);
+					s.scheducleEncapsulated(pk);
 				}
 			}else {
 				Logger.warn("Session is null??? "+player.nickname);
