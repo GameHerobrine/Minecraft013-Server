@@ -15,7 +15,9 @@ public class ReedBlock extends Block{
 	public boolean isSolidRender() {
 		return false;
 	}
-	
+	public void onNeighborBlockChanged(World world, int x, int y, int z, int meta) {
+		this.checkAlive(world, x, y, z);
+	}
 	public void tick(World world, int x, int y, int z, BedrockRandom random) {
 		//Logger.info(x+":"+y+":"+z+"  is"+this.blockID);
 		if(world.isAirBlock(x, y + 1, z)) {
@@ -35,13 +37,26 @@ public class ReedBlock extends Block{
 			}
 		}
 	}
+	//TODO getAABB -> null
 	
-	public boolean canSurvive(World world, int x, int y, int z) {
+	public void checkAlive(World world, int x, int y, int z) {
+		if(!this.canSurvive(world, x, y, z)) world.setBlock(x, y, z, (byte)0, (byte)0, 3);
+	}
+	
+	public boolean mayPlace(World world, int x, int y, int z) {
+		int idBelow = world.getBlockIDAt(x, y - 1, z);
 		
-		int dY = y - 1;
-		int idDown = world.getBlockIDAt(x, dY, z);
-		if(idDown == this.blockID) return true;
-		else if(idDown != Block.grass.blockID && idDown != Block.dirt.blockID) return false;
-		return world.getMaterial(x - 1, dY, z) == Material.water || world.getMaterial(x + 1, dY, z) == Material.water || world.getMaterial(x, dY, z - 1) == Material.water || world.getMaterial(x, dY, z + 1) == Material.water;
+		if(idBelow == this.blockID) return true;
+		if(idBelow != Block.grass.blockID && idBelow != Block.dirt.blockID) return false;
+		
+		if(world.getMaterial(x - 1, y - 1, z) == Material.water) return true;
+		if(world.getMaterial(x + 1, y - 1, z) == Material.water) return true;
+		if(world.getMaterial(x, y - 1, z - 1) == Material.water) return true;
+		
+		return world.getMaterial(x, y - 1, z + 1) == Material.water;
+		
+	}
+	public boolean canSurvive(World world, int x, int y, int z) {
+		return this.mayPlace(world, x, y, z);
 	}
 }

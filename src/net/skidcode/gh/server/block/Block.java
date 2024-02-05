@@ -176,6 +176,11 @@ public class Block {
 		 */
 	}
 	
+	public boolean mayPlace(World world, int x, int y, int z) {
+		//TODO mayPlace
+		return true;
+	}
+	
 	public boolean canSurvive(World world, int x, int y, int z) {
 		return true;
 	}

@@ -186,6 +186,11 @@ public class World {
 		
 	}
 	
+	public void placeBlockMetaNoUpdate(int x, int y, int z, byte meta) {
+		Chunk c = this.getChunk(x / 16, z / 16);
+		c.setBlockMetadataRaw(x & 0xf, y, z & 0xf, meta);
+	}
+	
 	public void placeBlockAndNotifyNearby(int x, int y, int z, byte id, byte meta) {
 		this.setBlock(x, y, z, id, meta, 3);
 	}
