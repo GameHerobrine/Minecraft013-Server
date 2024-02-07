@@ -121,33 +121,39 @@ public class Session {
 		}
 		
 		this.isActive = false;
-
-		if (!this.ACKQueue.isEmpty()) {
-			ACK pk = new ACK();
-			pk.packets = new TreeMap<>(this.ACKQueue);
-			this.sendPacket(pk);
-			this.ACKQueue = new HashMap<>();
-		}
-
-		if (!this.NACKQueue.isEmpty()) {
-			NACK pk = new NACK();
-			pk.packets = new TreeMap<>(this.NACKQueue);
-			this.sendPacket(pk);
-			this.NACKQueue = new HashMap<>();
-		}
-
-		if (!this.packetToSend.isEmpty()) {
-			int limit = 16;
-			for (int i = 0; i < this.packetToSend.size(); i++) {
-				DataPacket pk = this.packetToSend.get(i);
-				pk.sendTime = time;
-				pk.encode();
-				this.recoveryQueue.put(pk.seqNumber, pk);
-				this.packetToSend.remove(pk);
+		
+		synchronized(this.ACKQueue) {
+			if (!this.ACKQueue.isEmpty()) {
+				ACK pk = new ACK();
+				pk.packets = new TreeMap<>(this.ACKQueue);
 				this.sendPacket(pk);
-
-				if (limit-- <= 0) {
-					break;
+				this.ACKQueue = new HashMap<>();
+			}
+		}
+		
+		synchronized(this.NACKQueue) {
+			if (!this.NACKQueue.isEmpty()) {
+				NACK pk = new NACK();
+				pk.packets = new TreeMap<>(this.NACKQueue);
+				this.sendPacket(pk);
+				this.NACKQueue = new HashMap<>();
+			}
+		}
+		
+		synchronized(this.packetToSend) {
+			if (!this.packetToSend.isEmpty()) {
+				int limit = 16;
+				for (int i = 0; i < this.packetToSend.size(); i++) {
+					DataPacket pk = this.packetToSend.get(i);
+					pk.sendTime = time;
+					pk.encode();
+					this.recoveryQueue.put(pk.seqNumber, pk);
+					this.packetToSend.remove(pk);
+					this.sendPacket(pk);
+	
+					if (limit-- <= 0) {
+						break;
+					}
 				}
 			}
 		}
@@ -155,32 +161,38 @@ public class Session {
 		if (this.packetToSend.size() > WINDOW_SIZE) {
 			this.packetToSend.clear();
 		}
-
-		if (!this.needACK.isEmpty()) {
-			for (int identifierACK : new ArrayList<>(this.needACK.keySet())) {
-				Map<Integer, Integer> indexes = this.needACK.get(identifierACK);
-				if (indexes.isEmpty()) {
-					this.needACK.remove(identifierACK);
-					this.sessionManager.notifyACK(this, identifierACK);
+		
+		synchronized(this.needACK) {
+			if (!this.needACK.isEmpty()) {
+				for (int identifierACK : new ArrayList<>(this.needACK.keySet())) {
+					Map<Integer, Integer> indexes = this.needACK.get(identifierACK);
+					if (indexes.isEmpty()) {
+						this.needACK.remove(identifierACK);
+						this.sessionManager.notifyACK(this, identifierACK);
+					}
 				}
 			}
 		}
-
-		for (int seq : new ArrayList<>(this.recoveryQueue.keySet())) {
-			DataPacket pk = this.recoveryQueue.get(seq);
-			if (pk.sendTime < System.currentTimeMillis() - 8000) {
-				this.packetToSend.add(pk);
-				this.recoveryQueue.remove(seq);
-			} else {
-				break;
+		
+		synchronized(this.recoveryQueue) {
+			for (int seq : new ArrayList<>(this.recoveryQueue.keySet())) {
+				DataPacket pk = this.recoveryQueue.get(seq);
+				if (pk.sendTime < System.currentTimeMillis() - 8000) {
+					this.packetToSend.add(pk);
+					this.recoveryQueue.remove(seq);
+				} else {
+					break;
+				}
 			}
 		}
-
-		for (int seq : new ArrayList<>(this.receivedWindow.keySet())) {
-			if (seq < this.windowStart) {
-				this.receivedWindow.remove(seq);
-			} else {
-				break;
+		
+		synchronized(this.receivedWindow) {
+			for (int seq : new ArrayList<>(this.receivedWindow.keySet())) {
+				if (seq < this.windowStart) {
+					this.receivedWindow.remove(seq);
+				} else {
+					break;
+				}
 			}
 		}
 

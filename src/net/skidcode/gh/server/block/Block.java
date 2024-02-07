@@ -15,7 +15,6 @@ import net.skidcode.gh.server.world.World;
 public class Block {
 	public static Block[] blocks = new Block[256];
 	public static boolean[] shouldTick = new boolean[256];
-	public static int[] lightOpacity = new int[256];
 	public static int[] lightBlock = new int[256];
 	public static int[] lightEmission = new int[256];
 	public String description;

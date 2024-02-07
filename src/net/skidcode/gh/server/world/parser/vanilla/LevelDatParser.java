@@ -15,15 +15,19 @@ public class LevelDatParser extends WorldDataFile{
 	public String worldName;
 	
 	public LevelDatParser(Path p) throws IOException {
-		super(p, 8);
+		super(p, 0);
 	}
 
 	public LevelDatParser(String string) throws IOException {
-		super(string+"/level.dat", 8);
+		super(string+"/level.dat", 0);
 	}
 
 	@Override
 	public void parse(World world) {
+		
+		this.getInt();
+		this.getInt();
+		
 		world.worldSeed = this.getInt(); //should be long, but 0.1 write<long> writes int
 		world.spawnX = this.getInt();
 		world.spawnY = this.getInt();
@@ -41,6 +45,7 @@ public class LevelDatParser extends WorldDataFile{
 	public void save(World world) {
 		this.putInt(0x01000000); //dat version
 		this.putInt(8*4+2+world.name.length()); //data size
+		
 		this.putInt(world.worldSeed);
 		this.putInt(world.spawnX);
 		this.putInt(world.spawnY);

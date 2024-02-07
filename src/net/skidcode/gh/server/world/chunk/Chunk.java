@@ -2,6 +2,7 @@ package net.skidcode.gh.server.world.chunk;
 
 import net.skidcode.gh.server.Server;
 import net.skidcode.gh.server.block.Block;
+import net.skidcode.gh.server.utils.Logger;
 
 public class Chunk {
 	
@@ -34,9 +35,7 @@ public class Chunk {
 		for(int x = 0; x < 16; ++x) {
 			for(int z = 0; z < 16; ++z) {
 				byte l = 127;
-				
-				for(;l > 0 && (this.blockData[x << 11 | z << 7 | l-1] & 0xff) == 0;--l);
-				
+				for(int ind = x << 11 | z << 7; l > 0 && Block.lightBlock[this.blockData[(ind + l) - 1] & 0xff] == 0; --l);
 				heightMap[x][z] = l;
 			}
 		}
@@ -56,7 +55,7 @@ public class Chunk {
 	
 	public boolean setBlock(int x, int y, int z, byte id, byte meta) {
 		
-		int idBefore = this.getBlockID(x, y, z);
+		int idBefore = this.getBlockID(x, y, z) & 0xff;
 		if(idBefore == id) {
 			if(this.getBlockMetadata(x, y, z) == meta) return false;
 		}
@@ -67,7 +66,13 @@ public class Chunk {
 		this.blockData[x << 11 | z << 7 | y] = (byte) id;
 		
 		if(idBefore > 0) {
-			Block.blocks[idBefore].onRemove(Server.world, worldX, y, worldZ); //TODO Chunk::world
+			Block b = Block.blocks[idBefore];
+			if(b != null) {
+				b.onRemove(Server.world, worldX, y, worldZ); //TODO Chunk::world
+			}else {
+				Logger.warn(String.format("%d-%d-%d has unknown block ID(%d)!", worldX, y, worldZ, idBefore));
+			}
+			
 			//Removal of TileEntities is also handled here, but they didnt exist until ~0.3
 		}
 		this.setBlockMetadataRaw(x, y, z, meta);
@@ -123,5 +128,18 @@ public class Chunk {
 		int index = x << 11 | z << 7 | y;
 		return (index & 1) == 1 ? (this.blockMetadata[index >> 1] >> 4) : (this.blockMetadata[index >> 1] & 0xf);
 	}
+	
+	public int getSkylight(int x, int y, int z) {
+		if(y > 127 || y < 0) return 0;
+		int index = x << 11 | z << 7 | y;
+		return (index & 1) == 1 ? (this.blockSkyLight[index >> 1] >> 4) : (this.blockSkyLight[index >> 1] & 0xf);
+	}
+	
+	public int getBlockLight(int x, int y, int z) {
+		if(y > 127 || y < 0) return 0;
+		int index = x << 11 | z << 7 | y;
+		return (index & 1) == 1 ? (this.blockLight[index >> 1] >> 4) : (this.blockLight[index >> 1] & 0xf);
+	}
+	
 	
 }
