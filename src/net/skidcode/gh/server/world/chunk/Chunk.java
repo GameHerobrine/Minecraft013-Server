@@ -31,11 +31,12 @@ public class Chunk {
 		this.updateMap = new byte[16][16];
 	}
 	
-	public void generateHeightMap() {
+	public void generateHeightMap() { //TODO vanilla
 		for(int x = 0; x < 16; ++x) {
 			for(int z = 0; z < 16; ++z) {
 				byte l = 127;
-				for(int ind = x << 11 | z << 7; l > 0 && Block.lightBlock[this.blockData[(ind + l) - 1] & 0xff] == 0; --l);
+				//for(int ind = x << 11 | z << 7; l > 0 && Block.lightBlock[this.blockData[(ind + l) - 1] & 0xff] == 0; --l);
+				for(;l > 0 && (this.blockData[x << 11 | z << 7 | l-1] & 0xff) == 0;--l);
 				heightMap[x][z] = l;
 			}
 		}
