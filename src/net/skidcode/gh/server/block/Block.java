@@ -165,6 +165,10 @@ public class Block {
 		
 	}
 	
+	public void destroy(World world, int x, int y, int z, int meta) {
+		
+	}
+	
 	public void onRemove(World world, int x, int y, int z) {
 		/*
 		 * TODO ice, leaf, stairs, trunk
@@ -205,6 +209,16 @@ public class Block {
 	
 	public int getTickDelay() {
 		return 10;
+	}
+	
+	public float getDestroyProgress(Player player) {
+		if(this.destroyTime < 0) return 0;
+		
+		if(!player.canDestroy(this)) { //never called
+			return (1 - this.destroyTime) / 100;
+		}
+		
+		return player.getDestroySpeed() / this.destroyTime / 30;
 	}
 	
 	public int blockID;

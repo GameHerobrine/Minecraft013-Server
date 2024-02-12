@@ -171,9 +171,9 @@ public class World {
 		}
 	}
 	
-	public void setBlock(int x, int y, int z, byte id, byte meta, int flags) {
+	public boolean setBlock(int x, int y, int z, int id, int meta, int flags) {
 		Chunk c = this.getChunk(x >> 4, z >> 4);
-		boolean s = c.setBlock(x &0xf, y, z & 0xf, id, meta);
+		boolean s = c.setBlock(x &0xf, y, z & 0xf, (byte) id, (byte)meta);
 		if(s) {
 			if((flags & 1) != 0) { //update neighbors
 				this.notifyNearby(x, y, z, id);
@@ -183,6 +183,7 @@ public class World {
 				this.sendBlockPlace(x, y, z, c.getBlockID(x & 0xf, y, z & 0xf), meta); //TODO check
 			}
 		}
+		return s;
 		
 	}
 	

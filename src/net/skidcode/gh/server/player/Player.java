@@ -20,6 +20,7 @@ import net.skidcode.gh.server.network.protocol.PlayerEquipmentPacket;
 import net.skidcode.gh.server.network.protocol.RemoveBlockPacket;
 import net.skidcode.gh.server.network.protocol.RequestChunkPacket;
 import net.skidcode.gh.server.network.protocol.StartGamePacket;
+import net.skidcode.gh.server.network.protocol.UpdateBlockPacket;
 import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.world.chunk.Chunk;
 import net.skidcode.gh.server.world.format.PlayerData;
@@ -33,6 +34,7 @@ public class Player extends Entity implements CommandIssuer{
 	public boolean firstChunkData = true;
 	public PlayerData playerdata;
 	public boolean chunkDataSend[] = new boolean[256];
+	public GameMode gamemode;
 	
 	public Player(String identifier, long clientID, String ip, int port) {
 		super();
@@ -41,6 +43,7 @@ public class Player extends Entity implements CommandIssuer{
 		this.port = port;
 		this.ip = ip;
 		this.identifier = identifier;
+		this.gamemode = new SurvivalMode(this);
 	}
 	
 	public void sendMessage(String message) {
@@ -118,7 +121,18 @@ public class Player extends Entity implements CommandIssuer{
 				break;
 			case ProtocolInfo.REMOVE_BLOCK_PACKET:
 				RemoveBlockPacket rbp = (RemoveBlockPacket) dp;
-				this.world.placeBlockAndNotifyNearby(rbp.posX, rbp.posY, rbp.posZ, (byte)0, (byte)0);
+				
+				if(!this.gamemode.destroyBlock(rbp.posX, rbp.posY, rbp.posZ)) {
+					UpdateBlockPacket rollback = new UpdateBlockPacket();
+					rollback.posX = rbp.posX;
+					rollback.posY = rbp.posY;
+					rollback.posZ = rbp.posZ;
+					rollback.id = (byte) this.world.getBlockIDAt(rbp.posX, rbp.posY, rbp.posZ);
+					rollback.metadata = (byte) this.world.getBlockMetaAt(rbp.posX, rbp.posY, rbp.posZ);
+					this.dataPacket(rollback);
+				}
+				
+				//this.world.placeBlockAndNotifyNearby(rbp.posX, rbp.posY, rbp.posZ, (byte)0, (byte)0);
 				//this.world.broadcastPacketFromPlayer(rbp, this);
 				break;
 			case ProtocolInfo.PLACE_BLOCK_PACKET:
@@ -194,6 +208,14 @@ public class Player extends Entity implements CommandIssuer{
 				Logger.warn("Unknown PID: "+dp.pid());
 				break;
 		}
+	}
+	
+	public float getDestroySpeed() {
+		return 0.5f;
+	}
+	
+	public boolean canDestroy(Block block) {
+		return true;
 	}
 	
 	public void onSpawned() {
