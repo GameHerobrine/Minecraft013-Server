@@ -15,8 +15,8 @@ public class ReedsFeature extends Feature{
 			if (world.isAirBlock(blockX, y, blockZ) && (world.getMaterial(blockX - 1, y - 1, blockZ) == Material.water || world.getMaterial(blockX + 1, y - 1, blockZ) == Material.water || world.getMaterial(blockX, y - 1, blockZ - 1) == Material.water || world.getMaterial(blockX, y - 1, blockZ + 1) == Material.water)) {
 				int nextInt3 = 2 + rand.nextInt(rand.nextInt(3) + 1);
 				for (int i2 = 0; i2 < nextInt3; i2++) {
-					if (Block.reeds.canSurvive(world, blockX, y + i2, blockZ)) { //TODO a bit non-vanilla, make vanilla
-						world.placeBlock(blockX, y + i2, blockZ, (byte) Block.reeds.blockID);
+					if (Block.reeds.canSurvive(world, blockX, y + i2, blockZ)) {
+						world.setBlock(blockX, y + i2, blockZ, (byte) Block.reeds.blockID, 0, 0);
 					}
 				 }
 			}

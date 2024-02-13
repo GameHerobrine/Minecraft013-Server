@@ -17,7 +17,7 @@ import net.skidcode.gh.server.world.feature.OreFeature;
 import net.skidcode.gh.server.world.feature.ReedsFeature;
 import net.skidcode.gh.server.world.feature.SpringFeature;
 
-public class RandomLevelSource implements LevelSource{ //TODO all public?, try to make more vanilla
+public class RandomLevelSource implements LevelSource{
 	private World world;
 	private BedrockRandom rand;
 	private PerlinNoise upperInterpolationNoise;

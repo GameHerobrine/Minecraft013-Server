@@ -7,7 +7,7 @@ import net.skidcode.gh.server.world.chunk.Chunk;
 
 public class FillChunkCommand extends CommandBase{
 
-	public FillChunkCommand(String name) {
+	public FillChunkCommand(String name, String desc) {
 		super(name);
 	}
 

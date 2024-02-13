@@ -6,8 +6,8 @@ import net.skidcode.gh.server.console.command.CommandIssuer;
 
 public class TpsCommand extends CommandBase{
 
-	public TpsCommand(String name) {
-		super(name);
+	public TpsCommand(String name, String desc) {
+		super(name, desc);
 	}
 
 	@Override

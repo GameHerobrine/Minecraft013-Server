@@ -13,9 +13,17 @@ import net.skidcode.gh.server.console.command.impl.TpsCommand;
 public abstract class CommandBase {
 	
 	public final String name;
-	public CommandBase(String name) { //TODO help
-		this.name = name;
+	public final String description;
+	
+	public CommandBase(String name) {
+		this(name, "[...]");
 	}
+	
+	public CommandBase(String name, String description) {
+		this.name = name;
+		this.description = description;
+	}
+	
 	public abstract String processCommand(CommandIssuer issuer, String... parameters);
 	
 	
@@ -26,13 +34,13 @@ public abstract class CommandBase {
 	}
 	
 	static {
-		addCommand(new HelpCommand("help"));
-		addCommand(new BroadcastCommand("broadcast"));
-		addCommand(new TeleportCommand("teleport"));
-		addCommand(new StopCommand("stop"));
-		addCommand(new FillChunkCommand("fillchunk"));
-		addCommand(new TpsCommand("tps"));
-		addCommand(new PlayerListCommand("playerlist"));
+		addCommand(new HelpCommand("help", ""));
+		addCommand(new BroadcastCommand("broadcast", "<msg>"));
+		addCommand(new TeleportCommand("teleport", "<x> <y> <z> <playername>"));
+		addCommand(new StopCommand("stop", ""));
+		addCommand(new FillChunkCommand("fillchunk", "wth_are_u_doing"));
+		addCommand(new TpsCommand("tps", ""));
+		addCommand(new PlayerListCommand("playerlist", ""));
 	}
 	
 }

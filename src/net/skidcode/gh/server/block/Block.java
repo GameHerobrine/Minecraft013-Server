@@ -80,8 +80,6 @@ public class Block {
 	public static Block reeds = new ReedBlock(83).setDestroyTime(0.0f).setDescription("reeds");
 	public static Block invisibleBedrock = new InvisibleBlock(95, Material.stone).setDestroyTime(-1.0f).setExplodeable(6000000.0f);
 	
-	
-	//TODO
 	public static Block wool = new ClothBlock(35, -49).setDestroyTime(0.8f);
 	public static Block wool_f = new ClothBlock(101, 0xf).setDestroyTime(0.8f); //using ids instead of meta =/
 	public static Block wool_e = new ClothBlock(102, 0xe).setDestroyTime(0.8f);

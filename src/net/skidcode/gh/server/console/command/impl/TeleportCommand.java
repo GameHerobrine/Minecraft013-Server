@@ -9,8 +9,8 @@ import net.skidcode.gh.server.player.Player;
 
 public class TeleportCommand extends CommandBase{
 
-	public TeleportCommand(String name) {
-		super(name);
+	public TeleportCommand(String name, String desc) {
+		super(name, desc);
 	}
 
 	@Override

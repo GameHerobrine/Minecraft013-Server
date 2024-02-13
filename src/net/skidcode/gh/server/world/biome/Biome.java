@@ -26,7 +26,7 @@ public class Biome {
 	
 	public String name;
 	public byte topBlock = (byte) Block.grass.blockID;
-	public byte fillerBlock = (byte) Block.dirt.blockID; //TODO maybe stone??
+	public byte fillerBlock = (byte) Block.dirt.blockID;
 	
 	public Feature getTreeFeature(BedrockRandom r) {
 		r.nextInt(); //necessary for vanilla-like gen!

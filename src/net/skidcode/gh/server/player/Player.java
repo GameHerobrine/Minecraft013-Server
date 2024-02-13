@@ -242,7 +242,7 @@ public class Player extends Entity implements CommandIssuer{
 	}
 	
 	public void onSpawned() {
-		for(Player p : Server.getPlayers()) { //Fix of Vanilla's not sending other player items on connect, TODO make toggleable in config?
+		for(Player p : Server.getPlayers()) {
 			if(p.eid != this.eid) {
 				PlayerEquipmentPacket pep = new PlayerEquipmentPacket();
 				pep.eid = p.eid;

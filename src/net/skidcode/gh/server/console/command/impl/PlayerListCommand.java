@@ -7,8 +7,8 @@ import net.skidcode.gh.server.player.Player;
 
 public class PlayerListCommand extends CommandBase {
 
-	public PlayerListCommand(String name) {
-		super(name);
+	public PlayerListCommand(String name, String desc) {
+		super(name, desc);
 	}
 
 	@Override

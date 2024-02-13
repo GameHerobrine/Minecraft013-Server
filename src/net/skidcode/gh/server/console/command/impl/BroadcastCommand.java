@@ -9,8 +9,8 @@ import net.skidcode.gh.server.utils.Logger;
 
 public class BroadcastCommand extends CommandBase{
 
-	public BroadcastCommand(String name) {
-		super(name);
+	public BroadcastCommand(String name, String desc) {
+		super(name, desc);
 	}
 
 	@Override

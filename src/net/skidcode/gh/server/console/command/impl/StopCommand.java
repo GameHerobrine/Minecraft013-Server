@@ -6,8 +6,8 @@ import net.skidcode.gh.server.console.command.CommandIssuer;
 
 public class StopCommand extends CommandBase{
 
-	public StopCommand(String name) {
-		super(name);
+	public StopCommand(String name, String desc) {
+		super(name, desc);
 	}
 
 	@Override
