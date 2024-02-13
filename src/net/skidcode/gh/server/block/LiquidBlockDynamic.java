@@ -25,10 +25,7 @@ public class LiquidBlockDynamic extends LiquidBlock{
 		}
 		
 	}
-	public void onBlockPlacedByPlayer(World world, int x, int y, int z, int face, Player player) {
-		super.onBlockPlacedByPlayer(world, x, y, z, face, player);
-		//world.addToTickNextTick(x, y, z, this.blockID, this.tickrate);
-	}
+	
 	@Override
 	public void tick(World world, int x, int y, int z, BedrockRandom random) {
 		int depth = this.getDepth(world, x, y, z);

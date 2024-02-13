@@ -3,6 +3,8 @@ package net.skidcode.gh.server.block;
 import java.util.Random;
 
 import net.skidcode.gh.server.block.material.Material;
+import net.skidcode.gh.server.item.BlockItem;
+import net.skidcode.gh.server.item.Item;
 import net.skidcode.gh.server.network.protocol.RemoveBlockPacket;
 import net.skidcode.gh.server.network.protocol.UpdateBlockPacket;
 import net.skidcode.gh.server.player.Player;
@@ -100,9 +102,18 @@ public class Block {
 	public static Block updateGame2 = new Block(249, Material.dirt).setDestroyTime(0.8f);
 	public static Block fire = new FireBlock(51).setDestroyTime(0.0f).setLightEmmision(1.0f);
 	
+	
+	static {
+		for(int i = 0; i < 256; ++i) {
+			if(Block.blocks[i] != null) {
+				if(Item.items[i] == null) {
+					Item.items[i] = new BlockItem(i - 256);
+				}
+			}
+		}
+	}
+	
 	public void onNeighborBlockChanged(World world, int x, int y, int z, int meta) {}
-
-
 	public void onBlockRemoved(World world, int x, int y, int z) {
 		world.placeBlock(x, y, z, (byte)0, (byte)0);
 		UpdateBlockPacket pk = new UpdateBlockPacket();
@@ -180,8 +191,11 @@ public class Block {
 	}
 	
 	public boolean mayPlace(World world, int x, int y, int z) {
-		//TODO mayPlace
-		return true;
+		int blockID = world.getBlockIDAt(x, y, z);
+		
+		if(blockID == 0) return true;
+		
+		return Block.blocks[blockID].material.isLiquid;
 	}
 	
 	public boolean canSurvive(World world, int x, int y, int z) {
@@ -190,10 +204,6 @@ public class Block {
 	
 	public boolean isSolidRender() {
 		return true;
-	}
-	
-	public void onBlockPlacedByPlayer(World world, int x, int y, int z, int face, Player player) {
-		world.placeBlockAndNotifyNearby(x, y, z, (byte) this.blockID, (byte) 0);
 	}
 	
 	public static void init() {}
@@ -225,4 +235,17 @@ public class Block {
 	public String name = "";
 	public Material material;
 	public boolean isOpaque = true;
+
+	public boolean use(World world, int x, int y, int z, Player player) {
+		return false;
+	}
+	
+	public void setPlacedBy(World world, int x, int y, int z, Player player) {
+		
+	}
+	
+	public void setPlacedOnFace(World world, int x, int y, int z, int side) {
+		
+	}
+	
 }

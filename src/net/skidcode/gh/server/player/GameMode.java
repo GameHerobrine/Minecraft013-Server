@@ -1,6 +1,7 @@
 package net.skidcode.gh.server.player;
 
 import net.skidcode.gh.server.block.Block;
+import net.skidcode.gh.server.item.ItemInstance;
 
 public class GameMode {
 	
@@ -15,6 +16,21 @@ public class GameMode {
 	}
 	
 	public boolean isSurvival() {
+		return false;
+	}
+	
+	public boolean useItemOn(ItemInstance item, int x, int y, int z, int face) {
+		
+		int blockID = this.player.world.getBlockIDAt(x, y, z);
+		
+		if(Block.blocks[blockID] != null && Block.blocks[blockID].use(this.player.world, x, y, z, this.player)) {
+			return true;
+		}
+		
+		if(item != null) {
+			return item.useOn(this.player, this.player.world, x, y, z, face);
+		}
+		
 		return false;
 	}
 	

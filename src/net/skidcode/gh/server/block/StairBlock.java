@@ -15,19 +15,20 @@ public class StairBlock extends Block{
 		this.setExplodeable(base.explosionResistance / 3);
 	}
 	//TODO more methods
-	public void onBlockPlacedByPlayer(World world, int x, int y, int z, int face, Player player) {
+	@Override
+	public void setPlacedBy(World world, int x, int y, int z, Player player) {
 		switch(Utils.getPlayerDirection(player)) {
 			case 0:
-				world.placeBlock(x, y, z, (byte) this.blockID, (byte) 2);
+				world.placeBlockMetaAndNotifyNearby(x, y, z, (byte) 2);
 				break;
 			case 1:
-				world.placeBlock(x, y, z, (byte) this.blockID, (byte) 1);
+				world.placeBlockMetaAndNotifyNearby(x, y, z, (byte) 1);
 				break;
 			case 2:
-				world.placeBlock(x, y, z, (byte) this.blockID, (byte) 3);
+				world.placeBlockMetaAndNotifyNearby(x, y, z, (byte) 3);
 				break;
 			default:
-				world.placeBlock(x, y, z, (byte) this.blockID, (byte) 0);
+				world.placeBlockMetaAndNotifyNearby(x, y, z, (byte) 0);
 				break;
 			
 		}

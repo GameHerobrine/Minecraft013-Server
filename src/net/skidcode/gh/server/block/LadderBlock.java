@@ -14,7 +14,8 @@ public class LadderBlock extends Block{
 		return false;
 	}
 	
-	public void onBlockPlacedByPlayer(World world, int x, int y, int z, int face, Player player) {
+	@Override
+	public void setPlacedOnFace(World world, int x, int y, int z, int face) {
 		world.placeBlock(x, y, z, (byte) this.blockID, (byte) face);
 	}
 	

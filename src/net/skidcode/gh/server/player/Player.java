@@ -8,6 +8,7 @@ import net.skidcode.gh.server.console.command.CommandIssuer;
 import net.skidcode.gh.server.entity.Entity;
 import net.skidcode.gh.server.event.EventRegistry;
 import net.skidcode.gh.server.event.packet.DataPacketReceive;
+import net.skidcode.gh.server.item.ItemInstance;
 import net.skidcode.gh.server.network.MinecraftDataPacket;
 import net.skidcode.gh.server.network.ProtocolInfo;
 import net.skidcode.gh.server.network.protocol.AddPlayerPacket;
@@ -137,13 +138,30 @@ public class Player extends Entity implements CommandIssuer{
 				break;
 			case ProtocolInfo.PLACE_BLOCK_PACKET:
 				PlaceBlockPacket pbp = (PlaceBlockPacket) dp;
-				Block b = Block.blocks[pbp.id & 0xff];
-				if(b instanceof Block) {
-					b.onBlockPlacedByPlayer(this.world, pbp.posX, pbp.posY, pbp.posZ, pbp.face, this);
-					this.world.broadcastPacketFromPlayer(pbp, this);
-				}else {
-					Logger.warn(this.nickname+" tried to place invalid block id("+(pbp.id & 0xff)+")!");
+				
+				switch(pbp.face) {
+					case 0:
+						++pbp.posY;
+						break;
+					case 1:
+						--pbp.posY;
+						break;
+					case 2:
+						++pbp.posZ;
+						break;
+					case 3:
+						--pbp.posZ;
+						break;
+					case 4:
+						++pbp.posX;
+						break;
+					case 5:
+						--pbp.posX;
+						break;
 				}
+				
+				ItemInstance inst = new ItemInstance(pbp.id, 63, 0); //TODO better way to place it, this one is dangerous
+				this.gamemode.useItemOn(inst, pbp.posX, pbp.posY, pbp.posZ, pbp.face);
 				break;
 			case ProtocolInfo.MOVE_PLAYER_PACKET_PACKET:
 				MovePlayerPacket moveplayerpacket = (MovePlayerPacket)dp;
@@ -156,8 +174,13 @@ public class Player extends Entity implements CommandIssuer{
 			case ProtocolInfo.PLAYER_EQUIPMENT_PACKET:
 				PlayerEquipmentPacket pep = (PlayerEquipmentPacket) dp;
 				if(pep.eid == this.eid) {
-					this.itemID = pep.itemID;
+					Block block = Block.blocks[pep.itemID];
+					if(block == null) {
+						Logger.warn(String.format("%s tried to equip a block that is null! (ID: %d)", this.nickname, pep.itemID));
+						break;
+					}
 					
+					this.itemID = pep.itemID;
 					
 					PlayerEquipmentPacket pepe = new PlayerEquipmentPacket(); //TODO fix
 					pepe.eid = this.eid;

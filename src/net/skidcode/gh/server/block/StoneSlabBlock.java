@@ -13,12 +13,9 @@ public class StoneSlabBlock extends Block{
 		this.setLightBlock(255);
 	}
 	
-	public void onBlockPlacedByPlayer(World world, int x, int y, int z, int face, Player player) {
-		if(world.getBlockIDAt(x, y - 1, z) == this.blockID) {
-			Block.fullStoneSlab.onBlockPlacedByPlayer(world, x, y - 1, z, face, player);
-		}else {
-			super.onBlockPlacedByPlayer(world, x, y, z, face, player);
-		}
+	@Override
+	public void onBlockAdded(World world, int x, int y, int z) {
+		 //TODO fix
 	}
 	
 	public boolean isSolidRender() {

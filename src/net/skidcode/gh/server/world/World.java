@@ -17,6 +17,7 @@ import net.skidcode.gh.server.network.protocol.UpdateBlockPacket;
 import net.skidcode.gh.server.player.Player;
 import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.utils.TickNextTickData;
+import net.skidcode.gh.server.utils.Utils;
 import net.skidcode.gh.server.utils.random.BedrockRandom;
 import net.skidcode.gh.server.world.chunk.Chunk;
 import net.skidcode.gh.server.world.generator.BiomeSource;
@@ -40,7 +41,7 @@ public class World {
 	public int unknown5 = 0;
 	public BiomeSource biomeSource;
 	public LevelSource levelSource;
-	
+	public HashSet<Integer> blockUpdates = new HashSet<>();
 	public int randInt1, randInt2;
 	
 	public TreeSet<TickNextTickData> scheduledTickTreeSet;
@@ -161,14 +162,8 @@ public class World {
 		pk.posZ = z;
 		pk.id = (byte) id;
 		pk.metadata = (byte) meta;
-		int chunkX = x / 16;
-		int chunkZ = z / 16;
-		for(Player p : this.players.values()) {
-			if(p.chunkDataSend[(chunkX << 4) | chunkZ]) {
-				p.dataPacket(pk.clone());
-			}
-			
-		}
+		
+		blockUpdates.add(Utils.packBlockPos(x & 0xff, y & 0xff, z & 0xff));
 	}
 	
 	public boolean setBlock(int x, int y, int z, int id, int meta, int flags) {
@@ -333,6 +328,27 @@ public class World {
 			}
 		}
 		
+		
+		//Queued block sends
+		for(int xyz : this.blockUpdates) {
+			int x = xyz >> 16 & 0xff;
+			int y = xyz >> 8 & 0xff;
+			int z = xyz & 0xff;
+			
+			UpdateBlockPacket pk = new UpdateBlockPacket();
+			pk.posX = x;
+			pk.posY = (byte) y;
+			pk.posZ = z;
+			pk.id = (byte) this.getBlockIDAt(x, y, z);
+			pk.metadata = (byte) this.getBlockMetaAt(x, y, z);
+			
+			for(Player p : this.players.values()) {
+				p.dataPacket(pk.clone());
+			}
+		}
+		
+		this.blockUpdates.clear();
+		
 	}
 	
 	public boolean canSeeSky(int x, int y, int z) {
@@ -341,6 +357,17 @@ public class World {
 		}
 		return false;
 		
+	}
+
+	public boolean mayPlace(int blockID, int x, int y, int z, boolean tgl) {
+		
+		int blockAt = this.getBlockIDAt(x, y, z);
+		//TODO aabbs checks
+		if(blockAt == Block.waterStill.blockID || blockAt == Block.waterFlowing.blockID || blockAt == Block.lavaStill.blockID || blockAt == Block.lavaFlowing.blockID || blockAt == Block.fire.blockID || blockAt == Block.snowLayer.blockID) {
+			return true;
+		}
+		
+		return blockID > 0 && Block.blocks[blockAt] == null && Block.blocks[blockID].mayPlace(this, x, y, z);
 	}
 	
 }

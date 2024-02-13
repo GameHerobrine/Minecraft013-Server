@@ -4,7 +4,7 @@ import net.skidcode.gh.server.player.Player;
 
 public class Utils {
 	public static int getPlayerDirection(Player p) {
-		return (int)((p.yaw * 4.0 / 360)+0.5) & 0x3;
+		return MathUtils.ffloor((p.yaw * 4.0f / 360)+0.5f) & 0x3;
 	}
 	
 	public static int stringHash(String s) {
@@ -16,4 +16,9 @@ public class Utils {
 
         return i;
 	}
+	
+	public static int packBlockPos(int x, int y, int z) {
+		return x << 16 | y << 8 | z;
+	}
+	
 }

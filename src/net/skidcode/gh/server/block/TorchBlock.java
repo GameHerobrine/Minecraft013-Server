@@ -12,7 +12,8 @@ public class TorchBlock extends Block{
 		this.setTicking(true); //TODO ticking might be used only for clientside rendering
 	}
 	
-	public void onBlockPlacedByPlayer(World world, int x, int y, int z, int face, Player player) {
+	@Override
+	public void setPlacedOnFace(World world, int x, int y, int z, int face) {
 		byte meta2Place = 0;
 		switch(face) {
 			case BlockFace.DOWN:

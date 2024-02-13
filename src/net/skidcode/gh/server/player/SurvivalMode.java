@@ -1,6 +1,7 @@
 package net.skidcode.gh.server.player;
 
 import net.skidcode.gh.server.block.Block;
+import net.skidcode.gh.server.item.ItemInstance;
 import net.skidcode.gh.server.utils.Logger;
 
 public class SurvivalMode extends GameMode{
