@@ -220,7 +220,7 @@ public class World {
 	
 	public boolean isBlockSolid(int x, int y, int z) {
 		Block b = Block.blocks[this.getBlockIDAt(x, y, z)];
-		return (b instanceof Block && b.material.isSolid);
+		return (b instanceof Block && b.isSolidRender());
 	}
 	
 	public void placeBlock(int x, int y, int z, byte id, byte meta) {

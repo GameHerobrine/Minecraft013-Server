@@ -12,49 +12,58 @@ public class TorchBlock extends Block{
 		this.setTicking(true); //TODO ticking might be used only for clientside rendering
 	}
 	
+	public boolean checkCanSurvive(World world, int x, int y, int z){
+		if(this.mayPlace(world, x, y, z)) return true;
+		world.setBlock(x, y, z, 0, 0, 3);
+		return false;
+	}
+	
+	@Override
+	public boolean mayPlace(World world, int x, int y, int z) {
+		
+		if(world.isBlockSolid(x - 1, y, z) || world.isBlockSolid(x + 1, y, z)) return true;
+		if(world.isBlockSolid(x, y, z - 1) || world.isBlockSolid(x, y, z + 1)) return true;
+		
+		return world.isBlockSolid(x, y - 1, z);
+	}
+	
 	@Override
 	public void setPlacedOnFace(World world, int x, int y, int z, int face) {
 		byte meta2Place = 0;
 		switch(face) {
 			case BlockFace.DOWN:
-				Block bd = Block.blocks[world.getBlockIDAt(x, y - 1, z)];
-				if(bd != null && bd.material.isSolid) meta2Place = 5;
+				if(world.isBlockSolid(x, y - 1, z)) meta2Place = 5;
 				break;
 			case BlockFace.NORTH:
-				Block bn = Block.blocks[world.getBlockIDAt(x, y, z + 1)];
-				if(bn != null && bn.material.isSolid) meta2Place = 4;
+				if(world.isBlockSolid(x, y, z + 1)) meta2Place = 4;
 				break;
 			case BlockFace.SOUTH:
-				Block bs = Block.blocks[world.getBlockIDAt(x, y, z - 1)];
-				if(bs != null && bs.material.isSolid) meta2Place = 3;
+				if(world.isBlockSolid(x, y, z - 1)) meta2Place = 3;
 				break;
 			case BlockFace.EAST:
-				Block be =  Block.blocks[world.getBlockIDAt(x + 1, y, z)];
-				if(be != null && be.material.isSolid) meta2Place = 2;
+				if(world.isBlockSolid(x + 1, y, z)) meta2Place = 2;
 				break;
 			default:
-				Block b = Block.blocks[world.getBlockIDAt(x - 1, y, z)];
-				if(b != null && b.material.isSolid) meta2Place = 1;
+				if(world.isBlockSolid(x - 1, y, z)) meta2Place = 1;
 		}
 		world.placeBlock(x, y, z, (byte) this.blockID, meta2Place);
 	}
 	
 	public void onNeighborBlockChanged(World world, int x, int y, int z, int meta) {
-		switch(meta) {
-			case 5:
-				if(!world.isBlockSolid(x, y - 1, z)) this.onBlockRemoved(world, x, y, z);
-				break;
-			case 4:
-				if(!world.isBlockSolid(x, y, z + 1)) this.onBlockRemoved(world, x, y, z);
-				break;
-			case 3:
-				if(!world.isBlockSolid(x, y, z - 1)) this.onBlockRemoved(world, x, y, z); 
-				break;
-			case 2:
-				if(!world.isBlockSolid(x + 1, y, z)) this.onBlockRemoved(world, x, y, z);
-				break;
-			default:
-				if(!world.isBlockSolid(x - 1, y, z)) this.onBlockRemoved(world, x, y, z);
+		boolean survive = this.checkCanSurvive(world, x, y, z);
+		if(survive) {
+			int metaHere = world.getBlockMetaAt(x, y, z);
+			boolean shouldDestroy = false;
+			
+			if(!world.isBlockSolid(x - 1, y, z) && metaHere == 1) shouldDestroy = true;
+			if(!world.isBlockSolid(x + 1, y, z) && metaHere == 2) shouldDestroy = true;
+			if(!world.isBlockSolid(x, y, z - 1) && metaHere == 3) shouldDestroy = true;
+			if(!world.isBlockSolid(x, y, z + 1) && metaHere == 4) shouldDestroy = true;
+			if(!world.isBlockSolid(x, y - 1, z) && metaHere == 5) shouldDestroy = true;
+
+			if(shouldDestroy) {
+				world.setBlock(x, y, z, 0, 0, 3);
+			}
 		}
 	}
 	
