@@ -43,9 +43,13 @@ public class World {
 	public LevelSource levelSource;
 	public HashSet<Integer> blockUpdates = new HashSet<>();
 	public int randInt1, randInt2;
+	public int lightUpdatesCount = 0;
 	
 	public TreeSet<TickNextTickData> scheduledTickTreeSet;
 	public HashSet<TickNextTickData> scheduledTickSet;
+	
+	public ArrayList<LightUpdate> lightUpdates;
+	
 	public World(int seed) {
 		this.worldSeed = seed;
 		this.random = new BedrockRandom(seed);
@@ -53,6 +57,7 @@ public class World {
 		this.levelSource = new RandomLevelSource(this, seed); //TODO API
 		this.scheduledTickTreeSet = new TreeSet<>();
 		this.scheduledTickSet = new HashSet<>();
+		this.lightUpdates = new ArrayList<>();
 		this.randInt1 = 0x283AE83; //it is static in 0.1
 		this.randInt2 = 0x3C6EF35F;
 	}
@@ -368,6 +373,61 @@ public class World {
 		}
 		
 		return blockID > 0 && Block.blocks[blockAt] == null && Block.blocks[blockID].mayPlace(this, x, y, z);
+	}
+
+	public void lightColumnChanged(int x, int z, int newheight, int oldheight) {
+		//used to update rendering<?>, not needed?
+	}
+	public void updateLight(LightLayer layer, int startX, int oldHeight, int startZ, int endX, int height, int endZ, boolean b) {
+		//some dimension checks, not really needed until 0.12(never)
+		
+		++this.lightUpdatesCount; 
+		if(this.lightUpdatesCount == 50) { //TODO stopping updates completely is not good
+			--this.lightUpdatesCount;
+			return;
+		}
+		
+		int avgX = (startX + endX) / 2;
+		int avgZ = (startZ + endZ) / 2;
+		
+		
+		if(this.hasChunkAt(avgX, avgZ)) {	
+			Chunk chunk = this.getChunk(avgX, avgZ);
+			//never empty, skipping check
+			
+			if(b) {
+				int size = this.lightUpdates.size();
+				int lightUpdateCount = 5;
+				if(size < lightUpdateCount) lightUpdateCount = size;
+				
+				for(int i = 0; i < lightUpdateCount; ++i) {
+					size = this.lightUpdates.size();
+					LightUpdate update = this.lightUpdates.get(size - i - 1);
+					if(update.layer == layer && update.expandToContain(startX, oldHeight, startZ, endX, height, endZ)) {
+						--this.lightUpdatesCount;
+						return;
+					}
+				}
+			}
+			
+			LightUpdate update = new LightUpdate(layer, startX, oldHeight, startZ, endX, height, endZ);
+			this.lightUpdates.add(update);
+			if(this.lightUpdates.size() > 1000000) {
+				this.lightUpdates.clear(); //bad
+				--this.lightUpdatesCount;
+			}
+		}else {
+			--this.lightUpdatesCount;
+		}
+		
+		
+	}
+	public boolean hasChunkAt(int x, int z) {
+		return x >= 0 && x < 16 && z >= 0 && z < 16; //TODO do not hardcode
+	}
+
+	public void updateLight(LightLayer layer, int startX, int oldHeight, int startZ, int x2, int height, int z2) {
+		this.updateLight(layer, startX, oldHeight, startZ, x2, height, z2, true);
 	}
 	
 }

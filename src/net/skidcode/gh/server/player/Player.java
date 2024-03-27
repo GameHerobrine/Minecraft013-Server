@@ -212,11 +212,71 @@ public class Player extends Entity implements CommandIssuer{
 						for(int y = 0; y < 8; ++y) {
 							if ((((update >> y) & 1) == 1))
 							{
-								int index = x << 11 | z << 7 | y << 4;
-								System.arraycopy(c.blockData, index, cd, l, 16);
+								byte[] blocks = new byte[16];
+								for(int i = 0; i < 16; ++i) {
+									blocks[i] = (byte) c.getSkylight(x, y*16+i, z);
+									switch(blocks[i]) {
+										case 0:
+											blocks[i] = 0;
+											break;
+										case 1:
+											blocks[i] = (byte) Block.obsidian.blockID;
+											break;
+										case 2:
+											blocks[i] = (byte) Block.dirt.blockID;
+											break;
+										case 3:
+											blocks[i] = (byte) Block.brick.blockID;
+											break;
+										case 4:
+											blocks[i] = (byte) Block.glass.blockID;
+											break;
+										case 5:
+											blocks[i] = (byte) Block.goldBlock.blockID;
+											break;
+										case 6:
+											blocks[i] = (byte) Block.stone.blockID;
+											break;
+										case 7:
+											blocks[i] = (byte) Block.lapisOre.blockID;
+											break;
+										case 8:
+											blocks[i] = (byte) Block.oreIron.blockID;
+											break;
+										case 9:
+											blocks[i] = (byte) Block.diamondOre.blockID;
+											break;
+										case 10:
+											blocks[i] = (byte) Block.oreGold.blockID;
+											break;
+										case 11:
+											blocks[i] = (byte) Block.oreCoal.blockID;
+											break;
+										case 12:
+											blocks[i] = (byte) Block.diamondBlock.blockID;
+											break;
+										case 13:
+											blocks[i] = (byte) Block.redstoneOre.blockID;
+											break;
+										case 14:
+											blocks[i] = (byte) Block.goldBlock.blockID;
+											break;
+										case 15:
+											blocks[i] = (byte) Block.grass.blockID;
+											break;
+										default:
+											System.out.println("wat"+blocks[i]);
+									}
+								}
+								System.arraycopy(blocks, 0, cd, l, 16);
 								l += 16;
-								System.arraycopy(c.blockMetadata, index >> 1, cd, l, 8);
+								System.arraycopy(new byte[]{0, 0, 0, 0, 0, 0, 0, 0}, 0, cd, l, 8);
 								l += 8;
+								//int index = x << 11 | z << 7 | y << 4;
+								//System.arraycopy(c.blockData, index, cd, l, 16);
+								//l += 16;
+								//System.arraycopy(c.blockMetadata, index >> 1, cd, l, 8);
+								//l += 8;
 							}
 						}
 						
