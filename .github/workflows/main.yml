@@ -27,7 +27,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: "build-${{github.run_number}}"
-          body: "### Commit: ${{github.sha}}"
+          body: "### Commit: ${{github.sha}}\n### Branch: ${{github.ref_name}}"
           repository: GameHerobrine/MCPE013CoreArtifacts
           token: ${{ secrets.TOKEN }}
           files: src/classes/build.jar
