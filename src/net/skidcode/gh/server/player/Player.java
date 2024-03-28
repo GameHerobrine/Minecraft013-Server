@@ -259,10 +259,10 @@ public class Player extends Entity implements CommandIssuer{
 											blocks[i] = (byte) Block.redstoneOre.blockID;
 											break;
 										case 14:
-											blocks[i] = (byte) Block.goldBlock.blockID;
+											blocks[i] = (byte) Block.diamondBlock.blockID;
 											break;
 										case 15:
-											blocks[i] = (byte) Block.grass.blockID;
+											blocks[i] = 0; //(byte) Block.grass.blockID;
 											break;
 										default:
 											System.out.println("wat"+blocks[i]);

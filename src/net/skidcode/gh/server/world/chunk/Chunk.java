@@ -85,8 +85,8 @@ public class Chunk {
 		}
 		
 		//i suppose it also checks does dimension have sky or not
-		if(Block.lightBlock[id] != 0 && height <= y) {
-			this.recalcHeight(x, y + 1, z);
+		if(Block.lightBlock[id] != 0) {
+			if(height <= y) this.recalcHeight(x, y + 1, z);
 		}else if((height - 1) == y) {
 			this.recalcHeight(x, y, z);
 		}
@@ -195,21 +195,27 @@ public class Chunk {
 		if(idBefore == id) {
 			return false;
 		}
-		
 		int worldX = this.posX*16 + x;
 		int worldZ = this.posZ*16 + z;
+		byte height = this.heightMap[x][z];
 		
 		this.blockData[x << 11 | z << 7 | y] = (byte) id;
 		
 		if(idBefore > 0) {
 			Block.blocks[idBefore].onRemove(Server.world, worldX, y, worldZ); //TODO Chunk::world
 		}
-		
 		this.setBlockMetadataRaw(x, y, z, (byte) 0);
-		//TODO light
-		if(id != 0 && this.heightMap[x][z] < y) { //TODO move to special funcion
-			this.heightMap[x][z] = (byte) y;
+
+		if(Block.lightBlock[id] != 0) {
+			if(y >= height) this.recalcHeight(x, y + 1, z);
+		}else if(height - 1 == y) {
+			this.recalcHeight(x, y, z);
 		}
+		//no dim checks here
+		Server.world.updateLight(LightLayer.SKY, worldX, y, worldZ, worldX, y, worldZ);
+		Server.world.updateLight(LightLayer.BLOCK, worldX, y, worldZ, worldX, y, worldZ);
+		this.lightGaps(x, z);
+		
 		
 		if(id > 0) {
 			Block.blocks[id].onBlockAdded(Server.world, worldX, y, worldZ); //TODO Chunk::world
@@ -230,9 +236,13 @@ public class Chunk {
 	}
 	
 	public int getSkylight(int x, int y, int z) {
-		if(y > 127 || y < 0) return 0;
 		int index = x << 11 | z << 7 | y;
 		return ((index & 1) == 1 ? (this.blockSkyLight[index >> 1] >> 4) : this.blockSkyLight[index >> 1]) & 0xf;
+	}
+	
+	public int getBlocklight(int x, int y, int z) {
+		int index = x << 11 | z << 7 | y;
+		return ((index & 1) == 1 ? (this.blockLight[index >> 1] >> 4) : this.blockLight[index >> 1]) & 0xf;
 	}
 	
 	public void setSkylightRaw(int x, int y, int z, int level) {
@@ -246,11 +256,46 @@ public class Chunk {
 		}
 	}
 	
+	public void setBlocklightRaw(int x, int y, int z, int level) {
+		int index = x << 11 | z << 7 | y;
+		if((index & 1) == 1) {
+			this.blockLight[index >> 1] &= 0x0f;
+			this.blockLight[index >> 1] |= ((level & 0xf) << 4);
+		}else {
+			this.blockLight[index >> 1] &= 0xf0;
+			this.blockLight[index >> 1] |= (level & 0xf);
+		}
+	}
+	
 	public int getBlockLight(int x, int y, int z) {
 		if(y > 127 || y < 0) return 0;
 		int index = x << 11 | z << 7 | y;
 		return (index & 1) == 1 ? (this.blockLight[index >> 1] >> 4) : (this.blockLight[index >> 1] & 0xf);
 	}
-	
-	
+
+	public int getBrightness(LightLayer layer, int x, int y, int z) {
+		switch(layer) {
+			case SKY:
+				return this.getSkylight(x, y, z);
+			case BLOCK:
+				return this.getBlocklight(x, y, z);
+			default:
+				return 0;
+		}
+	}
+
+	public boolean isSkyLit(int x, int y, int z) {
+		return this.heightMap[x][z] <= y;
+	}
+
+	public void setBrightness(LightLayer layer, int x, int y, int z, int brightness) {
+		switch(layer) {
+			case SKY:
+				this.setSkylightRaw(x, y, z, brightness);
+				break;
+			case BLOCK:
+				this.setBlocklightRaw(x, y, z, brightness);
+				break;
+		}
+	}
 }

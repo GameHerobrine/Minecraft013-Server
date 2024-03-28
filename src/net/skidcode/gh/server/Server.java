@@ -30,6 +30,7 @@ import net.skidcode.gh.server.plugin.PluginInfo;
 import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.utils.Utils;
 import net.skidcode.gh.server.utils.config.PropertiesFile;
+import net.skidcode.gh.server.world.LightLayer;
 import net.skidcode.gh.server.world.World;
 import net.skidcode.gh.server.world.generator.FlatWorldGenerator;
 import net.skidcode.gh.server.world.generator.NormalWorldGenerator;
@@ -165,6 +166,8 @@ public final class Server {
 				NormalWorldGenerator.generateChunks(Server.world);
 				}catch(StackOverflowError e) {throw new RuntimeException();}
 				Server.world.setSaveSpawn(127, 127);
+				Server.world.updateLight(LightLayer.SKY, 0, 0, 0, 255, 0, 255); //XXX
+				while(Server.world.updateLights());
 			}else {
 				Server.saveWorld = false;
 				Logger.critical("Type '"+type+"' is not found!");
@@ -304,8 +307,8 @@ public final class Server {
 					}
 				}
 				
-				Server.world.tick(); //TODO enable world ticking 
-				
+				Server.world.tick();
+				while(Server.world.updateLights()); //TODO check
 				++Server.tps;
 				if(tickTime - lastSecondRecorded >= 1000) { //maybe make it better?
 					lastSecondRecorded = tickTime;

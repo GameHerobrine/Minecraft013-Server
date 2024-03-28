@@ -1,5 +1,7 @@
 package net.skidcode.gh.server.world;
 
+import net.skidcode.gh.server.block.Block;
+
 public class LightUpdate {
 	public LightLayer layer;
 	public int minX, minY, minZ;
@@ -12,6 +14,11 @@ public class LightUpdate {
 		this.maxX = maxX;
 		this.maxY = maxY;
 		this.maxZ = maxZ;
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("layer %s min3 max3 %d %d %d %d %d %d", this.layer.name(), this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
 	}
 	
 	public boolean expandToContain(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
@@ -43,5 +50,77 @@ public class LightUpdate {
 		this.maxZ = maxZ;
 		
 		return true;
+	}
+
+	public void update(World world) {
+		if((this.maxZ - this.minZ + 1)*(this.maxY-this.minY + 1)*(this.maxX-this.minX+1) > 0x8000) return;
+		
+		for(int x = this.minX; this.maxX >= x; ++x) { //TODO i ... this.max
+			for(int z = this.minZ; this.maxZ >= z; ++z) { //TODO i ... this.max
+				boolean hasChunks = world.hasChunksAt(x, 0, z, 1);
+				
+				if(hasChunks) {
+					//also checks if world.getChunk(x >> 4, z >> 4) is empty, assuming it is never empty
+				}
+				
+				if(hasChunks) {
+					if(this.minY < 0) this.minY = 0;
+					if(this.maxY > 127) this.maxY = 127;
+					
+					for(int y = this.minY; this.maxY >= y; ++y) {
+						int brightness = world.getBrightness(this.layer, x, y, z);
+						int blockID = world.getBlockIDAt(x, y, z);
+						int lightBlock = Block.lightBlock[blockID];
+						int newBrightness;
+						if(lightBlock == 0) lightBlock = 1;
+						int lightEmission = 0;
+						if(this.layer == LightLayer.SKY) {
+							if(world.isSkyLit(x, y, z)) lightEmission = 15;
+						}else if(this.layer == LightLayer.BLOCK) {
+							lightEmission = Block.lightEmission[blockID];
+						}
+						
+						if(lightBlock <= 14 || lightEmission != 0) {
+							int xNegBright = world.getBrightness(layer, x - 1, y, z);
+							int xPosBright = world.getBrightness(layer, x + 1, y, z);
+							int yNegBright = world.getBrightness(layer, x, y - 1, z);
+							int yPosBright = world.getBrightness(layer, x, y + 1, z);
+							int zNegBright = world.getBrightness(layer, x, y, z - 1);
+							int zPosBright = world.getBrightness(layer, x, y, z + 1);
+							
+							int v15 = xNegBright;
+							if(xPosBright > v15) v15 = xPosBright;
+							if(yNegBright > v15) v15 = yNegBright;
+							if(yPosBright > v15) v15 = yPosBright;
+							if(zNegBright > v15) v15 = zNegBright;
+							if(zPosBright > v15) v15 = zPosBright;
+							
+							newBrightness = v15 - lightBlock;
+							if(newBrightness < 0) newBrightness = 0;
+							if(lightEmission > newBrightness) newBrightness = lightEmission;
+						}else {
+							newBrightness = 0;
+						}
+						
+						if(brightness != newBrightness) {
+							world.setBrightness(this.layer, x, y, z, newBrightness);
+							int v4 = newBrightness - 1;
+							if(v4 < 0) v4 = 0;
+							
+							world.updateLightIfOtherThan(this.layer, x - 1, y, z, v4);
+							world.updateLightIfOtherThan(this.layer, x, y - 1, z, v4);
+							world.updateLightIfOtherThan(this.layer, x, y, z - 1, v4);
+							
+							if(x + 1 >= this.maxX) world.updateLightIfOtherThan(this.layer, x + 1, y, z, v4);
+							if(y + 1 >= this.maxY) world.updateLightIfOtherThan(this.layer, x, y + 1, z, v4);
+							if(z + 1 >= this.maxZ) world.updateLightIfOtherThan(this.layer, x, y, z + 1, v4);
+						}
+					}
+					
+				}
+				
+			}
+		}
+		
 	}
 }

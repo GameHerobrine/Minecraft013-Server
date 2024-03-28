@@ -47,7 +47,7 @@ public class World {
 	
 	public TreeSet<TickNextTickData> scheduledTickTreeSet;
 	public HashSet<TickNextTickData> scheduledTickSet;
-	
+	public int lightDepth = 0;
 	public ArrayList<LightUpdate> lightUpdates;
 	
 	public World(int seed) {
@@ -84,7 +84,10 @@ public class World {
 			}
 		}
 	}
-	
+
+	public boolean hasChunksAt(int x, int y, int z, int radius) {
+		return this.hasChunksAt(x - radius, y - radius, z - radius, x + radius, y + radius, radius + z);
+	}
 	public boolean hasChunksAt(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
 		if(minY > -1 && minY < 128) {
 			for(int chunkX = minX >> 4; chunkX <= maxX >> 4; ++chunkX) {
@@ -382,10 +385,10 @@ public class World {
 		//some dimension checks, not really needed until 0.12(never)
 		
 		++this.lightUpdatesCount; 
-		if(this.lightUpdatesCount == 50) { //TODO stopping updates completely is not good
-			--this.lightUpdatesCount;
-			return;
-		}
+		//if(this.lightUpdatesCount == 50) { //TODO stopping updates completely is not good
+		//	--this.lightUpdatesCount;
+		//	return;//XXX
+		//}
 		
 		int avgX = (startX + endX) / 2;
 		int avgZ = (startZ + endZ) / 2;
@@ -428,6 +431,76 @@ public class World {
 
 	public void updateLight(LightLayer layer, int startX, int oldHeight, int startZ, int x2, int height, int z2) {
 		this.updateLight(layer, startX, oldHeight, startZ, x2, height, z2, true);
+	}
+
+	public boolean updateLights() {
+		if(this.lightDepth > 49) return false;
+		
+		++this.lightDepth;
+		int maxUpdates = 500;
+		
+		Logger.info(String.format("Light updates total: %d", this.lightUpdates.size()));
+		
+		
+		while(this.lightUpdates.size() > 0) {
+			if(--maxUpdates <= 0) {
+				--this.lightDepth;
+				return true;
+			}
+			
+			LightUpdate update = this.lightUpdates.get(this.lightUpdates.size() - 1);
+			Logger.info(String.format("updating light: %s", update));
+			this.lightUpdates.remove(this.lightUpdates.size() - 1);
+			update.update(this);
+		}
+		
+		--this.lightDepth;
+		return false;
+		
+	}
+
+	public int getBrightness(LightLayer layer, int x, int y, int z) {
+		if(y < 0 || y > 127) return layer.defaultValue;
+		Chunk c = this.getChunk(x >> 4, z >> 4);
+		if(c == null) return 0;
+		
+		return c.getBrightness(layer, x & 0xf, y, z & 0xf);
+	}
+
+	public boolean isSkyLit(int x, int y, int z) {
+		if(y < 0) return false;
+		if(y > 127) return true;
+		
+		Chunk c = this.getChunk(x >> 4, z >> 4);
+		if(c == null) return false;
+		return c.isSkyLit(x & 0xf, y, z & 0xf);
+	}
+
+	public void setBrightness(LightLayer layer, int x, int y, int z, int brightness) {
+		if(y >= 0 && y <= 127) {
+			Chunk c = this.getChunk(x >> 4, z >> 4);
+			if(c == null) return;
+			
+			c.setBrightness(layer, x & 0xf, y, z & 0xf, brightness);
+			//also notifies LevelListeners, but they seem to not do anything
+		}
+	}
+
+	public void updateLightIfOtherThan(LightLayer layer, int x, int y, int z, int lightLevel) {
+		//skipping checks related to dimension(!hasSky probably)
+		
+		if(layer == LightLayer.SKY) {
+			if(this.isSkyLit(x, y, z)) lightLevel = 15;
+		}else if(layer == LightLayer.BLOCK) {
+			int blockID = this.getBlockIDAt(x, y, z);
+			int emission = Block.lightEmission[blockID];
+			if(emission > lightLevel) lightLevel = emission;
+		}
+		
+		if(this.getBrightness(layer, x, y, z) != lightLevel) {
+			this.updateLight(layer, x, y, z, x, y, z);
+		}
+		
 	}
 	
 }
