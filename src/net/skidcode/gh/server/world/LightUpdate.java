@@ -26,7 +26,7 @@ public class LightUpdate {
 			return true; //already updated
 		}
 		
-		if(this.minX - 1 > minX || this.minY - 1 > minZ || this.minZ - 1 > minZ || this.maxX + 1 < maxX || this.maxY + 1 < maxY || this.maxZ + 1 < maxZ) {
+		if(this.minX - 1 > minX || this.minY - 1 > minY || this.minZ - 1 > minZ || this.maxX + 1 < maxX || this.maxY + 1 < maxY || this.maxZ + 1 < maxZ) {
 			return false;
 		}
 

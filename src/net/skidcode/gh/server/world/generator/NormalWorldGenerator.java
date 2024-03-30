@@ -26,6 +26,8 @@ public class NormalWorldGenerator {
 			}
 		}
 		
+		
+		
 		w.locationTable = ChunkDataParser.locTable;
 	}
 	

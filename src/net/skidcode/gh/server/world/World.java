@@ -44,6 +44,8 @@ public class World {
 	public HashSet<Integer> blockUpdates = new HashSet<>();
 	public int randInt1, randInt2;
 	public int lightUpdatesCount = 0;
+	public boolean updateLights = true;
+	
 	
 	public TreeSet<TickNextTickData> scheduledTickTreeSet;
 	public HashSet<TickNextTickData> scheduledTickSet;
@@ -66,7 +68,9 @@ public class World {
 		entity.world = this;
 		this.entities.put(entity.eid, entity);
 	}
-	
+	public void setUpdateLights(boolean b) {
+		this.updateLights = b;
+	}
 	public void addToTickNextTick(int x, int y, int z, int id, int delay) {
 		TickNextTickData tick = new TickNextTickData(x, y, z, id);
 		if(this.instantScheduledUpdate) {
@@ -220,8 +224,6 @@ public class World {
 			Chunk c = this.chunks[x >> 4][z >> 4];
 			c.setBlock(x & 0xf, y, z & 0xf, id, (byte) 0);
 			
-			if(id > 0) Block.blocks[id].onBlockAdded(this, x, y, z);
-			
 			this.sendBlockPlace(x, y, z, id, (byte) 0);
 		}
 	}
@@ -236,7 +238,6 @@ public class World {
 			Chunk c = this.chunks[x >> 4][z >> 4];
 			c.setBlock(x & 0xf, y, z & 0xf, id, meta);
 			
-			if(id > 0) Block.blocks[id].onBlockAdded(this, x, y, z);
 			
 			this.sendBlockPlace(x, y, z, id, meta);
 		}
@@ -266,10 +267,10 @@ public class World {
 	}
 
 	public int getHeightValue(int x, int z) {
-		if(x < 256 && z < 256 && x >= 0 && z >= 0) {
-			return this.chunks[x >> 4][z >> 4].heightMap[x & 0xf][z & 0xf];
-		}
-		return 0;
+		Chunk c = this.getChunk(x, z);
+		
+		if(c == null) return 0;
+		return c.getHeightmap(x & 0xf, z & 0xf);
 	}
 
 	public boolean isAirBlock(int x, int y, int z) {
@@ -383,18 +384,19 @@ public class World {
 	}
 	public void updateLight(LightLayer layer, int startX, int oldHeight, int startZ, int endX, int height, int endZ, boolean b) {
 		//some dimension checks, not really needed until 0.12(never)
+		if(!this.updateLights) return;
 		
 		++this.lightUpdatesCount; 
-		//if(this.lightUpdatesCount == 50) { //TODO stopping updates completely is not good
-		//	--this.lightUpdatesCount;
-		//	return;//XXX
-		//}
+		if(this.lightUpdatesCount == 50) { //TODO stopping updates completely is not good
+			--this.lightUpdatesCount;
+			return;
+		}
 		
 		int avgX = (startX + endX) / 2;
 		int avgZ = (startZ + endZ) / 2;
 		
 		
-		if(this.hasChunkAt(avgX, avgZ)) {	
+		if(this.hasChunkAt(avgX >> 4, avgZ >> 4)) {	
 			Chunk chunk = this.getChunk(avgX, avgZ);
 			//never empty, skipping check
 			
@@ -417,9 +419,10 @@ public class World {
 			this.lightUpdates.add(update);
 			if(this.lightUpdates.size() > 1000000) {
 				this.lightUpdates.clear(); //bad
-				--this.lightUpdatesCount;
 			}
+			--this.lightUpdatesCount;
 		}else {
+			//if(true) throw new RuntimeException("not has?"+avgX+":"+avgZ);
 			--this.lightUpdatesCount;
 		}
 		
@@ -449,7 +452,7 @@ public class World {
 			}
 			
 			LightUpdate update = this.lightUpdates.get(this.lightUpdates.size() - 1);
-			Logger.info(String.format("updating light: %s", update));
+			//Logger.info(String.format("updating light: %s", update));
 			this.lightUpdates.remove(this.lightUpdates.size() - 1);
 			update.update(this);
 		}

@@ -1,5 +1,7 @@
 package net.skidcode.gh.server.world.chunk;
 
+import java.util.Arrays;
+
 import net.skidcode.gh.server.Server;
 import net.skidcode.gh.server.block.Block;
 import net.skidcode.gh.server.utils.Logger;
@@ -297,5 +299,41 @@ public class Chunk {
 				this.setBlocklightRaw(x, y, z, brightness);
 				break;
 		}
+	}
+
+	public void recalcHeightmap() {
+		// TODO Auto-generated method stub
+		int topBlock = 127;
+		for(int x = 0; x <= 15; ++x) {
+			for(int z = 0; z <= 15; ++z) {
+				int y = 127;
+				int xzIndex = (x << 11) | (z << 7);
+				while(y > 0 && Block.lightBlock[this.blockData[y - 1 + xzIndex]] != 0) {
+					--y;
+				}
+				
+				this.heightMap[x][z] = (byte) y;
+				if(y < topBlock) topBlock = y;
+				
+				//dim -> hasNoSkyCheck start?
+				int lightLevel = 15;
+				int yLight = 127;
+				do {
+					lightLevel -= Block.lightBlock[this.blockData[yLight + xzIndex]];
+					if(lightLevel > 0) this.setSkylightRaw(x, yLight, z, lightLevel);
+				}while(--yLight > 0 && lightLevel > 0);
+			}
+		}
+		
+		this.topBlockY = (byte) topBlock;
+		for(int x = 0; x <= 15; ++x) {
+			for(int z = 0; z <= 15; ++z) {
+				this.lightGaps(x, z);
+			}
+		}
+	}
+
+	public int getHeightmap(int x, int z) {
+		return this.heightMap[x][z];
 	}
 }
