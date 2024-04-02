@@ -179,6 +179,9 @@ public class World {
 	}
 	
 	public boolean setBlock(int x, int y, int z, int id, int meta, int flags) {
+		
+		if(y < 0 || y > 127) return false;
+		
 		Chunk c = this.getChunk(x >> 4, z >> 4);
 		boolean s = c.setBlock(x &0xf, y, z & 0xf, (byte) id, (byte)meta);
 		if(s) {
@@ -267,7 +270,7 @@ public class World {
 	}
 
 	public int getHeightValue(int x, int z) {
-		Chunk c = this.getChunk(x, z);
+		Chunk c = this.getChunk(x >> 4, z >> 4);
 		
 		if(c == null) return 0;
 		return c.getHeightmap(x & 0xf, z & 0xf);
@@ -313,7 +316,7 @@ public class World {
 			if(this.hasChunksAt(tick.posX - 8, tick.posY - 8, tick.posY - 8, tick.posX + 8, tick.posY + 8, tick.posY + 8)) {
 				int id = this.getBlockIDAt(tick.posX, tick.posY, tick.posZ);
 				if(id > 0 && id == tick.blockID) {
-					Block.blocks[id].tick(this, tick.posX, tick.posY, tick.posZ, random);
+				//	Block.blocks[id].tick(this, tick.posX, tick.posY, tick.posZ, random);
 				}
 			}
 		}
@@ -331,7 +334,7 @@ public class World {
 					int y = xyz >>> 16 & 0x7f;
 					int id = c.blockData[x << 11 | z << 7 | y] & 0xff;
 					if(Block.shouldTick[id]) {
-						Block.blocks[id].tick(this, x + (c.posX << 4), y, z + (c.posZ << 4), random);
+					//	Block.blocks[id].tick(this, x + (c.posX << 4), y, z + (c.posZ << 4), random);
 					}
 				}while(++l1 <= 80);
 			}
@@ -397,7 +400,7 @@ public class World {
 		
 		
 		if(this.hasChunkAt(avgX >> 4, avgZ >> 4)) {	
-			Chunk chunk = this.getChunk(avgX, avgZ);
+			Chunk chunk = this.getChunk(avgX >> 4, avgZ >> 4);
 			//never empty, skipping check
 			
 			if(b) {

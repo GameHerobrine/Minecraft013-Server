@@ -15,6 +15,7 @@ public class LeafBlock extends TransparentBlock{
 		//TODO tick
 	}
 	
+	@Override
 	public boolean isSolidRender() {
 		return false;
 	}

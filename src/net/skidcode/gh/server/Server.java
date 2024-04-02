@@ -83,7 +83,6 @@ public final class Server {
 				Server.running = false;
 			}
 		});
-		Block.init();
 		Logger.info("Creating directories...");
 		Files.createDirectories(Paths.get("world/players"));
 		Files.createDirectories(Paths.get("world"));
@@ -163,11 +162,13 @@ public final class Server {
 				Logger.info("Generating normal world...");
 				Server.world = new World(iWorldSeed);
 				try {
+					Server.world.updateLights = false;
 					NormalWorldGenerator.generateChunks(Server.world);
 				}catch(StackOverflowError e) {throw new RuntimeException();}
-				
+				Server.world.updateLights = true;
+				Server.world.updateLight(LightLayer.SKY, 0, 0, 0, 255, 127, 255);
 				Server.world.setSaveSpawn(127, 127);
-				while(Server.world.updateLights());
+				//while(Server.world.updateLights());
 			}else {
 				Server.saveWorld = false;
 				Logger.critical("Type '"+type+"' is not found!");

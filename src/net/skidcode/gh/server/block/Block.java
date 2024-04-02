@@ -17,6 +17,7 @@ import net.skidcode.gh.server.world.World;
 public class Block {
 	public static Block[] blocks = new Block[256];
 	public static boolean[] shouldTick = new boolean[256];
+	public static boolean[] solid = new boolean[256];
 	public static int[] lightBlock = new int[256];
 	public static int[] lightEmission = new int[256];
 	public String description;
@@ -204,7 +205,14 @@ public class Block {
 		return true;
 	}
 	
-	public static void init() {}
+	public void init() {
+		Block.solid[this.blockID] = this.isSolidRender();
+		
+		int lightBlock = this.isSolidRender() ? 255 : 0;
+		Block.lightBlock[lightBlock] = lightBlock;
+		//TODO Block.translucent
+		
+	}
 	
 	public Block(int id, Material m) {
 		this.blockID = id;
@@ -213,6 +221,7 @@ public class Block {
 		this.boundingBox = new AABB(0, 0, 0, 1, 1, 1);
 		if(Block.blocks[id] instanceof Block) Logger.critical("ID "+id+" is occupied already!");
 		else Block.blocks[id] = this;
+		this.init();
 	}
 	
 	public int getTickDelay() {

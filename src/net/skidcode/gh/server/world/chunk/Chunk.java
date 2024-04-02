@@ -232,9 +232,8 @@ public class Chunk {
 		return this.blockData[(x & 0xf) << 11 | (z & 0xf) << 7 | (y & 0x7f)] & 0xff;
 	}
 	public int getBlockMetadata(int x, int y, int z) {
-		if(y > 127 || y < 0) return 0;
 		int index = x << 11 | z << 7 | y;
-		return (index & 1) == 1 ? (this.blockMetadata[index >> 1] >> 4) : (this.blockMetadata[index >> 1] & 0xf);
+		return ((index & 1) == 1 ? (this.blockMetadata[index >> 1] >> 4) : this.blockMetadata[index >> 1])  & 0xf;
 	}
 	
 	public int getSkylight(int x, int y, int z) {
