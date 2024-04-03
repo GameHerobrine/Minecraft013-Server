@@ -6,11 +6,12 @@ import net.skidcode.gh.server.Server;
 import net.skidcode.gh.server.block.Block;
 import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.world.LightLayer;
+import net.skidcode.gh.server.world.World;
 
 public class Chunk {
 	
 	public static EmptyChunk emptyChunk = new EmptyChunk();
-	
+	public World world;
 	public byte[] blockData; //xzy all
 	public byte[] blockMetadata = new byte[16384];
 	public byte[] blockLight = new byte[16384];
@@ -25,11 +26,12 @@ public class Chunk {
 	public byte topBlockY;
 	
 	
-	public Chunk(int x, int z) {
-		this(new byte[32768], x, z);
+	public Chunk(World world, int x, int z) {
+		this(world, new byte[32768], x, z);
 	}
 
-	public Chunk(byte[] blockData, int cx, int cz) {
+	public Chunk(World world, byte[] blockData, int cx, int cz) {
+		this.world = world;
 		this.blockData = blockData;
 		this.posX = cx;
 		this.posZ = cz;
@@ -38,18 +40,6 @@ public class Chunk {
 	public void clearUpdateMap() {
 		this.updateMap = new byte[16][16];
 	}
-	
-	public void generateHeightMap() { //TODO vanilla
-		for(int x = 0; x < 16; ++x) {
-			for(int z = 0; z < 16; ++z) {
-				byte l = 127;
-				//for(int ind = x << 11 | z << 7; l > 0 && Block.lightBlock[this.blockData[(ind + l) - 1] & 0xff] == 0; --l);
-				for(;l > 0 && (this.blockData[x << 11 | z << 7 | l-1] & 0xff) == 0;--l);
-				heightMap[x][z] = l;
-			}
-		}
-	}
-	
 	
 	public void setBlockMetadataRaw(int x, int y, int z, byte meta) {
 		int index = x << 11 | z << 7 | y;
@@ -78,7 +68,7 @@ public class Chunk {
 		if(idBefore > 0) {
 			Block b = Block.blocks[idBefore];
 			if(b != null) {
-				b.onRemove(Server.world, worldX, y, worldZ); //TODO Chunk::world
+				b.onRemove(this.world, worldX, y, worldZ);
 			}else {
 				Logger.warn(String.format("%d-%d-%d has unknown block ID(%d)!", worldX, y, worldZ, idBefore));
 			}
@@ -92,14 +82,14 @@ public class Chunk {
 		}else if((height - 1) == y) {
 			this.recalcHeight(x, y, z);
 		}
-		Server.world.updateLight(LightLayer.SKY, worldX, y, worldZ, worldX, y, worldZ);
+		this.world.updateLight(LightLayer.SKY, worldX, y, worldZ, worldX, y, worldZ);
 		
-		Server.world.updateLight(LightLayer.BLOCK, worldX, y, worldZ, worldX, y, worldZ);
+		this.world.updateLight(LightLayer.BLOCK, worldX, y, worldZ, worldX, y, worldZ);
 		this.lightGaps(x, z);
 		
 		this.setBlockMetadataRaw(x, y, z, meta);
 		if(id > 0) {
-			Block.blocks[id].onBlockAdded(Server.world, worldX, y, worldZ); //TODO Chunk::world
+			Block.blocks[id].onBlockAdded(this.world, worldX, y, worldZ);
 		}
 		
 		this.updateMap[x][z] |= 1 << (y >> 4);
@@ -118,12 +108,12 @@ public class Chunk {
 	}
 
 	public void lightGap(int x, int z, int height) {
-		int heightHere = Server.world.getHeightmap(x, z);
+		int heightHere = this.world.getHeightmap(x, z);
 		
 		if(heightHere < height) {
-			Server.world.updateLight(LightLayer.SKY, x, heightHere, z, x, height, z);
+			this.world.updateLight(LightLayer.SKY, x, heightHere, z, x, height, z);
 		}else if(heightHere != height){
-			Server.world.updateLight(LightLayer.SKY, x, height, z, x, heightHere, z);
+			this.world.updateLight(LightLayer.SKY, x, height, z, x, heightHere, z);
 		}
 	}
 
@@ -136,8 +126,8 @@ public class Chunk {
 			--height;
 		}
 		
-		if(height != oldHeight) { //TODO multiworld
-			Server.world.lightColumnChanged(x, z, height, oldHeight);
+		if(height != oldHeight) {
+			this.world.lightColumnChanged(x, z, height, oldHeight);
 			this.heightMap[x][z] = height;
 			
 			if(this.topBlockY <= height) {
@@ -156,7 +146,7 @@ public class Chunk {
 			int worldZ = z + 16*this.posZ;
 			
 			if(height >= oldHeight) {
-				Server.world.updateLight(LightLayer.SKY, worldX, oldHeight, worldZ, worldX, height, worldZ); //TODO dont pass worldX/Z twice?
+				this.world.updateLight(LightLayer.SKY, worldX, oldHeight, worldZ, worldX, height, worldZ);
 			
 				for(int k = oldHeight; k < height; ++k) {
 					this.setSkylightRaw(x, k, z, 0);
@@ -186,7 +176,7 @@ public class Chunk {
 			}
 			
 			if(height != savedHeight) {
-				Server.world.updateLight(LightLayer.SKY, worldX - 1, height, worldZ - 1, worldX + 1, savedHeight, worldZ + 1);
+				this.world.updateLight(LightLayer.SKY, worldX - 1, height, worldZ - 1, worldX + 1, savedHeight, worldZ + 1);
 			}
 		}
 		
@@ -204,7 +194,7 @@ public class Chunk {
 		this.blockData[x << 11 | z << 7 | y] = (byte) id;
 		
 		if(idBefore > 0) {
-			Block.blocks[idBefore].onRemove(Server.world, worldX, y, worldZ); //TODO Chunk::world
+			Block.blocks[idBefore].onRemove(this.world, worldX, y, worldZ);
 		}
 		this.setBlockMetadataRaw(x, y, z, (byte) 0);
 
@@ -214,13 +204,13 @@ public class Chunk {
 			this.recalcHeight(x, y, z);
 		}
 		//no dim checks here
-		Server.world.updateLight(LightLayer.SKY, worldX, y, worldZ, worldX, y, worldZ);
-		Server.world.updateLight(LightLayer.BLOCK, worldX, y, worldZ, worldX, y, worldZ);
+		this.world.updateLight(LightLayer.SKY, worldX, y, worldZ, worldX, y, worldZ);
+		this.world.updateLight(LightLayer.BLOCK, worldX, y, worldZ, worldX, y, worldZ);
 		this.lightGaps(x, z);
 		
 		
 		if(id > 0) {
-			Block.blocks[id].onBlockAdded(Server.world, worldX, y, worldZ); //TODO Chunk::world
+			Block.blocks[id].onBlockAdded(this.world, worldX, y, worldZ);
 		}
 		
 		

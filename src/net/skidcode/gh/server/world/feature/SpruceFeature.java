@@ -49,7 +49,7 @@ public class SpruceFeature extends Feature{
                         int i11 = i10 - x;
                         for (int i12 = z - nextInt4; i12 <= z + nextInt4; i12++) {
                             int i13 = i12 - z;
-                            if ((Math.abs(i11) != nextInt4 || Math.abs(i13) != nextInt4 || nextInt4 <= 0) /*&& !Block.FULL_OPAQUE[world.getBlockIDAt(i10, i9, i12)] TODO opaque*/) {
+                            if ((Math.abs(i11) != nextInt4 || Math.abs(i13) != nextInt4 || nextInt4 <= 0) && !Block.solid[world.getBlockIDAt(i10, i9, i12)]) {
                                 world.placeBlock(i10, i9, i12, (byte)Block.leaves.blockID, (byte)1);
                             }
                         }

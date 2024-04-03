@@ -76,7 +76,7 @@ public class ChunkDataParser extends WorldDataFile{
 				
 				int ch = this.getInt();
 				//assert ch == CHUNK_HEADER; //71368960 - chunk header(04 41 01 20)
-				Chunk c = new Chunk(chunkX, chunkZ);
+				Chunk c = new Chunk(world, chunkX, chunkZ);
 				for(int x = 0; x < 16; ++x) {
 					for(int z = 0; z < 16; ++z) {
 						int index = x << 11 | z << 7;
@@ -113,7 +113,7 @@ public class ChunkDataParser extends WorldDataFile{
 				}
 				
 				world.chunks[chunkX][chunkZ] = c;
-				c.generateHeightMap();
+				//c.recalcHeightmap(); TODO heightmap
 			}
 		}
 	}

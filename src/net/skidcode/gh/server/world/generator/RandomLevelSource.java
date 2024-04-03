@@ -163,7 +163,7 @@ public class RandomLevelSource implements LevelSource{
 		this.biomes = this.world.biomeSource.getBiomeBlock(chunkX * 16, chunkZ * 16, 16, 16);
 		this.prepareHeights(chunkX, chunkZ, bArr, this.biomes, this.world.biomeSource.temperatureNoises);
 		this.buildSurfaces(chunkX, chunkZ, bArr, this.biomes);
-		Chunk c = new Chunk(bArr, chunkX, chunkZ);
+		Chunk c = new Chunk(this.world, bArr, chunkX, chunkZ);
 		c.recalcHeightmap();
 		return c;
 	}

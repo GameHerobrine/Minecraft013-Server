@@ -16,10 +16,6 @@ public class CactusBlock extends Block{
 	}
 	
 	public boolean canSurvive(World world, int x, int y, int z) {
-		/*if(world.getMaterial(x - 1, y, z).isSolid || world.getMaterial(x + 1, y, z).isSolid ||
-			world.getMaterial(x, y, z - 1).isSolid || world.getMaterial(x, y, z + 1).isSolid) {
-			return false;
-		}*/
 		if(world.getMaterial(x - 1, y, z).isSolid || world.getMaterial(x + 1, y, z).isSolid || world.getMaterial(x, y, z - 1).isSolid || world.getMaterial(x, y, z + 1).isSolid) return false;
 		int id = world.getBlockIDAt(x, y - 1, z);
 		return id == Block.cactus.blockID || id == Block.sand.blockID;

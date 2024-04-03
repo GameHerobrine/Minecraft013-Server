@@ -7,7 +7,7 @@ import net.skidcode.gh.server.world.LightLayer;
 
 public class EmptyChunk extends Chunk{
 	public EmptyChunk() {
-		super(16, 16);
+		super(null, 16, 16);
 		Arrays.fill(this.blockData, (byte)Block.invisibleBedrock.blockID);
 	}
 	@Override
@@ -20,4 +20,6 @@ public class EmptyChunk extends Chunk{
 	public boolean isSkyLit(int x, int y, int z) {
 		return false;
 	}
+	public void lightGap(int x, int z, int height) {}
+	public void recalcHeight(int x, int y, int z) {}
 }

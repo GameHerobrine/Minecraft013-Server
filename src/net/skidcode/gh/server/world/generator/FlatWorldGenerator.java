@@ -12,7 +12,7 @@ public class FlatWorldGenerator {
 	public static void generateChunks(World w) {
 		for(int x = 0; x < 16; ++x) {
 			for(int z = 0; z < 16; ++z) {
-				Chunk c = new Chunk(x, z);
+				Chunk c = new Chunk(w, x, z);
 				FlatWorldGenerator.generateChunk(c);
 				w.chunks[x][z] = c;
 			}

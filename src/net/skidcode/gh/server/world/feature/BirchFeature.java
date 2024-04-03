@@ -42,7 +42,7 @@ public class BirchFeature extends Feature{
                         int i9 = i8 - x;
                         for (int i10 = z - i7; i10 <= z + i7; i10++) {
                             int i11 = i10 - z;
-                            if ((Math.abs(i9) != i7 || Math.abs(i11) != i7 || (rand.nextInt(2) != 0 && i6 != 0))/* && !Block.FULL_OPAQUE[world.getBlockIDAt(i8, i5, i10)]TODO opaque*/) {
+                            if ((Math.abs(i9) != i7 || Math.abs(i11) != i7 || (rand.nextInt(2) != 0 && i6 != 0))&& !Block.solid[world.getBlockIDAt(i8, i5, i10)]) {
                                 world.placeBlock(i8, i5, i10, (byte)Block.leaves.blockID, (byte)2);
                             }
                         }
