@@ -323,7 +323,7 @@ public class Chunk {
 				}while(--yLight > 0 && lightLevel > 0);
 			}
 		}
-		Logger.info(topBlock);
+		
 		this.topBlockY = (byte) topBlock;
 		for(int x = 0; x <= 15; ++x) {
 			for(int z = 0; z <= 15; ++z) {

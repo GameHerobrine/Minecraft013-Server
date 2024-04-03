@@ -1,6 +1,7 @@
 package net.skidcode.gh.server.world;
 
 import net.skidcode.gh.server.block.Block;
+import net.skidcode.gh.server.utils.Logger;
 
 public class LightUpdate {
 	public LightLayer layer;
@@ -79,7 +80,6 @@ public class LightUpdate {
 						}else if(this.layer == LightLayer.BLOCK) {
 							lightEmission = Block.lightEmission[blockID];
 						}
-						
 						if(lightBlock <= 14 || lightEmission != 0) {
 							int xNegBright = world.getBrightness(layer, x - 1, y, z);
 							int xPosBright = world.getBrightness(layer, x + 1, y, z);

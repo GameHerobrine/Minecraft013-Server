@@ -163,11 +163,8 @@ public final class Server {
 				Logger.info("Generating normal world...");
 				Server.world = new World(iWorldSeed);
 				try {
-					Server.world.updateLights = false;
 					NormalWorldGenerator.generateChunks(Server.world);
 				}catch(StackOverflowError e) {throw new RuntimeException();}
-				Server.world.updateLights = true;
-				Server.world.updateLight(LightLayer.SKY, 0, 0, 0, 255, 127, 255);
 				Server.world.setSaveSpawn(127, 127);
 				//while(Server.world.updateLights());
 			}else {

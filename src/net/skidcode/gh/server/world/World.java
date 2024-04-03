@@ -93,15 +93,15 @@ public class World {
 		return this.hasChunksAt(x - radius, y - radius, z - radius, x + radius, y + radius, radius + z);
 	}
 	public boolean hasChunksAt(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
-		if(minY > -1 && minY < 128) {
-			for(int chunkX = minX >> 4; chunkX <= maxX >> 4; ++chunkX) {
-				for(int chunkZ = minZ >> 4; chunkZ <= maxZ >> 4; ++chunkZ) {
-					if(chunkX < 0 || chunkZ < 0 || chunkX > 15 || chunkZ > 15 || this.chunks[chunkX][chunkZ] == null) return false;
-				}
+		
+		if(maxY < 0 || minY > 127) return false;
+		
+		for(int chunkX = minX >> 4; chunkX <= maxX >> 4; ++chunkX) {
+			for(int chunkZ = minZ >> 4; chunkZ <= maxZ >> 4; ++chunkZ) {
+				if(chunkX < 0 || chunkZ < 0 || chunkX > 15 || chunkZ > 15 || this.chunks[chunkX][chunkZ] == null) return false;
 			}
-			return true;
 		}
-		return false;
+		return true;
 	}
 	
 	public void addPlayer(Player player) {
@@ -422,6 +422,7 @@ public class World {
 			this.lightUpdates.add(update);
 			if(this.lightUpdates.size() > 1000000) {
 				this.lightUpdates.clear(); //bad
+				Logger.warn("More than 1000000 light updates, clearing...");
 			}
 			--this.lightUpdatesCount;
 		}else {
