@@ -65,7 +65,8 @@ public final class Server {
 
 	public static void main(String[] args) throws IOException {
 		Logger.info("Starting Server...");
-		
+		Logger.info(String.format("Light Emission: %s", Arrays.toString(Block.lightEmission)));
+		Logger.info(String.format("Light Block: %s", Arrays.toString(Block.lightBlock)));
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			public void run() {
 				if(Server.saveWorld && Server.world != null) {

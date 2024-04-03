@@ -209,7 +209,7 @@ public class Block {
 		Block.solid[this.blockID] = this.isSolidRender();
 		
 		int lightBlock = this.isSolidRender() ? 255 : 0;
-		Block.lightBlock[lightBlock] = lightBlock;
+		Block.lightBlock[this.blockID] = lightBlock;
 		//TODO Block.translucent
 		
 	}
