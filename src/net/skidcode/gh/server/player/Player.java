@@ -217,7 +217,7 @@ public class Player extends Entity implements CommandIssuer{
 									blocks[i] = (byte) c.getSkylight(x, y*16+i, z);
 									switch(blocks[i]) {
 										case 0:
-											blocks[i] = 0;
+											blocks[i] = 0; //(byte) Block.grass.blockID;
 											break;
 										case 1:
 											blocks[i] = (byte) Block.obsidian.blockID;
@@ -272,11 +272,11 @@ public class Player extends Entity implements CommandIssuer{
 								l += 16;
 								System.arraycopy(new byte[]{0, 0, 0, 0, 0, 0, 0, 0}, 0, cd, l, 8);
 								l += 8;
-								//int index = x << 11 | z << 7 | y << 4;
-								//System.arraycopy(c.blockData, index, cd, l, 16);
-								//l += 16;
-								//System.arraycopy(c.blockMetadata, index >> 1, cd, l, 8);
-								//l += 8;
+								/*int index = x << 11 | z << 7 | y << 4;
+								System.arraycopy(c.blockData, index, cd, l, 16);
+								l += 16;
+								System.arraycopy(c.blockMetadata, index >> 1, cd, l, 8);
+								l += 8;*/
 							}
 						}
 						

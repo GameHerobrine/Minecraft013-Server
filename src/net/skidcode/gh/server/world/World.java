@@ -269,7 +269,7 @@ public class World {
 		return id > 0 ? Block.blocks[id].material : Material.air;
 	}
 
-	public int getHeightValue(int x, int z) {
+	public int getHeightmap(int x, int z) {
 		Chunk c = this.getChunk(x >> 4, z >> 4);
 		
 		if(c == null) return 0;

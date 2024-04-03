@@ -365,7 +365,9 @@ public class RandomLevelSource implements LevelSource{
 			int j15 = chunkZWorld + rand.nextInt(16) + 8;
 			Feature tree = biome.getTreeFeature(rand);
 			//tree.func_517_a(1.0D, 1.0D, 1.0D);
-			tree.place(this.world, rand, l12, this.world.getHeightValue(l12, j15), j15);
+			int hm = this.world.getHeightmap(l12, j15);
+			Logger.info(String.format("Trying to generate a tree on %d %d %d ", l12, hm, j15));
+			tree.place(this.world, rand, l12, hm, j15);
 		}
 		for(int i9 = 0; i9 < 2; i9++)
 		{

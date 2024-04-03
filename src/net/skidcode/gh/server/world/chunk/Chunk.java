@@ -118,7 +118,7 @@ public class Chunk {
 	}
 
 	public void lightGap(int x, int z, int height) {
-		int heightHere = Server.world.getHeightValue(x, z);
+		int heightHere = Server.world.getHeightmap(x, z);
 		
 		if(heightHere < height) {
 			Server.world.updateLight(LightLayer.SKY, x, heightHere, z, x, height, z);
@@ -301,13 +301,13 @@ public class Chunk {
 	}
 
 	public void recalcHeightmap() {
-		// TODO Auto-generated method stub
 		int topBlock = 127;
 		for(int x = 0; x <= 15; ++x) {
 			for(int z = 0; z <= 15; ++z) {
 				int y = 127;
 				int xzIndex = (x << 11) | (z << 7);
-				while(y > 0 && Block.lightBlock[this.blockData[y - 1 + xzIndex]] != 0) {
+				
+				while(y > 0 && Block.lightBlock[this.blockData[y - 1 + xzIndex]] == 0) {
 					--y;
 				}
 				
@@ -323,7 +323,7 @@ public class Chunk {
 				}while(--yLight > 0 && lightLevel > 0);
 			}
 		}
-		
+		Logger.info(topBlock);
 		this.topBlockY = (byte) topBlock;
 		for(int x = 0; x <= 15; ++x) {
 			for(int z = 0; z <= 15; ++z) {
