@@ -387,14 +387,14 @@ public class RandomLevelSource implements LevelSource{
 			int k9 = chunkXWorld + rand.nextInt(16) + 8;
 			int k13 = rand.nextInt(128);
 			int i16 = chunkZWorld + rand.nextInt(16) + 8;
-			(new FlowerFeature(Block.mushroomRed.blockID)).place(this.world, rand, k9, k13, i16);
+			(new FlowerFeature(Block.mushroomBrown.blockID)).place(this.world, rand, k9, k13, i16);
 		}
 		if(rand.nextInt(8) == 0)
 		{
 			int l9 = chunkXWorld + rand.nextInt(16) + 8;
 			int l13 = rand.nextInt(128);
 			int j16 = chunkZWorld + rand.nextInt(16) + 8;
-			(new FlowerFeature(Block.mushroomBrown.blockID)).place(this.world, rand, l9, l13, j16);
+			(new FlowerFeature(Block.mushroomRed.blockID)).place(this.world, rand, l9, l13, j16);
 		}
 		
 		for(int i10 = 0; i10 < 10; i10++)
