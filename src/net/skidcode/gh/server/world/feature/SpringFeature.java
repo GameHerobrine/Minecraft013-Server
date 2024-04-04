@@ -60,7 +60,7 @@ public class SpringFeature extends Feature{
         }
         if(l == 3 && i1 == 1)
         {
-            world.placeBlock(x, y, z, this.blockID);
+            world.setBlock(x, y, z, this.blockID, 0, 1);
             world.instantScheduledUpdate = true;
             Block.blocks[this.blockID].tick(world, x, y, z, rand);
             world.instantScheduledUpdate = false;

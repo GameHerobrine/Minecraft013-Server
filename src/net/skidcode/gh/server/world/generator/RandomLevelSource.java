@@ -443,9 +443,9 @@ public class RandomLevelSource implements LevelSource{
 				int i20 = k17 - (chunkZWorld + 8);
 				int j20 = this.world.findTopSolidBlock(i15, k17);
 				float d1 = temps[i19 * 16 + i20] - ((j20 - 64) / 64f) * 0.3f;
-				if(d1 < 0.5D && j20 > 0 && j20 < 128 && this.world.isAirBlock(i15, j20, k17) && this.world.getMaterial(i15, j20 - 1, k17).isSolid && this.world.getMaterial(i15, j20 - 1, k17) != Material.ice)
+				if(d1 < 0.5D && j20 > 0 && j20 < 128 && this.world.isAirBlock(i15, j20, k17) && this.world.getMaterial(i15, j20 - 1, k17).blocksMotion && this.world.getMaterial(i15, j20 - 1, k17) != Material.ice)
 				{
-					this.world.placeBlock(i15, j20, k17, (byte) Block.snowLayer.blockID);
+					this.world.setBlock(i15, j20, k17, (byte) Block.snowLayer.blockID, 0, 1);
 				}
 			}
 		}
