@@ -325,4 +325,15 @@ public class Chunk {
 	public int getHeightmap(int x, int z) {
 		return this.heightMap[x][z];
 	}
+
+	public int getRawBrightness(int x, int y, int z, int k) {
+		
+		int sky = this.getSkylight(x, y, z);
+		//if(sky > 0) Chunk.touchedSky = 1, useless probably?
+		
+		sky -= k;
+		int block = this.getBlocklight(x, y, z);
+		
+		return block > sky ? block : sky;
+	}
 }

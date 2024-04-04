@@ -54,7 +54,9 @@ public class LightUpdate {
 	}
 
 	public void update(World world) {
-		if((this.maxZ - this.minZ + 1)*(this.maxY-this.minY + 1)*(this.maxX-this.minX+1) > 0x8000) return;
+		if((this.maxZ - this.minZ + 1)*(this.maxY-this.minY + 1)*(this.maxX-this.minX+1) > 0x8000) {
+			return;
+		}
 		
 		for(int x = this.minX; this.maxX >= x; ++x) { //TODO i ... this.max
 			for(int z = this.minZ; this.maxZ >= z; ++z) { //TODO i ... this.max

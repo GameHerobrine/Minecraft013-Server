@@ -432,6 +432,45 @@ public class World {
 		
 		
 	}
+	
+	public int getRawBrightness(int x, int y, int z) {
+		return this.getRawBrightness(x, y, z, true);
+	}
+	public int getRawBrightness(int x, int y, int z, boolean complex) {
+		int lightValue;
+		
+		if(complex) {
+			int blockID = this.getBlockIDAt(x, y, z);
+			if(blockID == Block.stoneSlab.blockID || blockID == Block.farmland.blockID) { //TODO do not hardcode
+				lightValue = this.getRawBrightness(x, y + 1, z, false);
+				int xpos = this.getRawBrightness(x + 1, y, z, false);
+				int xneg = this.getRawBrightness(x - 1, y, z, false);
+				int zpos = this.getRawBrightness(x, y, z + 1, false);
+				int zneg = this.getRawBrightness(x, y, z - 1, false);
+			
+				if(xpos > lightValue) lightValue = xpos;
+				if(xneg > lightValue) lightValue = xneg;
+				if(zpos > lightValue) lightValue = zpos;
+				if(zneg > lightValue) lightValue = zneg;
+				return lightValue;
+			}
+		}
+		if(y < 0) {
+			return 0;
+		}else if(y > 127) { 
+			//TODO also checks some variable(field_2C, m_skydarken in mcped), ignoring for now
+			//v12 = 15 - this.skyDarken
+			//if(v12 < 0) return 0 else return v12;
+			return 15;
+		}else {
+			Chunk c = this.getChunk(x >> 4, z >> 4);
+			return c.getRawBrightness(x & 0xf, y, z & 0xf, /*this.skyDarken*/ 0); //TODO this.skyDarken
+		}
+		
+		
+		
+		
+	}
 	public boolean hasChunkAt(int x, int z) {
 		return x >= 0 && x < 16 && z >= 0 && z < 16; //TODO do not hardcode
 	}
@@ -488,11 +527,13 @@ public class World {
 			Chunk c = this.getChunk(x >> 4, z >> 4);
 			if(c == null) return;
 			
-			c.setBrightness(layer, x & 0xf, y, z & 0xf, brightness);
+			c.setBrightness(layer, x & 0xf, y, z & 0xf, brightness & 0xf);
 			//also notifies LevelListeners, but they seem to not do anything
 		}
 	}
-
+	
+	
+	
 	public void updateLightIfOtherThan(LightLayer layer, int x, int y, int z, int lightLevel) {
 		//skipping checks related to dimension(!hasSky probably)
 		

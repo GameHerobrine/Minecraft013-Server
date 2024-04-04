@@ -84,21 +84,21 @@ public class ChunkDataParser extends WorldDataFile{
 						this.offset += 128;
 					}
 				}
-				for(int x = 0; x < 16; ++x) { //TODO make more beautiful
+				for(int x = 0; x < 16; ++x) {
 					for(int z = 0; z < 16; ++z) {
 						int index = x << 11 | z << 7;
 						System.arraycopy(this.buffer, this.offset, c.blockMetadata, index >> 1, 64);
 						this.offset += 64;
 					}
 				}
-				for(int x = 0; x < 16; ++x) { //TODO make more beautiful
+				for(int x = 0; x < 16; ++x) {
 					for(int z = 0; z < 16; ++z) {
 						int index = x << 11 | z << 7;
 						System.arraycopy(this.buffer, this.offset, c.blockSkyLight, index >> 1, 64);
 						this.offset += 64;
 					}
 				}
-				for(int x = 0; x < 16; ++x) { //TODO make more beautiful
+				for(int x = 0; x < 16; ++x) {
 					for(int z = 0; z < 16; ++z) {
 						int index = x << 11 | z << 7;
 						System.arraycopy(this.buffer, this.offset, c.blockLight, index >> 1, 64);
@@ -113,9 +113,10 @@ public class ChunkDataParser extends WorldDataFile{
 				}
 				
 				world.chunks[chunkX][chunkZ] = c;
-				//c.recalcHeightmap(); TODO heightmap
+				//TODO c.recalcHeightmap();
 			}
 		}
+		
 	}
 
 	@Override

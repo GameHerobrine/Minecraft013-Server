@@ -1,6 +1,8 @@
 package net.skidcode.gh.server.world.generator;
 
+import net.skidcode.gh.server.Server;
 import net.skidcode.gh.server.utils.Logger;
+import net.skidcode.gh.server.world.LightLayer;
 import net.skidcode.gh.server.world.World;
 import net.skidcode.gh.server.world.parser.vanilla.ChunkDataParser;
 
@@ -26,7 +28,6 @@ public class NormalWorldGenerator {
 				w.chunks[x][z].clearUpdateMap();
 			}
 		}
-		
 		
 		
 		w.locationTable = ChunkDataParser.locTable;

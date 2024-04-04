@@ -166,6 +166,7 @@ public final class Server {
 					NormalWorldGenerator.generateChunks(Server.world);
 				}catch(StackOverflowError e) {throw new RuntimeException();}
 				Server.world.setSaveSpawn(127, 127);
+				
 				while(Server.world.updateLights());
 			}else {
 				Server.saveWorld = false;
