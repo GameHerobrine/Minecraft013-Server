@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 
 import net.skidcode.gh.server.block.Block;
+import net.skidcode.gh.server.world.LightLayer;
 import net.skidcode.gh.server.world.World;
 import net.skidcode.gh.server.world.chunk.Chunk;
 import net.skidcode.gh.server.world.data.WorldDataFile;
@@ -113,10 +114,26 @@ public class ChunkDataParser extends WorldDataFile{
 				}
 				
 				world.chunks[chunkX][chunkZ] = c;
-				//TODO c.recalcHeightmap();
+				c.recalcHeightmap();
+				int chunkWorldX = chunkX * 16;
+				int chunkWorldZ = chunkZ * 16;
+				for(int x = 0; x < 16; ++x) {
+					for(int z = 0; z < 16; ++z) {
+						
+						int worldX = chunkWorldX + x;
+						int worldZ = chunkWorldZ + z;
+						
+						for(int y = world.getHeightmap(worldX, worldZ); y >= 0; --y) { //TODO updateLight(.., 0, .., .., heightmap, ..)?
+							world.updateLight(LightLayer.SKY, worldX, y, worldZ, worldX, y, worldZ);
+							world.updateLight(LightLayer.BLOCK, worldX, y, worldZ, worldX, y, worldZ);
+						}
+					}
+				}
+				
 			}
 		}
 		
+		while(world.updateLights());
 	}
 
 	@Override

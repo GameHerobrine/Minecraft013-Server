@@ -485,7 +485,7 @@ public class World {
 		++this.lightDepth;
 		int maxUpdates = 500;
 		
-		Logger.info(String.format("Light updates total: %d", this.lightUpdates.size()));
+		//Logger.info(String.format("Light updates total: %d", this.lightUpdates.size()));
 		
 		
 		while(this.lightUpdates.size() > 0) {

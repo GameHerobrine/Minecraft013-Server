@@ -52,9 +52,12 @@ public class ImprovedNoise {
 		float xPos = x + xCoord;
 		float yPos = y + yCoord;
 		float zPos = z + zCoord;
-		int xFloor = MathUtils.ffloor(xPos);
-		int yFloor = MathUtils.ffloor(yPos);
-		int zFloor = MathUtils.ffloor(zPos);
+		int xFloor = (int) xPos;
+		if(xPos < xFloor) --xFloor;
+		int yFloor = (int) yPos;
+		if(yPos < yFloor) --yFloor;
+		int zFloor = (int) zPos;
+		if(zPos < zFloor) --zFloor;
 		int x255 = xFloor & 0xff;
 		int y255 = yFloor & 0xff;
 		int z255 = zFloor & 0xff;
@@ -90,7 +93,8 @@ public class ImprovedNoise {
 			for(int w = 0; w < width; w++)
 			{
 				float xFull = (x + (float)w) * scaleX + xCoord;
-				int floorXFull = MathUtils.ffloor(xFull);
+				int floorXFull = (int)xFull;
+				if(xFull < (float)floorXFull) --floorXFull;
 				int k4 = floorXFull & 0xff;
 				xFull -= floorXFull;
 				float xFullLerp = xFull * xFull * xFull * (xFull * (xFull * 6 - 15) + 10);
@@ -98,10 +102,7 @@ public class ImprovedNoise {
 				{
 					float zFull = (z + (float)d) * scaleZ + zCoord;
 					int zFloor = (int)zFull;
-					if(zFull < (float)zFloor)
-					{
-						zFloor--;
-					}
+					if(zFull < (float)zFloor)zFloor--;
 					int l5 = zFloor & 0xff;
 					zFull -= zFloor;
 					float zFullLerp = zFull * zFull * zFull * (zFull * (zFull * 6 - 15) + 10);
@@ -129,21 +130,24 @@ public class ImprovedNoise {
 		for(int i5 = 0; i5 < width; i5++)
 		{
 			float d20 = (x + (float)i5) * scaleX + xCoord;
-			int k5 = MathUtils.ffloor(d20);
+			int k5 = (int) d20;
+			if(d20 < k5) --k5;
 			int i6 = k5 & 0xff;
 			d20 -= k5;
 			float d22 = d20 * d20 * d20 * (d20 * (d20 * 6f - 15f) + 10f);
 			for(int j6 = 0; j6 < depth; j6++)
 			{
 				float d24 = (z + (float)j6) * scaleZ + zCoord;
-				int k6 = MathUtils.ffloor(d24);
+				int k6 = (int)d24;
+				if(d24 < k6) --k6;
 				int l6 = k6 & 0xff;
 				d24 -= k6;
 				float d25 = d24 * d24 * d24 * (d24 * (d24 * 6f - 15f) + 10f);
 				for(int i7 = 0; i7 < height; i7++)
 				{
 					float d26 = (y + (float)i7) * scaleY + yCoord;
-					int j7 = MathUtils.ffloor(d26);
+					int j7 = (int)d26;
+					if(d26 < j7) --j7;
 					int k7 = j7 & 0xff;
 					d26 -= j7;
 					float d27 = d26 * d26 * d26 * (d26 * (d26 * 6f - 15f) + 10f);

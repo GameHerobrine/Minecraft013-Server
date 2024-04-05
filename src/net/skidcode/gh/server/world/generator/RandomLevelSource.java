@@ -79,18 +79,18 @@ public class RandomLevelSource implements LevelSource{
 				d4 *= d4;
 				d4 *= d4;
 				d4 = 1.0F - d4;
-				float f5 = (biomeNoises[l1] + 256F) / 512F;
+				float f5 = (biomeNoises[l1] + 256.0F) / 512.0F;
 				f5 *= d4;
 				if(f5 > 1.0F)
 				{
 					f5 = 1.0F;
 				}
-				float f6 = depthNoises[l1] / 8000F;
+				float f6 = depthNoises[l1] / 8000.0F;
 				if(f6 < 0.0F)
 				{
 					f6 = f6 * -0.3f;
 				}
-				f6 = f6 * 3F - 2F;
+				f6 = (f6 * 3.0F) - 2F;
 				if(f6 < 0.0F)
 				{
 					f6 /= 2f;
@@ -98,8 +98,7 @@ public class RandomLevelSource implements LevelSource{
 					{
 						f6 = -1F;
 					}
-					f6 /= 1.4f;
-					f6 /= 2f;
+					f6 = (f6 / 1.4f) / 2.0f;
 					f5 = 0.0F;
 				} else
 				{
@@ -169,11 +168,11 @@ public class RandomLevelSource implements LevelSource{
 	}
 
 	public void buildSurfaces(int chunkX, int chunkZ, byte[] blockIDS, Biome[] biomes) {
-		this.sandNoises = this.beachNoise.getRegion(null, chunkX * 16, chunkZ * 16, 0f, 16, 16, 1, 0.03125f, 0.03125f, 1);
-		this.gravelNoises = this.beachNoise.getRegion(null, chunkX * 16, 109.01f, chunkZ * 16, 16, 1, 16, 0.03125f, 1, 0.03125f);
-		this.surfaceDepthNoises = this.surfaceDepthNoise.getRegion(null, chunkX * 16, chunkZ * 16, 0, 16, 16, 1, 0.0625f, 0.0625f, 0.0625f);
-		for (int blockX = 0; blockX < 16; blockX++) {
-			for (int blockZ = 0; blockZ < 16; blockZ++) {
+		this.sandNoises = this.beachNoise.getRegion(null, chunkX * 16, chunkZ * 16, 0f, 16, 16, 1, 0.03125f, 0.03125f, 1.0f);
+		this.gravelNoises = this.beachNoise.getRegion(null, chunkX * 16, 109.01f, chunkZ * 16, 16, 1, 16, 0.03125f, 1.0f, 0.03125f);
+		this.surfaceDepthNoises = this.surfaceDepthNoise.getRegion(null, chunkX * 16, chunkZ * 16, 0f, 16, 16, 1, 0.03125f + 0.03125f, 0.03125f + 0.03125f, 0.03125f + 0.03125f);
+		for (int blockX = 0; blockX < 16; ++blockX) {
+			for (int blockZ = 0; blockZ < 16; ++blockZ) {
 				Biome biome = biomes[blockX + (blockZ * 16)];
 				boolean z = this.sandNoises[blockX + (blockZ * 16)] + (this.rand.nextFloat() * 0.2f) > 0.0f;
 				boolean z2 = this.gravelNoises[blockX + (blockZ * 16)] + (this.rand.nextFloat() * 0.2f) > 3.0f;
@@ -192,7 +191,7 @@ public class RandomLevelSource implements LevelSource{
 						} else if (b3 == Block.stone.blockID) {
 							if (i == -1) {
 								if (nextFloat > 0) {
-									if (blockY >= 64 - 4 && blockY <= 64 + 1) {
+									if (blockY >= 60 && blockY <= 65) {
 										b = biome.topBlock;
 										b2 = biome.fillerBlock;
 										if (z2) {
@@ -214,13 +213,13 @@ public class RandomLevelSource implements LevelSource{
 									b = (byte) Block.waterStill.blockID;
 								}
 								i = nextFloat;
-								if (blockY >= 64 - 1) {
+								if (blockY >= 63) {
 									blockIDS[index] = b;
 								} else {
 									blockIDS[index] = b2;
 								}
 							} else if (i > 0) {
-								i--;
+								--i;
 								blockIDS[index] = b2;
 								if (i == 0 && b2 == Block.sand.blockID) {
 									i = this.rand.nextInt(4);
@@ -243,14 +242,14 @@ public class RandomLevelSource implements LevelSource{
 		for (int unkX = 0; unkX < 4; unkX++) {
 			for (int unkZ = 0; unkZ < 4; unkZ++) {
 				for (int unkY = 0; unkY < 16; unkY++) {
-					float f = this.heights[((((unkX + 0) * 5) + unkZ + 0) * 17) + unkY + 0];
-					float f2 = this.heights[((((unkX + 0) * 5) + unkZ + 1) * 17) + unkY + 0];
-					float f3 = this.heights[((((unkX + 1) * 5) + unkZ + 0) * 17) + unkY + 0];
-					float f4 = this.heights[((((unkX + 1) * 5) + unkZ + 1) * 17) + unkY + 0];
-					float f5 = (this.heights[((((unkX + 0) * 5) + (unkZ + 0)) * 17) + (unkY + 1)] - f) * 0.125f;
-					float f6 = (this.heights[((((unkX + 0) * 5) + (unkZ + 1)) * 17) + (unkY + 1)] - f2) * 0.125f;
-					float f7 = (this.heights[((((unkX + 1) * 5) + (unkZ + 0)) * 17) + (unkY + 1)] - f3) * 0.125f;
-					float f8 = (this.heights[((((unkX + 1) * 5) + (unkZ + 1)) * 17) + (unkY + 1)] - f4) * 0.125f;
+					float f = this.heights[85 * unkX + 17 * unkZ + unkY];
+					float f2 = this.heights[85 * unkX + 17 + 17 * unkZ + unkY];
+					float f3 = this.heights[85 * unkX + 85 + 17 * unkZ + unkY];
+					float f4 = this.heights[85 * unkX + 102 + 17 * unkZ + unkY];
+					float f5 = (this.heights[85 * unkX + 1 + 17 * unkZ + unkY] - f) * 0.125f;
+					float f6 = (this.heights[85 * unkX + 18 + 17 * unkZ + unkY] - f2) * 0.125f;
+					float f7 = (this.heights[85 * unkX + 86 + 17 * unkZ + unkY] - f3) * 0.125f;
+					float f8 = (this.heights[85 * unkX + 103 + 17 * unkZ + unkY] - f4) * 0.125f;
 					
 					for (int unkYY = 0; unkYY < 8; unkYY++) {
 						float f9 = f;

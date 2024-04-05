@@ -290,6 +290,24 @@ public class Chunk {
 		}
 	}
 
+	public void recalcHeightmapOnly() {
+		int topBlock = 127;
+		for(int x = 0; x <= 15; ++x) {
+			for(int z = 0; z <= 15; ++z) {
+				int y = 127;
+				int xzIndex = (x << 11) | (z << 7);
+				
+				while(y > 0 && Block.lightBlock[this.blockData[y - 1 + xzIndex]] == 0) {
+					--y;
+				}
+				
+				this.heightMap[x][z] = (byte) y;
+				if(y < topBlock) topBlock = y;
+			}
+		}
+		this.topBlockY = (byte) topBlock;
+	}
+	
 	public void recalcHeightmap() {
 		int topBlock = 127;
 		for(int x = 0; x <= 15; ++x) {

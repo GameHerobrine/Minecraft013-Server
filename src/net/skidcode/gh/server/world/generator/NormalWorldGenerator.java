@@ -13,12 +13,12 @@ public class NormalWorldGenerator {
 			Logger.info("Generating "+x+": [0-15] chunks");
 			for(int z = 0; z < 16; ++z) {
 				w.chunks[x][z] = w.levelSource.getChunk(x, z);
+				while(w.updateLights());
 			}
 		}
 		for(int x = 0; x < 16; ++x) {
 			Logger.info("Populating "+x+": [0-15] chunks");
 			for(int z = 0; z < 16; ++z) {
-				w.chunks[x][z].recalcHeightmap();
 				w.levelSource.postProcess(x, z);
 			}
 		}
