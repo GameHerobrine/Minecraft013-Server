@@ -67,7 +67,7 @@ public class PineFeature extends Feature{
                 for(int l4 = z - k2; l4 <= z + k2; l4++)
                 {
                     int i5 = l4 - z;
-                    if((Math.abs(k4) != k2 || Math.abs(i5) != k2 || k2 <= 0)/* && !Block.opaqueCubeLookup[world.getBlockId(l3, i3, l4)] TODO opaque*/)
+                    if((Math.abs(k4) != k2 || Math.abs(i5) != k2 || k2 <= 0) && !Block.solid[world.getBlockIDAt(l3, i3, l4)])
                     {
                         world.placeBlock(l3, i3, l4, (byte)Block.leaves.blockID, (byte)1);
                     }

@@ -18,9 +18,9 @@ public class OreFeature extends Feature{
 	public boolean place(World world, BedrockRandom rand, int x, int y, int z) {
 		float nextFloat = rand.nextFloat() * 3.1416f;
 		float sin = (float) (x + 8 + ((MathUtils.sin(nextFloat) * this.amount) / 8.0f));
-		float sin2 = (float) ((x + 8) + ((MathUtils.sin(nextFloat) * this.amount) / -8.0f));
+		float sin2 = (float) (x + 8 + ((MathUtils.sin(nextFloat) * this.amount) / -8.0f));
 		float cos = (float) (z + 8 + ((MathUtils.cos(nextFloat) * this.amount) / 8.0f));
-		float cos2 = (float) ((z + 8) + ((MathUtils.cos(nextFloat) * this.amount) / -8.0f));
+		float cos2 = (float) (z + 8 + ((MathUtils.cos(nextFloat) * this.amount) / -8.0f));
 		float nextInt = y + rand.nextInt(3) + 2;
 		float nextInt2 = y + rand.nextInt(3) + 2;
 		for (int i = 0; i <= this.amount; i++) {

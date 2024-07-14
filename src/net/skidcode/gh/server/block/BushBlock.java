@@ -41,7 +41,7 @@ public class BushBlock extends Block{
 	}
 	
 	public boolean canSurvive(World world, int x, int y, int z) {
-		if(/*world.getRawBrightness(x, y, z) > 7 || */world.canSeeSky(x, y, z)) { //TODO light
+		if(world.getRawBrightness(x, y, z) > 7 || world.canSeeSky(x, y, z)) {
 			int below = world.getBlockIDAt(x, y - 1, z);
 			if(this.mayPlaceOn(below)) return true;	
 		}

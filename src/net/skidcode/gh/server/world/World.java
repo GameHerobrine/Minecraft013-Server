@@ -43,9 +43,15 @@ public class World {
 	public LevelSource levelSource;
 	public HashSet<Integer> blockUpdates = new HashSet<>();
 	public int randInt1, randInt2;
+	public int lightUpdatesCount = 0;
+	public boolean updateLights = true;
+	
 	
 	public TreeSet<TickNextTickData> scheduledTickTreeSet;
 	public HashSet<TickNextTickData> scheduledTickSet;
+	public int lightDepth = 0;
+	public ArrayList<LightUpdate> lightUpdates;
+	
 	public World(int seed) {
 		this.worldSeed = seed;
 		this.random = new BedrockRandom(seed);
@@ -53,6 +59,7 @@ public class World {
 		this.levelSource = new RandomLevelSource(this, seed); //TODO API
 		this.scheduledTickTreeSet = new TreeSet<>();
 		this.scheduledTickSet = new HashSet<>();
+		this.lightUpdates = new ArrayList<>();
 		this.randInt1 = 0x283AE83; //it is static in 0.1
 		this.randInt2 = 0x3C6EF35F;
 	}
@@ -61,7 +68,9 @@ public class World {
 		entity.world = this;
 		this.entities.put(entity.eid, entity);
 	}
-	
+	public void setUpdateLights(boolean b) {
+		this.updateLights = b;
+	}
 	public void addToTickNextTick(int x, int y, int z, int id, int delay) {
 		TickNextTickData tick = new TickNextTickData(x, y, z, id);
 		if(this.instantScheduledUpdate) {
@@ -79,17 +88,20 @@ public class World {
 			}
 		}
 	}
-	
+
+	public boolean hasChunksAt(int x, int y, int z, int radius) {
+		return this.hasChunksAt(x - radius, y - radius, z - radius, x + radius, y + radius, radius + z);
+	}
 	public boolean hasChunksAt(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
-		if(minY > -1 && minY < 128) {
-			for(int chunkX = minX >> 4; chunkX <= maxX >> 4; ++chunkX) {
-				for(int chunkZ = minZ >> 4; chunkZ <= maxZ >> 4; ++chunkZ) {
-					if(chunkX < 0 || chunkZ < 0 || chunkX > 15 || chunkZ > 15 || this.chunks[chunkX][chunkZ] == null) return false;
-				}
+		
+		if(maxY < 0 || minY > 127) return false;
+		
+		for(int chunkX = minX >> 4; chunkX <= maxX >> 4; ++chunkX) {
+			for(int chunkZ = minZ >> 4; chunkZ <= maxZ >> 4; ++chunkZ) {
+				if(chunkX < 0 || chunkZ < 0 || chunkX > 15 || chunkZ > 15 || this.chunks[chunkX][chunkZ] == null) return false;
 			}
-			return true;
 		}
-		return false;
+		return true;
 	}
 	
 	public void addPlayer(Player player) {
@@ -167,6 +179,9 @@ public class World {
 	}
 	
 	public boolean setBlock(int x, int y, int z, int id, int meta, int flags) {
+		
+		if(y < 0 || y > 127) return false;
+		
 		Chunk c = this.getChunk(x >> 4, z >> 4);
 		boolean s = c.setBlock(x &0xf, y, z & 0xf, (byte) id, (byte)meta);
 		if(s) {
@@ -212,8 +227,6 @@ public class World {
 			Chunk c = this.chunks[x >> 4][z >> 4];
 			c.setBlock(x & 0xf, y, z & 0xf, id, (byte) 0);
 			
-			if(id > 0) Block.blocks[id].onBlockAdded(this, x, y, z);
-			
 			this.sendBlockPlace(x, y, z, id, (byte) 0);
 		}
 	}
@@ -228,7 +241,6 @@ public class World {
 			Chunk c = this.chunks[x >> 4][z >> 4];
 			c.setBlock(x & 0xf, y, z & 0xf, id, meta);
 			
-			if(id > 0) Block.blocks[id].onBlockAdded(this, x, y, z);
 			
 			this.sendBlockPlace(x, y, z, id, meta);
 		}
@@ -257,11 +269,11 @@ public class World {
 		return id > 0 ? Block.blocks[id].material : Material.air;
 	}
 
-	public int getHeightValue(int x, int z) {
-		if(x < 256 && z < 256 && x >= 0 && z >= 0) {
-			return this.chunks[x >> 4][z >> 4].heightMap[x & 0xf][z & 0xf];
-		}
-		return 0;
+	public int getHeightmap(int x, int z) {
+		Chunk c = this.getChunk(x >> 4, z >> 4);
+		
+		if(c == null) return 0;
+		return c.getHeightmap(x & 0xf, z & 0xf);
 	}
 
 	public boolean isAirBlock(int x, int y, int z) {
@@ -304,7 +316,7 @@ public class World {
 			if(this.hasChunksAt(tick.posX - 8, tick.posY - 8, tick.posY - 8, tick.posX + 8, tick.posY + 8, tick.posY + 8)) {
 				int id = this.getBlockIDAt(tick.posX, tick.posY, tick.posZ);
 				if(id > 0 && id == tick.blockID) {
-					Block.blocks[id].tick(this, tick.posX, tick.posY, tick.posZ, random);
+				//	Block.blocks[id].tick(this, tick.posX, tick.posY, tick.posZ, random);
 				}
 			}
 		}
@@ -322,7 +334,7 @@ public class World {
 					int y = xyz >>> 16 & 0x7f;
 					int id = c.blockData[x << 11 | z << 7 | y] & 0xff;
 					if(Block.shouldTick[id]) {
-						Block.blocks[id].tick(this, x + (c.posX << 4), y, z + (c.posZ << 4), random);
+					//	Block.blocks[id].tick(this, x + (c.posX << 4), y, z + (c.posZ << 4), random);
 					}
 				}while(++l1 <= 80);
 			}
@@ -368,6 +380,175 @@ public class World {
 		}
 		
 		return blockID > 0 && Block.blocks[blockAt] == null && Block.blocks[blockID].mayPlace(this, x, y, z);
+	}
+
+	public void lightColumnChanged(int x, int z, int newheight, int oldheight) {
+		//used to update rendering<?>, not needed?
+	}
+	public void updateLight(LightLayer layer, int startX, int oldHeight, int startZ, int endX, int height, int endZ, boolean b) {
+		//some dimension checks, not really needed until 0.12(never)
+		if(!this.updateLights) return;
+		
+		++this.lightUpdatesCount; 
+		if(this.lightUpdatesCount == 50) { //TODO stopping updates completely is not good
+			--this.lightUpdatesCount;
+			return;
+		}
+		
+		int avgX = (startX + endX) / 2;
+		int avgZ = (startZ + endZ) / 2;
+		
+		
+		if(this.hasChunkAt(avgX >> 4, avgZ >> 4)) {	
+			Chunk chunk = this.getChunk(avgX >> 4, avgZ >> 4);
+			//never empty, skipping check
+			
+			if(b) {
+				int size = this.lightUpdates.size();
+				int lightUpdateCount = 5;
+				if(size < lightUpdateCount) lightUpdateCount = size;
+				
+				for(int i = 0; i < lightUpdateCount; ++i) {
+					size = this.lightUpdates.size();
+					LightUpdate update = this.lightUpdates.get(size - i - 1);
+					if(update.layer == layer && update.expandToContain(startX, oldHeight, startZ, endX, height, endZ)) {
+						--this.lightUpdatesCount;
+						return;
+					}
+				}
+			}
+			
+			LightUpdate update = new LightUpdate(layer, startX, oldHeight, startZ, endX, height, endZ);
+			this.lightUpdates.add(update);
+			if(this.lightUpdates.size() > 1000000) {
+				this.lightUpdates.clear(); //bad
+				Logger.warn("More than 1000000 light updates, clearing...");
+			}
+			--this.lightUpdatesCount;
+		}else {
+			//if(true) throw new RuntimeException("not has?"+avgX+":"+avgZ);
+			--this.lightUpdatesCount;
+		}
+		
+		
+	}
+	
+	public int getRawBrightness(int x, int y, int z) {
+		return this.getRawBrightness(x, y, z, true);
+	}
+	public int getRawBrightness(int x, int y, int z, boolean complex) {
+		int lightValue;
+		
+		if(complex) {
+			int blockID = this.getBlockIDAt(x, y, z);
+			if(blockID == Block.stoneSlab.blockID || blockID == Block.farmland.blockID) { //TODO do not hardcode
+				lightValue = this.getRawBrightness(x, y + 1, z, false);
+				int xpos = this.getRawBrightness(x + 1, y, z, false);
+				int xneg = this.getRawBrightness(x - 1, y, z, false);
+				int zpos = this.getRawBrightness(x, y, z + 1, false);
+				int zneg = this.getRawBrightness(x, y, z - 1, false);
+			
+				if(xpos > lightValue) lightValue = xpos;
+				if(xneg > lightValue) lightValue = xneg;
+				if(zpos > lightValue) lightValue = zpos;
+				if(zneg > lightValue) lightValue = zneg;
+				return lightValue;
+			}
+		}
+		if(y < 0) {
+			return 0;
+		}else if(y > 127) { 
+			//TODO also checks some variable(field_2C, m_skydarken in mcped), ignoring for now
+			//v12 = 15 - this.skyDarken
+			//if(v12 < 0) return 0 else return v12;
+			return 15;
+		}else {
+			Chunk c = this.getChunk(x >> 4, z >> 4);
+			return c.getRawBrightness(x & 0xf, y, z & 0xf, /*this.skyDarken*/ 0); //TODO this.skyDarken
+		}
+		
+		
+		
+		
+	}
+	public boolean hasChunkAt(int x, int z) {
+		return x >= 0 && x < 16 && z >= 0 && z < 16; //TODO do not hardcode
+	}
+
+	public void updateLight(LightLayer layer, int startX, int oldHeight, int startZ, int x2, int height, int z2) {
+		this.updateLight(layer, startX, oldHeight, startZ, x2, height, z2, true);
+	}
+
+	public boolean updateLights() {
+		if(this.lightDepth > 49) return false;
+		
+		++this.lightDepth;
+		int maxUpdates = 500;
+		
+		//Logger.info(String.format("Light updates total: %d", this.lightUpdates.size()));
+		
+		
+		while(this.lightUpdates.size() > 0) {
+			if(--maxUpdates <= 0) {
+				--this.lightDepth;
+				return true;
+			}
+			
+			LightUpdate update = this.lightUpdates.get(this.lightUpdates.size() - 1);
+			//Logger.info(String.format("updating light: %s", update));
+			this.lightUpdates.remove(this.lightUpdates.size() - 1);
+			update.update(this);
+		}
+		
+		--this.lightDepth;
+		return false;
+		
+	}
+
+	public int getBrightness(LightLayer layer, int x, int y, int z) {
+		if(y < 0 || y > 127) return layer.defaultValue;
+		Chunk c = this.getChunk(x >> 4, z >> 4);
+		if(c == null) return 0;
+		
+		return c.getBrightness(layer, x & 0xf, y, z & 0xf);
+	}
+
+	public boolean isSkyLit(int x, int y, int z) {
+		if(y < 0) return false;
+		if(y > 127) return true;
+		
+		Chunk c = this.getChunk(x >> 4, z >> 4);
+		if(c == null) return false;
+		return c.isSkyLit(x & 0xf, y, z & 0xf);
+	}
+
+	public void setBrightness(LightLayer layer, int x, int y, int z, int brightness) {
+		if(y >= 0 && y <= 127) {
+			Chunk c = this.getChunk(x >> 4, z >> 4);
+			if(c == null) return;
+			
+			c.setBrightness(layer, x & 0xf, y, z & 0xf, brightness & 0xf);
+			//also notifies LevelListeners, but they seem to not do anything
+		}
+	}
+	
+	
+	
+	public void updateLightIfOtherThan(LightLayer layer, int x, int y, int z, int lightLevel) {
+		//skipping checks related to dimension(!hasSky probably)
+		
+		if(layer == LightLayer.SKY) {
+			if(this.isSkyLit(x, y, z)) lightLevel = 15;
+		}else if(layer == LightLayer.BLOCK) {
+			int blockID = this.getBlockIDAt(x, y, z);
+			int emission = Block.lightEmission[blockID];
+			if(emission > lightLevel) lightLevel = emission;
+		}
+		
+		if(this.getBrightness(layer, x, y, z) != lightLevel) {
+			this.updateLight(layer, x, y, z, x, y, z);
+		}
+		
 	}
 	
 }

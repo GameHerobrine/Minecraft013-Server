@@ -30,6 +30,7 @@ import net.skidcode.gh.server.plugin.PluginInfo;
 import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.utils.Utils;
 import net.skidcode.gh.server.utils.config.PropertiesFile;
+import net.skidcode.gh.server.world.LightLayer;
 import net.skidcode.gh.server.world.World;
 import net.skidcode.gh.server.world.generator.FlatWorldGenerator;
 import net.skidcode.gh.server.world.generator.NormalWorldGenerator;
@@ -64,7 +65,8 @@ public final class Server {
 
 	public static void main(String[] args) throws IOException {
 		Logger.info("Starting Server...");
-		
+		Logger.info(String.format("Light Emission: %s", Arrays.toString(Block.lightEmission)));
+		Logger.info(String.format("Light Block: %s", Arrays.toString(Block.lightBlock)));
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			public void run() {
 				if(Server.saveWorld && Server.world != null) {
@@ -82,7 +84,6 @@ public final class Server {
 				Server.running = false;
 			}
 		});
-		Block.init();
 		Logger.info("Creating directories...");
 		Files.createDirectories(Paths.get("world/players"));
 		Files.createDirectories(Paths.get("world"));
@@ -162,7 +163,7 @@ public final class Server {
 				Logger.info("Generating normal world...");
 				Server.world = new World(iWorldSeed);
 				try {
-				NormalWorldGenerator.generateChunks(Server.world);
+					NormalWorldGenerator.generateChunks(Server.world);
 				}catch(StackOverflowError e) {throw new RuntimeException();}
 				Server.world.setSaveSpawn(127, 127);
 			}else {
@@ -304,8 +305,8 @@ public final class Server {
 					}
 				}
 				
-				Server.world.tick(); //TODO enable world ticking 
-				
+				Server.world.tick();
+				while(Server.world.updateLights()); //TODO check
 				++Server.tps;
 				if(tickTime - lastSecondRecorded >= 1000) { //maybe make it better?
 					lastSecondRecorded = tickTime;

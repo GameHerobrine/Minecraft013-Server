@@ -33,12 +33,12 @@ public class ClayFeature extends Feature{
 			nextFloat = (rand.nextFloat() * this.size) / 16.0f;
 			float sin3 = (float) (((MathUtils.sin((i * 3.1416f) / this.size) + 1.0f) * nextFloat) + 1.0f);
 			float sin4 = (float) (((MathUtils.sin((i * 3.1416f) / this.size) + 1.0f) * nextFloat) + 1.0f);
-			int floor = MathUtils.ffloor(d - (sin3 / 2.0f));
-			int floor2 = MathUtils.ffloor(d + (sin3 / 2.0f));
-			int floor3 = MathUtils.ffloor(d2 - (sin4 / 2.0f));
-			int floor4 = MathUtils.ffloor(d2 + (sin4 / 2.0f));
-			int floor5 = MathUtils.ffloor(d3 - (sin3 / 2.0f));
-			int floor6 = MathUtils.ffloor(d3 + (sin3 / 2.0f));
+			int floor = (int)(d - (sin3 / 2.0f));
+			int floor2 = (int)(d + (sin3 / 2.0f));
+			int floor3 = (int)(d2 - (sin4 / 2.0f));
+			int floor4 = (int)(d2 + (sin4 / 2.0f));
+			int floor5 = (int)(d3 - (sin3 / 2.0f));
+			int floor6 = (int)(d3 + (sin3 / 2.0f));
 			for (int i2 = floor; i2 <= floor2; i2++) {
 				for (int i3 = floor3; i3 <= floor4; i3++) {
 					for (int i4 = floor5; i4 <= floor6; i4++) {

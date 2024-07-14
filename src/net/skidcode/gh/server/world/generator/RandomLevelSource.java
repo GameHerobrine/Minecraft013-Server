@@ -79,18 +79,18 @@ public class RandomLevelSource implements LevelSource{
 				d4 *= d4;
 				d4 *= d4;
 				d4 = 1.0F - d4;
-				float f5 = (biomeNoises[l1] + 256F) / 512F;
+				float f5 = (biomeNoises[l1] + 256.0F) / 512.0F;
 				f5 *= d4;
 				if(f5 > 1.0F)
 				{
 					f5 = 1.0F;
 				}
-				float f6 = depthNoises[l1] / 8000F;
+				float f6 = depthNoises[l1] / 8000.0F;
 				if(f6 < 0.0F)
 				{
 					f6 = f6 * -0.3f;
 				}
-				f6 = f6 * 3F - 2F;
+				f6 = (f6 * 3.0F) - 2F;
 				if(f6 < 0.0F)
 				{
 					f6 /= 2f;
@@ -98,8 +98,7 @@ public class RandomLevelSource implements LevelSource{
 					{
 						f6 = -1F;
 					}
-					f6 /= 1.4f;
-					f6 /= 2f;
+					f6 = (f6 / 1.4f) / 2.0f;
 					f5 = 0.0F;
 				} else
 				{
@@ -163,17 +162,17 @@ public class RandomLevelSource implements LevelSource{
 		this.biomes = this.world.biomeSource.getBiomeBlock(chunkX * 16, chunkZ * 16, 16, 16);
 		this.prepareHeights(chunkX, chunkZ, bArr, this.biomes, this.world.biomeSource.temperatureNoises);
 		this.buildSurfaces(chunkX, chunkZ, bArr, this.biomes);
-		Chunk c = new Chunk(bArr, chunkX, chunkZ);
-		c.generateHeightMap();
+		Chunk c = new Chunk(this.world, bArr, chunkX, chunkZ);
+		c.recalcHeightmap();
 		return c;
 	}
 
 	public void buildSurfaces(int chunkX, int chunkZ, byte[] blockIDS, Biome[] biomes) {
-		this.sandNoises = this.beachNoise.getRegion(null, chunkX * 16, chunkZ * 16, 0f, 16, 16, 1, 0.03125f, 0.03125f, 1);
-		this.gravelNoises = this.beachNoise.getRegion(null, chunkX * 16, 109.01f, chunkZ * 16, 16, 1, 16, 0.03125f, 1, 0.03125f);
-		this.surfaceDepthNoises = this.surfaceDepthNoise.getRegion(null, chunkX * 16, chunkZ * 16, 0, 16, 16, 1, 0.0625f, 0.0625f, 0.0625f);
-		for (int blockX = 0; blockX < 16; blockX++) {
-			for (int blockZ = 0; blockZ < 16; blockZ++) {
+		this.sandNoises = this.beachNoise.getRegion(null, chunkX * 16, chunkZ * 16, 0f, 16, 16, 1, 0.03125f, 0.03125f, 1.0f);
+		this.gravelNoises = this.beachNoise.getRegion(null, chunkX * 16, 109.01f, chunkZ * 16, 16, 1, 16, 0.03125f, 1.0f, 0.03125f);
+		this.surfaceDepthNoises = this.surfaceDepthNoise.getRegion(null, chunkX * 16, chunkZ * 16, 0f, 16, 16, 1, 0.03125f + 0.03125f, 0.03125f + 0.03125f, 0.03125f + 0.03125f);
+		for (int blockX = 0; blockX < 16; ++blockX) {
+			for (int blockZ = 0; blockZ < 16; ++blockZ) {
 				Biome biome = biomes[blockX + (blockZ * 16)];
 				boolean z = this.sandNoises[blockX + (blockZ * 16)] + (this.rand.nextFloat() * 0.2f) > 0.0f;
 				boolean z2 = this.gravelNoises[blockX + (blockZ * 16)] + (this.rand.nextFloat() * 0.2f) > 3.0f;
@@ -192,7 +191,7 @@ public class RandomLevelSource implements LevelSource{
 						} else if (b3 == Block.stone.blockID) {
 							if (i == -1) {
 								if (nextFloat > 0) {
-									if (blockY >= 64 - 4 && blockY <= 64 + 1) {
+									if (blockY >= 60 && blockY <= 65) {
 										b = biome.topBlock;
 										b2 = biome.fillerBlock;
 										if (z2) {
@@ -214,13 +213,13 @@ public class RandomLevelSource implements LevelSource{
 									b = (byte) Block.waterStill.blockID;
 								}
 								i = nextFloat;
-								if (blockY >= 64 - 1) {
+								if (blockY >= 63) {
 									blockIDS[index] = b;
 								} else {
 									blockIDS[index] = b2;
 								}
 							} else if (i > 0) {
-								i--;
+								--i;
 								blockIDS[index] = b2;
 								if (i == 0 && b2 == Block.sand.blockID) {
 									i = this.rand.nextInt(4);
@@ -243,14 +242,14 @@ public class RandomLevelSource implements LevelSource{
 		for (int unkX = 0; unkX < 4; unkX++) {
 			for (int unkZ = 0; unkZ < 4; unkZ++) {
 				for (int unkY = 0; unkY < 16; unkY++) {
-					float f = this.heights[((((unkX + 0) * 5) + unkZ + 0) * 17) + unkY + 0];
-					float f2 = this.heights[((((unkX + 0) * 5) + unkZ + 1) * 17) + unkY + 0];
-					float f3 = this.heights[((((unkX + 1) * 5) + unkZ + 0) * 17) + unkY + 0];
-					float f4 = this.heights[((((unkX + 1) * 5) + unkZ + 1) * 17) + unkY + 0];
-					float f5 = (this.heights[((((unkX + 0) * 5) + (unkZ + 0)) * 17) + (unkY + 1)] - f) * 0.125f;
-					float f6 = (this.heights[((((unkX + 0) * 5) + (unkZ + 1)) * 17) + (unkY + 1)] - f2) * 0.125f;
-					float f7 = (this.heights[((((unkX + 1) * 5) + (unkZ + 0)) * 17) + (unkY + 1)] - f3) * 0.125f;
-					float f8 = (this.heights[((((unkX + 1) * 5) + (unkZ + 1)) * 17) + (unkY + 1)] - f4) * 0.125f;
+					float f = this.heights[85 * unkX + 17 * unkZ + unkY];
+					float f2 = this.heights[85 * unkX + 17 + 17 * unkZ + unkY];
+					float f3 = this.heights[85 * unkX + 85 + 17 * unkZ + unkY];
+					float f4 = this.heights[85 * unkX + 102 + 17 * unkZ + unkY];
+					float f5 = (this.heights[85 * unkX + 1 + 17 * unkZ + unkY] - f) * 0.125f;
+					float f6 = (this.heights[85 * unkX + 18 + 17 * unkZ + unkY] - f2) * 0.125f;
+					float f7 = (this.heights[85 * unkX + 86 + 17 * unkZ + unkY] - f3) * 0.125f;
+					float f8 = (this.heights[85 * unkX + 103 + 17 * unkZ + unkY] - f4) * 0.125f;
 					
 					for (int unkYY = 0; unkYY < 8; unkYY++) {
 						float f9 = f;
@@ -364,7 +363,8 @@ public class RandomLevelSource implements LevelSource{
 			int j15 = chunkZWorld + rand.nextInt(16) + 8;
 			Feature tree = biome.getTreeFeature(rand);
 			//tree.func_517_a(1.0D, 1.0D, 1.0D);
-			tree.place(this.world, rand, l12, this.world.getHeightValue(l12, j15), j15);
+			int hm = this.world.getHeightmap(l12, j15);
+			tree.place(this.world, rand, l12, hm, j15);
 		}
 		for(int i9 = 0; i9 < 2; i9++)
 		{
@@ -386,14 +386,14 @@ public class RandomLevelSource implements LevelSource{
 			int k9 = chunkXWorld + rand.nextInt(16) + 8;
 			int k13 = rand.nextInt(128);
 			int i16 = chunkZWorld + rand.nextInt(16) + 8;
-			(new FlowerFeature(Block.mushroomRed.blockID)).place(this.world, rand, k9, k13, i16);
+			(new FlowerFeature(Block.mushroomBrown.blockID)).place(this.world, rand, k9, k13, i16);
 		}
 		if(rand.nextInt(8) == 0)
 		{
 			int l9 = chunkXWorld + rand.nextInt(16) + 8;
 			int l13 = rand.nextInt(128);
 			int j16 = chunkZWorld + rand.nextInt(16) + 8;
-			(new FlowerFeature(Block.mushroomBrown.blockID)).place(this.world, rand, l9, l13, j16);
+			(new FlowerFeature(Block.mushroomRed.blockID)).place(this.world, rand, l9, l13, j16);
 		}
 		
 		for(int i10 = 0; i10 < 10; i10++)
@@ -442,9 +442,9 @@ public class RandomLevelSource implements LevelSource{
 				int i20 = k17 - (chunkZWorld + 8);
 				int j20 = this.world.findTopSolidBlock(i15, k17);
 				float d1 = temps[i19 * 16 + i20] - ((j20 - 64) / 64f) * 0.3f;
-				if(d1 < 0.5D && j20 > 0 && j20 < 128 && this.world.isAirBlock(i15, j20, k17) && this.world.getMaterial(i15, j20 - 1, k17).isSolid && this.world.getMaterial(i15, j20 - 1, k17) != Material.ice)
+				if(d1 < 0.5D && j20 > 0 && j20 < 128 && this.world.isAirBlock(i15, j20, k17) && this.world.getMaterial(i15, j20 - 1, k17).blocksMotion && this.world.getMaterial(i15, j20 - 1, k17) != Material.ice)
 				{
-					this.world.placeBlock(i15, j20, k17, (byte) Block.snowLayer.blockID);
+					this.world.setBlock(i15, j20, k17, (byte) Block.snowLayer.blockID, 0, 1);
 				}
 			}
 		}
