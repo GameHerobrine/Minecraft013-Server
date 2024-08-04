@@ -118,9 +118,9 @@ public class Chunk {
 	}
 
 	public void recalcHeight(int x, int y, int z) {
-		byte height = this.heightMap[x][z];
-		byte oldHeight = height;
-		if(y > height) height = (byte) y;
+		int height = this.heightMap[x][z] & 0xff;
+		int oldHeight = height & 0xff;
+		if(y > height) height = y & 0xff;
 		
 		while(height > 0 && Block.lightBlock[this.getBlockID(x, height - 1, z)] == 0) {
 			--height;
@@ -128,7 +128,7 @@ public class Chunk {
 		
 		if(height != oldHeight) {
 			this.world.lightColumnChanged(x, z, height, oldHeight);
-			this.heightMap[x][z] = height;
+			this.heightMap[x][z] = (byte)height;
 			
 			if(this.topBlockY <= height) {
 				byte tby = 127;
@@ -139,7 +139,7 @@ public class Chunk {
 				}
 				this.topBlockY = tby;
 			}else {
-				this.topBlockY = height;
+				this.topBlockY = (byte)height;
 			}
 			
 			int worldX = x + 16*this.posX;
@@ -158,7 +158,7 @@ public class Chunk {
 			}
 			
 			int lightLevel = 15;
-			byte savedHeight = height;
+			int savedHeight = height;
 			
 			while(height > 0 && lightLevel > 0) {
 				int lightBlock = Block.lightBlock[this.getBlockID(x, --height, z)];

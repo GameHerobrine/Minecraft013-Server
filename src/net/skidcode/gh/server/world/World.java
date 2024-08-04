@@ -316,7 +316,7 @@ public class World {
 			if(this.hasChunksAt(tick.posX - 8, tick.posY - 8, tick.posY - 8, tick.posX + 8, tick.posY + 8, tick.posY + 8)) {
 				int id = this.getBlockIDAt(tick.posX, tick.posY, tick.posZ);
 				if(id > 0 && id == tick.blockID) {
-				//	Block.blocks[id].tick(this, tick.posX, tick.posY, tick.posZ, random);
+					Block.blocks[id].tick(this, tick.posX, tick.posY, tick.posZ, random);
 				}
 			}
 		}
