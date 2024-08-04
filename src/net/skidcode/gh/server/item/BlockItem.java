@@ -44,7 +44,6 @@ public class BlockItem extends Item{
 		}
 		
 		Block b = Block.blocks[this.blockID];
-		
 		if(!world.setBlock(x, y, z, this.blockID, 0, 3)) {
 			return true;
 		}
