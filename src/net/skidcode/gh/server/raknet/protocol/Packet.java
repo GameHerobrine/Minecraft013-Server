@@ -24,7 +24,14 @@ public abstract class Packet implements Cloneable {
 			this.offset = this.buffer.length - 1;
 			return new byte[0];
 		}
-
+		if(this.offset + len > this.buffer.length) {
+			try {
+				throw new Exception("Failed to get "+len+" bytes!");
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			return new byte[len];
+		}
 		byte[] buffer = new byte[len];
 		for (int i = 0; i < len; i++) {
 			buffer[i] = this.buffer[this.offset++];

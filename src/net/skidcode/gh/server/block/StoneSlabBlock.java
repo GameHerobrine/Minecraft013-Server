@@ -15,7 +15,15 @@ public class StoneSlabBlock extends Block{
 	
 	@Override
 	public void onBlockAdded(World world, int x, int y, int z) {
-		 //TODO fix
+		if(this != Block.stoneSlab) super.onBlockAdded(world, x, y, z);
+		//gib enchantile @realfreehij
+		int idb = world.getBlockIDAt(x, y-1, z);
+		int datab = world.getBlockMetaAt(x, y-1, z);
+		int data = world.getBlockMetaAt(x, y, z);
+		if(data == datab && idb == Block.stoneSlab.blockID) {
+			world.setBlock(x, y, z, 0, 0, 3);
+			world.setBlock(x, y-1, z, Block.fullStoneSlab.blockID, data, 3);
+		}
 	}
 	
 	public boolean isSolidRender() {
