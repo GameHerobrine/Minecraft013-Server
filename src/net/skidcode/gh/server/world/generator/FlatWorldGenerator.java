@@ -23,7 +23,7 @@ public class FlatWorldGenerator {
 	}
 	
 	public static void generateChunk(Chunk c) {
-		IntStream.range(0, 256).parallel().forEach(xz -> {
+		for(int xz = 0; xz < 256; ++xz) {
 			int x = xz & 0xf;
 			int z = xz >> 4;
 			/*for(int y = 127; y >= 0; --y) {
@@ -43,6 +43,6 @@ public class FlatWorldGenerator {
 			c.setBlock(x, 2, z, (byte)Block.dirt.blockID, (byte)0);
 			c.setBlock(x, 1, z, (byte)Block.dirt.blockID, (byte)0);
 			c.setBlock(x, 0, z, (byte)Block.bedrock.blockID, (byte)0);
-		});
+		}
 	}
 }

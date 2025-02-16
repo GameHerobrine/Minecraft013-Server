@@ -174,9 +174,10 @@ public class Player extends Entity implements CommandIssuer{
 			case ProtocolInfo.PLAYER_EQUIPMENT_PACKET:
 				PlayerEquipmentPacket pep = (PlayerEquipmentPacket) dp;
 				if(pep.eid == this.eid) {
-					Block block = Block.blocks[pep.itemID];
+					int itemid = pep.itemID & 0xff;
+					Block block = Block.blocks[itemid];
 					if(block == null) {
-						Logger.warn(String.format("%s tried to equip a block that is null! (ID: %d)", this.nickname, pep.itemID));
+						Logger.warn(String.format("%s tried to equip a block that is null! (ID: %d)", this.nickname, itemid));
 						break;
 					}
 					
