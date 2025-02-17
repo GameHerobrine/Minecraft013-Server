@@ -20,7 +20,11 @@ public class ItemInstance {
 	}
 	
 	public boolean useOn(Player player, World world, int x, int y, int z, int face) {
-		return this.getItem().useOn(this, player, world, x, y, z, face);
+		Item it = this.getItem();
+		if(it != null) {
+			return it.useOn(this, player, world, x, y, z, face);
+		}
+		return false;
 	}
 	
 }

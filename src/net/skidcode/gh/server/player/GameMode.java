@@ -2,6 +2,7 @@ package net.skidcode.gh.server.player;
 
 import net.skidcode.gh.server.block.Block;
 import net.skidcode.gh.server.item.ItemInstance;
+import net.skidcode.gh.server.utils.Logger;
 
 public class GameMode {
 	
@@ -20,7 +21,10 @@ public class GameMode {
 	}
 	
 	public boolean useItemOn(ItemInstance item, int x, int y, int z, int face) {
-		
+		if(item != null && item.getItem() == null) {
+			Logger.warn(String.format("%s tried using null item(ID %d Meta %d Count %d)!", player.nickname, item.itemID, item.itemMeta, item.itemCount));
+			return false;
+		}
 		int blockID = this.player.world.getBlockIDAt(x, y, z);
 		
 		if(Block.blocks[blockID] != null && Block.blocks[blockID].use(this.player.world, x, y, z, this.player)) {
