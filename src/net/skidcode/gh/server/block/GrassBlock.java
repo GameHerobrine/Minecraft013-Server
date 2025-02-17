@@ -8,8 +8,6 @@ public class GrassBlock extends Block{
 
 	public GrassBlock(int id) {
 		super(id, Material.dirt);
-		//TODO properties
-		//*((_DWORD *)this + 1) = 3;
 		this.unkField_4 = 3;
 		this.setTicking(true);
 		
@@ -17,7 +15,7 @@ public class GrassBlock extends Block{
 	
 	@Override
 	public void tick(World world, int x, int y, int z, BedrockRandom random) {
-		/*if(world.getRawBrightness(x, y + 1, z) <= 3) {
+		if(world.getRawBrightness(x, y + 1, z) <= 3) {
 			Material m = world.getMaterial(x, y + 1, z);
 			if(m.blocksLight) {
 				if(random.nextInt(4) == 0) {
@@ -36,7 +34,6 @@ public class GrassBlock extends Block{
 				}
 			}
 			
-		}*/
-		//TODO light
+		}
 	}
 }

@@ -132,9 +132,6 @@ public class Player extends Entity implements CommandIssuer{
 					rollback.metadata = (byte) this.world.getBlockMetaAt(rbp.posX, rbp.posY, rbp.posZ);
 					this.dataPacket(rollback);
 				}
-				
-				//this.world.placeBlockAndNotifyNearby(rbp.posX, rbp.posY, rbp.posZ, (byte)0, (byte)0);
-				//this.world.broadcastPacketFromPlayer(rbp, this);
 				break;
 			case ProtocolInfo.PLACE_BLOCK_PACKET:
 				PlaceBlockPacket pbp = (PlaceBlockPacket) dp;

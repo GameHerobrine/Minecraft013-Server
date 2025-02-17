@@ -16,6 +16,7 @@ import net.skidcode.gh.server.network.protocol.RemoveEntityPacket;
 import net.skidcode.gh.server.network.protocol.UpdateBlockPacket;
 import net.skidcode.gh.server.player.Player;
 import net.skidcode.gh.server.utils.Logger;
+import net.skidcode.gh.server.utils.MathUtils;
 import net.skidcode.gh.server.utils.TickNextTickData;
 import net.skidcode.gh.server.utils.Utils;
 import net.skidcode.gh.server.utils.random.BedrockRandom;
@@ -45,7 +46,7 @@ public class World {
 	public int randInt1, randInt2;
 	public int lightUpdatesCount = 0;
 	public boolean updateLights = true;
-	
+	public int skyDarken = 0;
 	
 	public TreeSet<TickNextTickData> scheduledTickTreeSet;
 	public HashSet<TickNextTickData> scheduledTickSet;
@@ -62,6 +63,8 @@ public class World {
 		this.lightUpdates = new ArrayList<>();
 		this.randInt1 = 0x283AE83; //it is static in 0.1
 		this.randInt2 = 0x3C6EF35F;
+		
+		this.updateSkyBrightness();
 	}
 	
 	public void addEntity(Entity entity) {
@@ -71,6 +74,42 @@ public class World {
 	public void setUpdateLights(boolean b) {
 		this.updateLights = b;
 	}
+	
+	public void updateSkyBrightness() {
+		this.skyDarken = this.getSkyDarken(1.0f);
+	}
+	
+	/**
+	 * Calculates skyDarken
+	 */
+	public int getSkyDarken(float f) {
+		float x = MathUtils.cos(this.getSunAngle(f));
+		float y = 1f - (2*x + 0.5f);
+		if(y < 0) return 0;
+		if(y > 1) return 11;
+		
+		return (int)(y*11);
+	}
+
+	public float getSunAngle(float f) {
+		return 2*((float)Math.PI) * this.dim_getTimeOfDay(this.worldTime, f);
+	}
+
+	//TODO: move to dimension
+	public float dim_getTimeOfDay(long wt, float f) {
+		wt = 0;
+		f = 0;
+		float i = wt % 24000;
+		float f1 = (i + f) / 24000f - 0.25f;
+		if(f1 < 0) f1 += 1.0f;
+		if(f1 > 1) f1 -= 1.0f;
+		
+		float f2 = f1;
+		f1 = 1 - (MathUtils.cos((float)Math.PI*f1) + 1) * 0.5f;
+		f1 = f2+(f1-f2) / 3;
+		return f1;
+	}
+
 	public void addToTickNextTick(int x, int y, int z, int id, int delay) {
 		TickNextTickData tick = new TickNextTickData(x, y, z, id);
 		if(this.instantScheduledUpdate) {
@@ -334,7 +373,7 @@ public class World {
 					int y = xyz >>> 16 & 0x7f;
 					int id = c.blockData[x << 11 | z << 7 | y] & 0xff;
 					if(Block.shouldTick[id]) {
-					//	Block.blocks[id].tick(this, x + (c.posX << 4), y, z + (c.posZ << 4), random);
+						Block.blocks[id].tick(this, x + (c.posX << 4), y, z + (c.posZ << 4), random);
 					}
 				}while(++l1 <= 80);
 			}
@@ -458,13 +497,12 @@ public class World {
 		if(y < 0) {
 			return 0;
 		}else if(y > 127) { 
-			//TODO also checks some variable(field_2C, m_skydarken in mcped), ignoring for now
-			//v12 = 15 - this.skyDarken
-			//if(v12 < 0) return 0 else return v12;
-			return 15;
+			int v12 = 15 - this.skyDarken;
+			if(v12 < 0) return 0;
+			else return v12;
 		}else {
 			Chunk c = this.getChunk(x >> 4, z >> 4);
-			return c.getRawBrightness(x & 0xf, y, z & 0xf, /*this.skyDarken*/ 0); //TODO this.skyDarken
+			return c.getRawBrightness(x & 0xf, y, z & 0xf, this.skyDarken);
 		}
 		
 		
