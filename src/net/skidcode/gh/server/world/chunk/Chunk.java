@@ -55,7 +55,8 @@ public class Chunk {
 	public boolean setBlock(int x, int y, int z, byte id, byte meta) {
 		
 		int idBefore = this.getBlockID(x, y, z) & 0xff;
-		if(idBefore == id) {
+		int idNow = id & 0xff;
+		if(idBefore == idNow) {
 			if(this.getBlockMetadata(x, y, z) == meta) return false;
 		}
 		
@@ -77,7 +78,7 @@ public class Chunk {
 		}
 		
 		//i suppose it also checks does dimension have sky or not
-		if(Block.lightBlock[id] != 0) {
+		if(Block.lightBlock[idNow] != 0) {
 			if(height <= y) this.recalcHeight(x, y + 1, z);
 		}else if((height - 1) == y) {
 			this.recalcHeight(x, y, z);
@@ -88,8 +89,8 @@ public class Chunk {
 		this.lightGaps(x, z);
 		
 		this.setBlockMetadataRaw(x, y, z, meta);
-		if(id > 0) {
-			Block.blocks[id].onBlockAdded(this.world, worldX, y, worldZ);
+		if(idNow > 0) {
+			Block.blocks[idNow].onBlockAdded(this.world, worldX, y, worldZ);
 		}
 		
 		this.updateMap[x][z] |= 1 << (y >> 4);
@@ -297,7 +298,7 @@ public class Chunk {
 				int y = 127;
 				int xzIndex = (x << 11) | (z << 7);
 				
-				while(y > 0 && Block.lightBlock[this.blockData[y - 1 + xzIndex]] == 0) {
+				while(y > 0 && Block.lightBlock[this.blockData[y - 1 + xzIndex] & 0xff] == 0) {
 					--y;
 				}
 				
@@ -315,7 +316,7 @@ public class Chunk {
 				int y = 127;
 				int xzIndex = (x << 11) | (z << 7);
 				
-				while(y > 0 && Block.lightBlock[this.blockData[y - 1 + xzIndex]] == 0) {
+				while(y > 0 && Block.lightBlock[this.blockData[y - 1 + xzIndex] & 0xff] == 0) {
 					--y;
 				}
 				
@@ -326,7 +327,7 @@ public class Chunk {
 				int lightLevel = 15;
 				int yLight = 127;
 				do {
-					lightLevel -= Block.lightBlock[this.blockData[yLight + xzIndex]];
+					lightLevel -= Block.lightBlock[this.blockData[yLight + xzIndex] & 0xff];
 					if(lightLevel > 0) this.setSkylightRaw(x, yLight, z, lightLevel);
 				}while(--yLight > 0 && lightLevel > 0);
 			}

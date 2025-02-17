@@ -71,6 +71,7 @@ public class Player extends Entity implements CommandIssuer{
 	public void handlePacket(MinecraftDataPacket dp) {
 		
 		EventRegistry.handleEvent(new DataPacketReceive(this, dp));
+		packethandling:
 		switch(dp.pid()) {
 			case ProtocolInfo.MESSAGE_PACKET:
 				Server.broadcastMessage(this.nickname+" : "+(((MessagePacket)dp).message));
@@ -135,13 +136,13 @@ public class Player extends Entity implements CommandIssuer{
 				break;
 			case ProtocolInfo.PLACE_BLOCK_PACKET:
 				PlaceBlockPacket pbp = (PlaceBlockPacket) dp;
-				
+				int posY = pbp.posY & 0xff;
 				switch(pbp.face) {
 					case 0:
-						++pbp.posY;
+						++posY;
 						break;
 					case 1:
-						--pbp.posY;
+						--posY;
 						break;
 					case 2:
 						++pbp.posZ;
@@ -155,10 +156,13 @@ public class Player extends Entity implements CommandIssuer{
 					case 5:
 						--pbp.posX;
 						break;
+					default:
+						Logger.warn(String.format("Player %s sent a packet with invalid face(%d)", this.nickname, pbp.face));
+						break packethandling;
 				}
 				
 				ItemInstance inst = new ItemInstance(pbp.id, 63, 0); //TODO better way to place it, this one is dangerous
-				this.gamemode.useItemOn(inst, pbp.posX, pbp.posY, pbp.posZ, pbp.face);
+				this.gamemode.useItemOn(inst, pbp.posX, posY, pbp.posZ, pbp.face);
 				break;
 			case ProtocolInfo.MOVE_PLAYER_PACKET_PACKET:
 				MovePlayerPacket moveplayerpacket = (MovePlayerPacket)dp;

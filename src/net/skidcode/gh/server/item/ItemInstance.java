@@ -9,6 +9,9 @@ public class ItemInstance {
 	public int itemCount;
 	public int itemMeta;
 	
+	public ItemInstance(byte itemID, int itemCount, int itemMeta) {
+		this(itemID & 0xff, itemCount, itemMeta);
+	}
 	public ItemInstance(int itemID, int itemCount, int itemMeta) {
 		this.itemID = itemID;
 		this.itemCount = itemCount;
