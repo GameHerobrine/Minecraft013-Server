@@ -11,13 +11,15 @@ public class TopSnowBlock extends Block {
 		this.setTicking(true);
 	}
 	
-	public void onNeighborBlockChanged(World world, int x, int y, int z, int meta) {
+	@Override
+	public void neighborChanged(World world, int x, int y, int z, int meta) {
 		if(world.getBlockIDAt(x, y-1, z) == 0) {
 			world.setBlock(x, y, z, (byte)0, (byte)0, 3);
 		}
 	}
 	
 	//TODO methods
+	@Override
 	public boolean isSolidRender() {
 		return false;
 	}

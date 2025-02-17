@@ -12,12 +12,17 @@ public class ReedBlock extends Block{
 		this.setTicking(true);
 	}
 	//TODO methods
+	@Override
 	public boolean isSolidRender() {
 		return false;
 	}
-	public void onNeighborBlockChanged(World world, int x, int y, int z, int meta) {
+	
+	@Override
+	public void neighborChanged(World world, int x, int y, int z, int meta) {
 		this.checkAlive(world, x, y, z);
 	}
+	
+	@Override
 	public void tick(World world, int x, int y, int z, BedrockRandom random) {
 		//Logger.info(x+":"+y+":"+z+"  is"+this.blockID);
 		if(world.isAirBlock(x, y + 1, z)) {
@@ -43,6 +48,7 @@ public class ReedBlock extends Block{
 		if(!this.canSurvive(world, x, y, z)) world.setBlock(x, y, z, (byte)0, (byte)0, 3);
 	}
 	
+	@Override
 	public boolean mayPlace(World world, int x, int y, int z) {
 		int idBelow = world.getBlockIDAt(x, y - 1, z);
 		
@@ -56,6 +62,8 @@ public class ReedBlock extends Block{
 		return world.getMaterial(x, y - 1, z + 1) == Material.water;
 		
 	}
+	
+	@Override
 	public boolean canSurvive(World world, int x, int y, int z) {
 		return this.mayPlace(world, x, y, z);
 	}

@@ -49,7 +49,8 @@ public class TorchBlock extends Block{
 		world.placeBlock(x, y, z, (byte) this.blockID, meta2Place);
 	}
 	
-	public void onNeighborBlockChanged(World world, int x, int y, int z, int meta) {
+	@Override
+	public void neighborChanged(World world, int x, int y, int z, int meta) {
 		boolean survive = this.checkCanSurvive(world, x, y, z);
 		if(survive) {
 			int metaHere = world.getBlockMetaAt(x, y, z);
@@ -67,6 +68,7 @@ public class TorchBlock extends Block{
 		}
 	}
 	
+	@Override
 	public boolean isSolidRender() {
 		return false;
 	}

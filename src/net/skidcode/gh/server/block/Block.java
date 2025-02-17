@@ -112,7 +112,7 @@ public class Block {
 		}
 	}
 	
-	public void onNeighborBlockChanged(World world, int x, int y, int z, int meta) {}
+	public void neighborChanged(World world, int x, int y, int z, int meta) {}
 	public void onBlockRemoved(World world, int x, int y, int z) {
 		world.placeBlock(x, y, z, (byte)0, (byte)0);
 		UpdateBlockPacket pk = new UpdateBlockPacket();

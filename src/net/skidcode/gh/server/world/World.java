@@ -193,7 +193,7 @@ public class World {
 		if(!editingBlocks) {
 			int id = this.getBlockIDAt(x, y, z);
 			if(Block.blocks[id] instanceof Block) {
-				Block.blocks[id].onNeighborBlockChanged(this, x, y, z, cid);
+				Block.blocks[id].neighborChanged(this, x, y, z, cid);
 			}
 		}
 	}

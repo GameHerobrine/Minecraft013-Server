@@ -22,11 +22,14 @@ public class BushBlock extends Block{
 		return id == Block.grass.blockID || id == Block.dirt.blockID || id == Block.farmland.blockID;
 	}
 	
+	@Override
 	public boolean mayPlace(World world, int x, int y, int z) {
 		return this.mayPlaceOn(world.getBlockIDAt(x, y - 1, z));
 	}
-	public void onNeighborBlockChanged(World world, int x, int y, int z, int meta) {
-		super.onNeighborBlockChanged(world, x, y, z, meta);
+	
+	@Override
+	public void neighborChanged(World world, int x, int y, int z, int meta) {
+		super.neighborChanged(world, x, y, z, meta);
 		this.checkAlive(world, x, y, z);
 		
 	}
@@ -40,6 +43,7 @@ public class BushBlock extends Block{
 		if(!this.canSurvive(world, x, y, z)) world.setBlock(x, y, z, (byte)0, (byte)0, 3);
 	}
 	
+	@Override
 	public boolean canSurvive(World world, int x, int y, int z) {
 		if(world.getRawBrightness(x, y, z) > 7 || world.canSeeSky(x, y, z)) {
 			int below = world.getBlockIDAt(x, y - 1, z);

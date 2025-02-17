@@ -27,8 +27,8 @@ public class LiquidBlockStatic extends LiquidBlock{
 		//TODO fire spread
 	}
 	@Override
-	public void onNeighborBlockChanged(World world, int x, int y, int z, int meta) {
-		super.onNeighborBlockChanged(world, x, y, z, meta);
+	public void neighborChanged(World world, int x, int y, int z, int meta) {
+		super.neighborChanged(world, x, y, z, meta);
 		if(this.blockID == world.getBlockIDAt(x, y, z)) this.setDynamic(world, x, y, z);
 	}
 }
