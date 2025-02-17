@@ -191,17 +191,16 @@ public final class Server {
 					
 				}
 			}
-			
 			for(File f : fs) {
 				if(f.getName().endsWith(".jar")) {
 					FileInputStream fileinputstream = new FileInputStream(f);
-                    ZipInputStream zipinputstream = new ZipInputStream(fileinputstream);
-                    ZipEntry entry = null;
-                    PluginInfo info = new PluginInfo();
-                    Plugin plugin = null;
+					ZipInputStream zipinputstream = new ZipInputStream(fileinputstream);
+					ZipEntry entry = null;
+					PluginInfo info = new PluginInfo();
+					Plugin plugin = null;
 					while((entry  = zipinputstream.getNextEntry()) != null) {
                     	if(entry.getName().equals("plugin.properties")) {
-                    		Scanner sc = new Scanner((InputStream)classLoader.getResource(entry.getName()).getContent());
+                    		Scanner sc = new Scanner(zipinputstream);
 							while(sc.hasNext()) {
 								String line = sc.nextLine();
                     			String[] propValue = line.split("=");
@@ -216,7 +215,6 @@ public final class Server {
                     				Class<?> cl = classLoader.loadClass(value.replace("/", "."));
                     				plugin = (Plugin) cl.newInstance();
                     				plugin.onEnable();
-                    				
                     			}
                     			
                     		};
@@ -225,7 +223,6 @@ public final class Server {
                     			Logger.info("Plugin "+info.name+" "+info.version+" by "+info.author+" was loaded!");
                     		}
                     		
-                    		sc.close();
                     	}else if(entry.getName().endsWith(".class")) {
                     		String className = entry.getName().replace("/", ".");
                     		classLoader.loadClass(className.substring(0, className.length() - 6));
