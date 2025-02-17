@@ -17,7 +17,23 @@ public class LadderBlock extends Block{
 	
 	@Override
 	public void setPlacedOnFace(World world, int x, int y, int z, int face) {
-		world.placeBlock(x, y, z, (byte) this.blockID, (byte) face);
+		int data = world.getBlockMetaAt(x, y, z);
+		if(data == 0) {
+			if(face == 2 && world.isBlockSolid(x, y, z+1)) data = 2;
+			if(face == 3 && world.isBlockSolid(x, y, z-1)) data = 3;
+			if(face == 4 && world.isBlockSolid(x+1, y, z)) data = 4;
+			if(face == 5 && world.isBlockSolid(x-1, y, z)) data = 5;
+		}
+		world.placeBlockMetaAndNotifyNearby(x, y, z, (byte) data);
+	}
+	
+	@Override
+	public boolean mayPlace(World world, int x, int y, int z) {
+		if(world.isBlockSolid(x-1, y, z)) return true;
+		if(world.isBlockSolid(x+1, y, z)) return true;
+		if(world.isBlockSolid(x, y, z-1)) return true;
+		if(world.isBlockSolid(x, y, z+1)) return true;
+		return false;
 	}
 	
 	@Override
