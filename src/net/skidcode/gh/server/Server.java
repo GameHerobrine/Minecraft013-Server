@@ -358,7 +358,6 @@ public final class Server {
 	}
 
 	public static void kickPlayer(Player player, String reason) {
-		player.closed = true;
 		Server.handler.closeSession(player.identifier, reason);
 	}
 	

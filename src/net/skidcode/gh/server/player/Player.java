@@ -60,9 +60,10 @@ public class Player extends Entity implements CommandIssuer{
 	}
 	
 	public void onPlayerExit() {
-		if(this.playerdata == null) return;
+		this.closed = true;
+		
 		try {
-			this.playerdata.save();
+			if(this.playerdata != null) this.playerdata.save();
 		} catch (Exception e) {
 			Logger.error("Failed to save playerdata!");
 			e.printStackTrace();
