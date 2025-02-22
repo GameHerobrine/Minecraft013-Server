@@ -9,8 +9,9 @@ public class LeafBlock extends TransparentBlock{
 	public LeafBlock(int id) {
 		super(id, Material.leaves, false);
 		this.unkField_70 = 0;
+		this.setTicking(true);
 	}
-	
+	@Override
 	public void tick(World world, int x, int y, int z, BedrockRandom random) {
 		//TODO tick
 	}
@@ -20,9 +21,9 @@ public class LeafBlock extends TransparentBlock{
 		return false;
 	}
 	
+	@Override
 	public void onRemove(World world, int x, int y, int z) {
 		if(world.hasChunksAt(x - 2, y - 2, z - 2, x + 2, y + 2, z + 2)) {
-			
 			for(int i = -1; i <= 1; ++i) {
 				for(int j = -1; j <= 1; ++j) {
 					for(int k = -1; k <= 1; ++k) {
@@ -33,7 +34,6 @@ public class LeafBlock extends TransparentBlock{
 					}
 				}
 			}
-			
 		}
 	}
 	

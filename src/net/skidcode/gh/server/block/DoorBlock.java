@@ -13,6 +13,7 @@ public class DoorBlock extends Block{
 	
 	//TODO methods
 	
+	@Override
 	public boolean use(World world, int x, int y, int z, Player player) {
 		if(this.material == Material.metal) return true; 
 		int metadata = world.getBlockMetaAt(x, y, z);
@@ -33,6 +34,18 @@ public class DoorBlock extends Block{
 		return true;
 	}
 	
+	@Override
+	public boolean mayPlace(World world, int x, int y, int z) {
+		if(y > 126) return false;
+		if(world.isBlockSolid(x, y-1, z)) {
+			if(this.mayPlace(world, x, y, z) && this.mayPlace(world, x, y+1, z)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	@Override
 	public boolean isSolidRender() {
 		return false;
 	}

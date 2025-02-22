@@ -181,8 +181,7 @@ public class Block {
 	
 	public void onRemove(World world, int x, int y, int z) {
 		/*
-		 * TODO ice, leaf, stairs, trunk
-			IceTile::onRemove(Level *,int,int,int)
+		 * TODO leaf, stairs, trunk
 			LeafTile::onRemove(Level *,int,int,int)
 			StairTile::onRemove(Level *,int,int,int)
 			TreeTile::onRemove(Level *,int,int,int)
