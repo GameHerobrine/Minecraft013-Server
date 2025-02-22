@@ -8,6 +8,7 @@ import net.skidcode.gh.server.console.command.CommandIssuer;
 import net.skidcode.gh.server.entity.Entity;
 import net.skidcode.gh.server.event.EventRegistry;
 import net.skidcode.gh.server.event.packet.DataPacketReceive;
+import net.skidcode.gh.server.event.player.PlayerSendChatMessage;
 import net.skidcode.gh.server.item.ItemInstance;
 import net.skidcode.gh.server.network.MinecraftDataPacket;
 import net.skidcode.gh.server.network.ProtocolInfo;
@@ -36,6 +37,7 @@ public class Player extends Entity implements CommandIssuer{
 	public PlayerData playerdata;
 	public boolean chunkDataSend[] = new boolean[256];
 	public GameMode gamemode;
+	public boolean closed = false;
 	
 	public Player(String identifier, long clientID, String ip, int port) {
 		super();
@@ -58,6 +60,7 @@ public class Player extends Entity implements CommandIssuer{
 	}
 	
 	public void onPlayerExit() {
+		if(this.playerdata == null) return;
 		try {
 			this.playerdata.save();
 		} catch (Exception e) {
@@ -65,21 +68,23 @@ public class Player extends Entity implements CommandIssuer{
 			e.printStackTrace();
 		}
 		
-		Server.broadcastMessage(this.nickname+" left the game.");
+		Server.broadcastMessage(this.nickname+" left the game.", false);
 	}
 	
 	public void handlePacket(MinecraftDataPacket dp) {
-		
+		if(this.closed) return;
 		EventRegistry.handleEvent(new DataPacketReceive(this, dp));
 		packethandling:
 		switch(dp.pid()) {
 			case ProtocolInfo.MESSAGE_PACKET:
-				Server.broadcastMessage(this.nickname+" : "+(((MessagePacket)dp).message));
+				String message = (((MessagePacket)dp).message);
+				Server.sendMessageBy(this, message);
 				break;
 			case ProtocolInfo.LOGIN_PACKET:
 				LoginPacket loginpacket = (LoginPacket)dp;
 				if(Server.getPlayerByNickname(loginpacket.nickname) != null) {
-					Logger.info(String.format("%s was prevented to join because player with nickname %s is already in game.", this.identifier, loginpacket.nickname));
+					Logger.info(String.format("%s was prevented from joining because a player with nickname %s is already in game.", this.identifier, loginpacket.nickname));
+					Server.kickPlayer(this, "already in game");
 					break;
 				}
 				this.nickname = loginpacket.nickname;

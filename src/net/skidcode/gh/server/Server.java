@@ -22,6 +22,7 @@ import net.skidcode.gh.server.console.ThreadConsole;
 import net.skidcode.gh.server.console.command.CommandBase;
 import net.skidcode.gh.server.console.command.ConsoleIssuer;
 import net.skidcode.gh.server.event.EventRegistry;
+import net.skidcode.gh.server.event.player.PlayerSendChatMessage;
 import net.skidcode.gh.server.event.server.ServerInitialized;
 import net.skidcode.gh.server.network.RakNetHandler;
 import net.skidcode.gh.server.player.Player;
@@ -57,6 +58,7 @@ public final class Server {
 	public static volatile String serverName = "MCCPP;Demo;Minecraft 0.1.3 Server";
 	public static int stableTPS = 0;
 	public static long lastSecondRecorded = 0;
+	
 	
 	public static void stop() {
 		running = false;
@@ -246,10 +248,19 @@ public final class Server {
 		return id2Player.getOrDefault(id, null);
 	}
 	
-	public static void broadcastMessage(String message) {
+	public static void broadcastMessage(String message, boolean console) {
+		if(console) Logger.info(message);
 		for(Player p : Server.getPlayers()) {
 			p.sendMessage(message);
 		}
+	}
+	
+	/**
+	 * Sends a message to everyone on the server and into console.
+	 * @param message
+	 */
+	public static void broadcastMessage(String message) {
+		broadcastMessage(message, true);
 	}
 	
 	public static void removePlayer(String id) {
@@ -262,9 +273,8 @@ public final class Server {
 			}
 			Logger.info(id+" closed a session.");
 		}
-		//else Logger.info(id+" closed session which doesnt exist?!");
-		
 	}
+	
 	public static void addPlayer(String id, Player player) {
 		Logger.info(id+" has started a new session. Client ID: "+player.clientID+", EID: "+player.eid);
 		id2Player.put(id, player);
@@ -335,6 +345,21 @@ public final class Server {
 
 	public static int getPort() {
 		return port;
+	}
+
+	public static void sendMessageBy(Player player, String message) {
+		PlayerSendChatMessage ev = new PlayerSendChatMessage(player, message);
+		EventRegistry.handleEvent(ev);
+		
+		if(!ev.isCancelled) {
+			message = ev.message;
+			Server.broadcastMessage("<"+player.nickname+"> "+message);
+		}
+	}
+
+	public static void kickPlayer(Player player, String reason) {
+		player.closed = true;
+		Server.handler.closeSession(player.identifier, reason);
 	}
 	
 }
