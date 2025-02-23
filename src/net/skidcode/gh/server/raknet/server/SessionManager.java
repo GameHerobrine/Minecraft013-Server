@@ -152,7 +152,7 @@ public class SessionManager {
 					packet.buffer = buffer;
 					this.getSession(source, port).handlePacket(packet);
 					return true;
-				} else if (pid == UNCONNECTED_PING.ID) {
+				} else if (pid == UNCONNECTED_PING.ID || pid == UNCONNECTED_PING_OPEN_CONNECTIONS.ID) {
 					packet = new UNCONNECTED_PING();
 					packet.buffer = buffer;
 					packet.decode();

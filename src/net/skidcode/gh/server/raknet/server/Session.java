@@ -405,7 +405,6 @@ public class Session {
 			}
 			return;
 		}
-
 		byte id = packet.buffer[0];
 		if ((id & 0xff) < 0x80) { //internal data packet
 			if (state == STATE_CONNECTING_2) {
@@ -461,6 +460,7 @@ public class Session {
 
 	public void handlePacket(Packet packet) throws Exception {
 		this.isActive = true;
+		long prevLastUpdate = this.lastUpdate;
 		this.lastUpdate = System.currentTimeMillis();
 		if (this.state == STATE_CONNECTED || this.state == STATE_CONNECTING_2) {
 			if (((packet.buffer[0] & 0xff) >= 0x80 || (packet.buffer[0] & 0xff) <= 0x8f) && packet instanceof DataPacket) {
@@ -521,6 +521,14 @@ public class Session {
 							this.recoveryQueue.remove(seq);
 						}
 					}
+				}else if(packet instanceof UNCONNECTED_PING) {
+					UNCONNECTED_PONG pk = new UNCONNECTED_PONG();
+					pk.serverID = this.sessionManager.getID();
+					
+					pk.pingID = ((UNCONNECTED_PING) packet).pingID;
+					pk.serverName = Server.serverName;
+					this.sendPacket(pk);
+					this.lastUpdate = prevLastUpdate;
 				}
 			}
 		} else if ((packet.buffer[0] & 0xff) > 0x00 || (packet.buffer[0] & 0xff) < (byte) 0x80) { //Not Data packet :)

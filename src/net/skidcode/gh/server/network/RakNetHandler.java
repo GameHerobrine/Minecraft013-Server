@@ -38,7 +38,7 @@ public class RakNetHandler implements ServerInstance{
 
 	@Override
 	public void closeSession(String identifier, String reason) {
-		Server.removePlayer(identifier);
+		Server.removePlayer(identifier, reason);
 	}
 
 	@Override

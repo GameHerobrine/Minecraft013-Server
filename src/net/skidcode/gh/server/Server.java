@@ -280,8 +280,10 @@ public final class Server {
 	public static void broadcastMessage(String message) {
 		broadcastMessage(message, true);
 	}
-	
 	public static void removePlayer(String id) {
+		removePlayer(id, "unknown");
+	}
+	public static void removePlayer(String id, String reason) {
 		Player p = id2Player.remove(id);
 		if(p != null) {
 			p.onPlayerExit();
@@ -289,7 +291,7 @@ public final class Server {
 				p.world.removePlayer(p.eid);
 				p.world = null;
 			}
-			Logger.info(id+" closed a session.");
+			Logger.info(id+" closed a session: "+reason);
 		}
 	}
 	
