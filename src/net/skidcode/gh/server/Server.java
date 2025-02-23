@@ -38,7 +38,8 @@ import net.skidcode.gh.server.world.generator.NormalWorldGenerator;
 import net.skidcode.gh.server.world.parser.vanilla.VanillaParser;
 
 public final class Server {
-	public static final boolean superSecretSettings = false;
+	public static boolean superSecretSettings = false;
+	public static boolean enableTNTEntity = false;
 	public static volatile boolean running = true;
 	public static RakNetHandler handler;
 	public static World world;
@@ -100,7 +101,9 @@ public final class Server {
 			{"max-mtu-size", String.valueOf(maxMTUSize)},
 			{"allow-from-different-port", String.valueOf(Server.allowFromDifferentPort)},
 			{"enable-terminal-colors", String.valueOf(Server.enableColors)},
-			{"send-full-chunks", String.valueOf(Server.sendFullChunks)}
+			{"send-full-chunks", String.valueOf(Server.sendFullChunks)},
+			{"enable-entity-ticking", String.valueOf(Server.superSecretSettings)},
+			{"enable-tnt-entity", String.valueOf(Server.enableTNTEntity)},
 		});
 		Server.enableColors = properties.getBoolean("enable-terminal-colors", Server.enableColors);
 		Server.serverName = properties.getString("server-name", Server.serverName);
@@ -110,7 +113,14 @@ public final class Server {
 		Server.maxMTUSize = properties.getInteger("max-mtu-size", Server.maxMTUSize);
 		Server.allowFromDifferentPort = properties.getBoolean("allow-from-different-port", Server.allowFromDifferentPort);
 		Server.sendFullChunks = properties.getBoolean("send-full-chunks", (Server.sendFullChunks));
+		Server.enableTNTEntity = properties.getBoolean("enable-tnt-entity", Server.enableTNTEntity);
+		Server.superSecretSettings = properties.getBoolean("enable-entity-ticking", Server.superSecretSettings);
+		
 		Logger.info("Running server on port "+Server.port);
+		if(Server.enableTNTEntity && !Server.superSecretSettings) {
+			Logger.warn("TNT Entity is enabled but entity ticking is not enabled!");
+		}
+		
 		if(Server.port != 19132 && !Server.allowFromDifferentPort) {
 			Logger.warn("Server port is not default and clients are not allowed to connect from different port. Vanilla users may be not able to connect!");
 		}

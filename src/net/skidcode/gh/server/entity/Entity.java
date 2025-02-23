@@ -12,6 +12,10 @@ public abstract class Entity {
 	public World world;
 	public AxisAlignedBB boundingBox = new AxisAlignedBB(-0.5f, 0, -0.5f, 0.5f, 1, 0.5f);
 	public float width = 1, height = 1, radius = 0.5f;
+	public float lastX, lastY, lastZ;
+	public float motionX, motionY, motionZ;
+	public boolean removed = false;
+	
 	public Entity() {
 		this.setPosition(Server.world.spawnX, Server.world.spawnY, Server.world.spawnZ, 0, 0);
 		this.eid = World.incrementAndGetNextFreeEID(); //TODO move to entity?
@@ -27,6 +31,14 @@ public abstract class Entity {
 		this.setPosition(x, y, z);
 		this.yaw = yaw;
 		this.pitch = pitch;
+	}
+	
+	public void move(float x, float y, float z) {
+		//TODO
+	}
+	
+	public void remove() {
+		this.removed = true;
 	}
 	
 	public void tick() {

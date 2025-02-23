@@ -262,4 +262,8 @@ public class Block {
 		
 	}
 	
+	public void wasExploded(World world, int x, int y, int z)
+	{	
+		
+	}
 }

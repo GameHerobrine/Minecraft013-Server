@@ -10,6 +10,7 @@ import net.skidcode.gh.server.Server;
 import net.skidcode.gh.server.block.Block;
 import net.skidcode.gh.server.block.material.Material;
 import net.skidcode.gh.server.entity.Entity;
+import net.skidcode.gh.server.entity.PrimedTnt;
 import net.skidcode.gh.server.network.MinecraftDataPacket;
 import net.skidcode.gh.server.network.protocol.PlaceBlockPacket;
 import net.skidcode.gh.server.network.protocol.RemoveEntityPacket;
@@ -29,6 +30,8 @@ public class World {
 	
 	public HashMap<Integer, Player> players = new HashMap<>();
 	public HashMap<Integer, Entity> entities = new HashMap<>();
+	public ArrayList<Entity> entitiesToAdd = new ArrayList<>();
+	public ArrayList<Entity> entitiesToRemove = new ArrayList<>();
 	private static int freeEID = 1;
 	public int worldSeed = 0x256512;
 	public BedrockRandom random;
@@ -68,8 +71,10 @@ public class World {
 	}
 	
 	public void addEntity(Entity entity) {
+		if(entity instanceof PrimedTnt && !Server.enableTNTEntity) return;
+		
 		entity.world = this;
-		this.entities.put(entity.eid, entity);
+		this.entitiesToAdd.add(entity);
 	}
 	public void setUpdateLights(boolean b) {
 		this.updateLights = b;
@@ -348,8 +353,26 @@ public class World {
 		/*Timer*/
 		this.worldTime++;
 		if(Server.superSecretSettings) {
+			for(int i = this.entitiesToAdd.size(); --i >= 0;) {
+				Entity e = this.entitiesToAdd.remove(i);
+				if(this.entities.containsKey(e.eid)) {
+					Logger.warn("Entity with EID "+e.eid+" already exisists!");
+				}else {
+					this.entities.put(e.eid, e);
+				}
+			}
+			
+			for(int i = this.entitiesToRemove.size(); --i >= 0;) {
+				Entity e = this.entitiesToRemove.remove(i);
+				this.entities.remove(e.eid);
+			}
+			
 			for(Entity e : this.entities.values()) {
-				e.tick();
+				if(e.removed) {
+					this.entitiesToRemove.add(e);
+				}else {
+					e.tick();
+				}
 			}
 		}
 		
@@ -598,6 +621,18 @@ public class World {
 			this.updateLight(layer, x, y, z, x, y, z);
 		}
 		
+	}
+
+	public Explosion explode(Entity entity, float x, float y, float z, float power) {
+		return this.explode(entity, x, y, z, power, false);
+	}
+	
+	public Explosion explode(Entity entity, float x, float y, float z, float power, boolean fire) {
+		Explosion e = new Explosion(this, entity, x, y, z, power);
+		e.fire = fire;
+		e.explode();
+		e.addParticles();
+		return e;
 	}
 	
 }

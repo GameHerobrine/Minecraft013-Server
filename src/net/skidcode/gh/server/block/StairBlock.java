@@ -21,6 +21,12 @@ public class StairBlock extends Block{
 		return this.base.getExplosionResistance(e);
 	}
 	
+	@Override
+	public void wasExploded(World world, int x, int y, int z)
+	{	
+		this.base.wasExploded(world, x, y, z);
+	}
+	
 	//TODO more methods
 	@Override
 	public void setPlacedBy(World world, int x, int y, int z, Player player) {

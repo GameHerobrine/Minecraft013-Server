@@ -1,5 +1,7 @@
 package net.skidcode.gh.server.utils;
 
+import net.skidcode.gh.server.utils.random.BedrockRandom;
+
 public class MathUtils {
 	
 	public static float sin(float f)
@@ -7,6 +9,11 @@ public class MathUtils {
         return SIN_TABLE[(int)(f * 10430f) & 0xffff];
     }
 
+	public static final BedrockRandom GLOBAL_RNG = new BedrockRandom();
+	public static float random() {
+		return GLOBAL_RNG.nextFloat();
+	}
+	
     public static float cos(float f)
     {
         return SIN_TABLE[(int)(f * 10430f + 16384F) & 0xffff];
