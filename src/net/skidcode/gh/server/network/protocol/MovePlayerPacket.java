@@ -10,7 +10,7 @@ public class MovePlayerPacket extends MinecraftDataPacket{
 	
 	@Override
 	public byte pid() {
-		return ProtocolInfo.MOVE_PLAYER_PACKET_PACKET;
+		return ProtocolInfo.MOVE_PLAYER_PACKET;
 	}
 
 	@Override

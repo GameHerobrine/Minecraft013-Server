@@ -33,7 +33,7 @@ public final class ProtocolInfo {
 	public static final byte START_GAME_PACKET = (byte) 0x88;
 	public static final byte ADD_PLAYER_PACKET = (byte) 0x89;
 	public static final byte REMOVE_ENTITY_PACKET = (byte) 0x8a;
-	public static final byte MOVE_PLAYER_PACKET_PACKET = (byte) 0x8b;
+	public static final byte MOVE_PLAYER_PACKET = (byte) 0x8b;
 	public static final byte PLACE_BLOCK_PACKET = (byte) 0x8c;
 	public static final byte REMOVE_BLOCK_PACKET = (byte) 0x8d;
 	public static final byte UPDATE_BLOCK_PACKET = (byte) 0x8e;
@@ -48,7 +48,7 @@ public final class ProtocolInfo {
 		packets[START_GAME_PACKET & 0xFF] = StartGamePacket.class;
 		packets[ADD_PLAYER_PACKET & 0xFF] = AddPlayerPacket.class;
 		packets[REMOVE_ENTITY_PACKET & 0xFF] = RemoveEntityPacket.class;
-		packets[MOVE_PLAYER_PACKET_PACKET & 0xFF] = MovePlayerPacket.class;
+		packets[MOVE_PLAYER_PACKET & 0xFF] = MovePlayerPacket.class;
 		packets[PLACE_BLOCK_PACKET & 0xFF] = PlaceBlockPacket.class;
 		packets[REMOVE_BLOCK_PACKET & 0xFF] = RemoveBlockPacket.class;
 		packets[UPDATE_BLOCK_PACKET & 0xFF] = UpdateBlockPacket.class;

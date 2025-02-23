@@ -170,7 +170,7 @@ public class Player extends Entity implements CommandIssuer{
 				ItemInstance inst = new ItemInstance(pbp.id, 63, 0); //TODO better way to place it, this one is dangerous
 				this.gamemode.useItemOn(inst, pbp.posX, posY, pbp.posZ, pbp.face);
 				break;
-			case ProtocolInfo.MOVE_PLAYER_PACKET_PACKET:
+			case ProtocolInfo.MOVE_PLAYER_PACKET:
 				MovePlayerPacket moveplayerpacket = (MovePlayerPacket)dp;
 				this.setPosition(moveplayerpacket.posX, moveplayerpacket.posY, moveplayerpacket.posZ, moveplayerpacket.yaw, moveplayerpacket.pitch);
 				moveplayerpacket.eid = this.eid;
