@@ -3,6 +3,7 @@ package net.skidcode.gh.server.block;
 import java.util.Random;
 
 import net.skidcode.gh.server.block.material.Material;
+import net.skidcode.gh.server.entity.Entity;
 import net.skidcode.gh.server.item.BlockItem;
 import net.skidcode.gh.server.item.Item;
 import net.skidcode.gh.server.network.protocol.RemoveBlockPacket;
@@ -140,6 +141,9 @@ public class Block {
 	
 	public Block setDestroyTime(float f) {
 		this.destroyTime = f;
+		if(this.explosionResistance < (f*5)) {
+			this.explosionResistance = f*5;
+		}
 		return this;
 	}
 	
@@ -235,6 +239,10 @@ public class Block {
 		}
 		
 		return player.getDestroySpeed() / this.destroyTime / 30;
+	}
+	
+	public float getExplosionResistance(Entity e) {
+		return this.explosionResistance / 5.0f;
 	}
 	
 	public int blockID;

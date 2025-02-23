@@ -1,5 +1,6 @@
 package net.skidcode.gh.server.block;
 
+import net.skidcode.gh.server.entity.Entity;
 import net.skidcode.gh.server.player.Player;
 import net.skidcode.gh.server.utils.Utils;
 import net.skidcode.gh.server.world.World;
@@ -14,6 +15,12 @@ public class StairBlock extends Block{
 		this.setDestroyTime(base.destroyTime);
 		this.setExplodeable(base.explosionResistance / 3);
 	}
+	
+	@Override
+	public float getExplosionResistance(Entity e) {
+		return this.base.getExplosionResistance(e);
+	}
+	
 	//TODO more methods
 	@Override
 	public void setPlacedBy(World world, int x, int y, int z, Player player) {
