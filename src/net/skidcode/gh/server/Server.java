@@ -38,12 +38,15 @@ import net.skidcode.gh.server.world.generator.NormalWorldGenerator;
 import net.skidcode.gh.server.world.parser.vanilla.VanillaParser;
 
 public final class Server {
+	
+	public static final int PLUGIN_API_VERSION = 2;
+	
 	public static boolean superSecretSettings = false;
 	public static boolean enableTNTEntity = false;
 	public static volatile boolean running = true;
 	public static RakNetHandler handler;
 	public static World world;
-	public static HashMap<String, Plugin> plugins = new HashMap<>();
+	public static HashMap<PluginInfo, Plugin> plugins = new HashMap<>();
 	public static HashMap<String, Player> id2Player = new HashMap<>();
 	public static PropertiesFile properties;
 	public static final File pluginsPath = new File("plugins/");
@@ -230,8 +233,13 @@ public final class Server {
                     			}
                     			
                     		};
+                    		
+                			if(Server.PLUGIN_API_VERSION != info.api) {
+                				Logger.warn(String.format("Plugin "+info.name+" "+info.version+" api version does not match server(%d != %d)!", info.api, Server.PLUGIN_API_VERSION));
+                			}
+                    		
                     		if(plugin != null) {
-                    			Server.plugins.put(info.name, plugin);
+                    			Server.plugins.put(info, plugin);
                     			Logger.info("Plugin "+info.name+" "+info.version+" by "+info.author+" was loaded!");
                     		}
                     		
