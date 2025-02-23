@@ -217,6 +217,17 @@ public class World {
 		blockUpdates.add(Utils.packBlockPos(x & 0xff, y & 0xff, z & 0xff));
 	}
 	
+	/**
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param id    block id
+	 * @param meta  block meta
+	 * @param flags Block update flags. 1 - Update neighbors, 2 - Send update to
+	 *              client. Specifying multiple flags can be done using | operator
+	 *              (1 | 2 => 3 => notify nearby and send block place to client)
+	 * @return placed successfully or not
+	 */
 	public boolean setBlock(int x, int y, int z, int id, int meta, int flags) {
 		
 		if(y < 0 || y > 127) return false;
@@ -429,7 +440,7 @@ public class World {
 		if(!this.updateLights) return;
 		
 		++this.lightUpdatesCount; 
-		if(this.lightUpdatesCount == 50) { //TODO stopping updates completely is not good
+		if(this.lightUpdatesCount == 50) { //stopping updates completely is not good
 			--this.lightUpdatesCount;
 			return;
 		}

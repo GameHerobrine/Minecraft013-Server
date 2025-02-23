@@ -5,14 +5,14 @@ import net.skidcode.gh.server.item.ItemInstance;
 import net.skidcode.gh.server.utils.Logger;
 
 public class SurvivalMode extends GameMode{
-	
 	public long lastDestroyedAt = 0;
-	
-	
 	
 	public SurvivalMode(Player player) {
 		super(player);
-		
+	}
+	
+	public float getPickRange() {
+		return 5.0f;
 	}
 	
 	public boolean destroyBlock(int x, int y, int z) {
@@ -37,6 +37,8 @@ public class SurvivalMode extends GameMode{
 		}else {
 			return false;
 		}
+		
+		//TODO better destroy method
 		
 		boolean changed = this.player.world.setBlock(x, y, z, 0, 0, 3);
 		

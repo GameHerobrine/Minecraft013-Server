@@ -20,6 +20,10 @@ public class GameMode {
 		return false;
 	}
 	
+	public float getPickRange() {
+		return 7.5f;
+	}
+	
 	public boolean useItemOn(ItemInstance item, int x, int y, int z, int face) {
 		if(item != null && item.getItem() == null) {
 			Logger.warn(String.format("%s tried using null item(ID %d Meta %d Count %d)!", player.nickname, item.itemID, item.itemMeta, item.itemCount));

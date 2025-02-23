@@ -17,10 +17,9 @@ public class BroadcastCommand extends CommandBase{
 	public String processCommand(CommandIssuer issuer, String... parameters) {
 		String msg = String.join(" ", parameters);
 		if(parameters.length <= 0) return "You must enter a message.";
-		MessagePacket mp = new MessagePacket(); //TODO API for all kind of this stuff
-		mp.message = "[Broadcast] "+msg;
-		Logger.raw(mp.message);
-		Server.broadcastMessage(mp.message);
+		
+		String message = "[Broadcast] "+msg;
+		Server.broadcastMessage(message, true);
 		return "";
 	}
 	

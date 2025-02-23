@@ -90,7 +90,7 @@ public class Chunk {
 		
 		this.setBlockMetadataRaw(x, y, z, meta);
 		if(idNow > 0) {
-			Block.blocks[idNow].onBlockAdded(this.world, worldX, y, worldZ);
+			Block.blocks[idNow].onPlace(this.world, worldX, y, worldZ);
 		}
 		
 		this.updateMap[x][z] |= 1 << (y >> 4);
@@ -211,7 +211,7 @@ public class Chunk {
 		
 		
 		if(id > 0) {
-			Block.blocks[id].onBlockAdded(this.world, worldX, y, worldZ);
+			Block.blocks[id].onPlace(this.world, worldX, y, worldZ);
 		}
 		
 		

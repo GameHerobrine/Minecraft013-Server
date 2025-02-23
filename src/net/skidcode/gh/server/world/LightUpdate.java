@@ -58,8 +58,8 @@ public class LightUpdate {
 			return;
 		}
 		
-		for(int x = this.minX; this.maxX >= x; ++x) { //TODO i ... this.max
-			for(int z = this.minZ; this.maxZ >= z; ++z) { //TODO i ... this.max
+		for(int x = this.minX; x <= this.maxX; ++x) {
+			for(int z = this.minZ; z <= this.maxZ; ++z) {
 				boolean hasChunks = world.hasChunksAt(x, 0, z, 1);
 				
 				if(hasChunks) {

@@ -14,8 +14,8 @@ public class StoneSlabBlock extends Block{
 	}
 	
 	@Override
-	public void onBlockAdded(World world, int x, int y, int z) {
-		if(this != Block.stoneSlab) super.onBlockAdded(world, x, y, z);
+	public void onPlace(World world, int x, int y, int z) {
+		if(this != Block.stoneSlab) super.onPlace(world, x, y, z);
 		//gib enchantile @realfreehij
 		int idb = world.getBlockIDAt(x, y-1, z);
 		int datab = world.getBlockMetaAt(x, y-1, z);

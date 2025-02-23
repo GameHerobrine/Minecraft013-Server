@@ -7,19 +7,18 @@ import net.skidcode.gh.server.world.World;
 
 public class LiquidBlockDynamic extends LiquidBlock{
 	
-	public int something = 0;
-	public boolean[] boolArr = new boolean[4];
-	public int[] intArr = new int[4];
+	public int adjacentLiquidSources = 0;
+	public boolean[] canSpread = new boolean[4];
+	public int[] dist = new int[4];
 	
 	public LiquidBlockDynamic(int id, Material m) {
 		super(id, m);
-		//*((_DWORD *)this + 0x1B) = 0;
-		//TODO unknown property
+		this.adjacentLiquidSources = 0;
 	}
 	
 	@Override
-	public void onBlockAdded(World world, int x, int y, int z) {
-		super.onBlockAdded(world, x, y, z);
+	public void onPlace(World world, int x, int y, int z) {
+		super.onPlace(world, x, y, z);
 		if(world.getBlockIDAt(x, y, z) == this.blockID) {
 			world.addToTickNextTick(x, y, z, this.blockID, this.getTickDelay());
 		}
@@ -33,18 +32,18 @@ public class LiquidBlockDynamic extends LiquidBlock{
 		boolean flag = true;
 		if(depth > 0) {
 			int i1 = -100;
-			this.something = 0;
-			i1 = this.weirdfunc1(world, x - 1, y, z, i1);
-			i1 = this.weirdfunc1(world, x + 1, y, z, i1);
-			i1 = this.weirdfunc1(world, x, y, z - 1, i1);
-			i1 = this.weirdfunc1(world, x, y, z + 1, i1);
+			this.adjacentLiquidSources = 0;
+			i1 = this.getHighest(world, x - 1, y, z, i1);
+			i1 = this.getHighest(world, x + 1, y, z, i1);
+			i1 = this.getHighest(world, x, y, z - 1, i1);
+			i1 = this.getHighest(world, x, y, z + 1, i1);
 			int j1 = i1 + byte0;
 			if(j1 >= 8 || i1 < 0) j1 = -1;
-			int l1 = this.getMetaForSelfMaterial(world, x, y + 1, z);
+			int l1 = this.getDepth(world, x, y + 1, z);
 			if(l1 >= 0) {
 				j1 = (l1 >= 8 ? l1 : l1 + 8);
 			}
-			if(this.something >= 2 && this.material == Material.water) {
+			if(this.adjacentLiquidSources >= 2 && this.material == Material.water) {
 				int idBot = world.getBlockIDAt(x, y - 1, z);
 				if(idBot != 0) {
 					Block b = Block.blocks[idBot];
@@ -92,8 +91,8 @@ public class LiquidBlockDynamic extends LiquidBlock{
 			if(i1 > 0) {
 				/*if(blockMaterial == Material.lava)
                 {
-                    func_292_i(world, i, j, k);
-                }*/ //TODO check
+                    fizz(world, i, j, k); //spawns 8 largesmoke particles
+                }*/
 				if(this.material != Material.lava) {
 					//TODO in case of further updates Block.blocks[i1].drop();
 				}
@@ -103,7 +102,7 @@ public class LiquidBlockDynamic extends LiquidBlock{
 	}
 	public boolean[] getSpread(World w, int x, int y, int z) {
 		for(int l = 0; l < 4; ++l) {
-			this.intArr[l] = 1000;
+			this.dist[l] = 1000;
 			int j1 = x;
 			int i2 = y;
 			int j2 = z;
@@ -125,24 +124,24 @@ public class LiquidBlockDynamic extends LiquidBlock{
 				continue;
 			}
 			if(!this.isWaterBlocking(w, j1, i2 - 1, j2)) {
-				this.intArr[l] = 0;
+				this.dist[l] = 0;
 			}else {
-				this.intArr[l] = this.getSlopeDistance(w, j1, i2, j2, 1, l);
+				this.dist[l] = this.getSlopeDistance(w, j1, i2, j2, 1, l);
 			}
 		}
 		
-		int i1 = this.intArr[0];
+		int i1 = this.dist[0];
 		for(int k1 = 1; k1 < 4; ++k1) {
-			if(this.intArr[k1] < i1) {
-				i1 = this.intArr[k1];
+			if(this.dist[k1] < i1) {
+				i1 = this.dist[k1];
 			}
 		}
 		
 		for(int l1 = 0; l1 < 4; ++l1) {
-			this.boolArr[l1] = (this.intArr[l1] == i1);
+			this.canSpread[l1] = (this.dist[l1] == i1);
 		}
 		
-		return this.boolArr;
+		return this.canSpread;
 	}
 	public int getSlopeDistance(World world, int x, int y, int z, int l, int i1) {
 		int j1 = 1000;
@@ -198,16 +197,13 @@ public class LiquidBlockDynamic extends LiquidBlock{
 		w.placeBlock(x, y, z, (byte) (this.blockID + 1), (byte) meta);
 	}
 	
-	public int getMetaForSelfMaterial(World world, int x, int y, int z) {
-		return world.getMaterial(x, y, z) != this.material ? -1 : world.getBlockMetaAt(x, y, z);
-	}
-	public int weirdfunc1(World world, int x, int y, int z, int u) {
-		int metaself = this.getMetaForSelfMaterial(world, x, y, z);
-		if(metaself < 0) return u;
-		if(metaself == 0) this.something++;
-		if(metaself >= 8) metaself = 0;
+	public int getHighest(World world, int x, int y, int z, int prev) {
+		int depth = this.getDepth(world, x, y, z);
+		if(depth < 0) return prev;
+		if(depth == 0) this.adjacentLiquidSources++;
+		if(depth >= 8) depth = 0;
 		
-		return u >= 0 && metaself >= u ? u : metaself;
+		return prev >= 0 && depth >= prev ? prev : depth;
 	}
 	
 	public int getDepth(World world, int x, int y, int z) {

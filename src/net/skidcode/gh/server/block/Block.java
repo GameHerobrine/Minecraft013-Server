@@ -175,7 +175,7 @@ public class Block {
 		
 	}
 	
-	public void onBlockAdded(World world, int x, int y, int z) { //TODO rename to onPlace
+	public void onPlace(World world, int x, int y, int z) {
 		
 	}
 	
@@ -208,23 +208,24 @@ public class Block {
 		return true;
 	}
 	
-	public void init() {
+	public Block init() {
 		Block.solid[this.blockID] = this.isSolidRender();
 		
 		int lightBlock = this.isSolidRender() ? 255 : 0;
 		Block.lightBlock[this.blockID] = lightBlock;
-		//TODO Block.translucent
+		//Block.translucent - used only for rendering ?
 		
+		return this;
 	}
 	
-	public Block(int id, Material m) {
+	public Block(int id, Material m) { 
 		this.blockID = id;
 		this.material = m;
 		this.unkField_4 = 1;
 		this.boundingBox = new AABB(0, 0, 0, 1, 1, 1);
 		if(Block.blocks[id] instanceof Block) Logger.critical("ID "+id+" is occupied already!");
 		else Block.blocks[id] = this;
-		this.init();
+		this.init(); //TODO call outside of constructor?
 	}
 	
 	public int getTickDelay() {
@@ -246,7 +247,6 @@ public class Block {
 	}
 	
 	public int blockID;
-	public String name = "";
 	public Material material;
 	public boolean isOpaque = true;
 

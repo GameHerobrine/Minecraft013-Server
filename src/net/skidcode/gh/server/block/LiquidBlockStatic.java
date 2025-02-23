@@ -18,7 +18,7 @@ public class LiquidBlockStatic extends LiquidBlock{
 		world.editingBlocks = false;
 	}
 	@Override
-	public void onBlockAdded(World world, int x, int y, int z) {
+	public void onPlace(World world, int x, int y, int z) {
 		/**
 		 * if ( *((_DWORD *)this + 0x10) == Material::lava )
 		    return (LiquidTile *)LiquidTile::_trySpreadFire(this, a2, a3, a4, a5, a6);

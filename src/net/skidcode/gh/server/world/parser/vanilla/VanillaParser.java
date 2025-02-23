@@ -25,7 +25,7 @@ public class VanillaParser {
 				for(int y = 0; y < 128; ++y) {
 					int id = w.getBlockIDAt(x, y, z);
 					if(id > 0) {
-						Block.blocks[id].onBlockAdded(w, x, y, z);
+						Block.blocks[id].onPlace(w, x, y, z);
 					}
 				}
 			}

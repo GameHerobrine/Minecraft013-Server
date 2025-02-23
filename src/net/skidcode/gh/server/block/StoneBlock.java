@@ -6,9 +6,5 @@ public class StoneBlock extends Block{
 
 	public StoneBlock(int id) {
 		super(id, Material.stone);
-		
-		this.name = "stone";
 	}
-	
-	//TODO StoneTile::getResource
 }

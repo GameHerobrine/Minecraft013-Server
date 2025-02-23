@@ -38,7 +38,7 @@ public class LiquidBlock extends Block{
 	}
 	
 	@Override
-	public void onBlockAdded(World world, int x, int y, int z) {
+	public void onPlace(World world, int x, int y, int z) {
 		this.updateLiquid(world, x, y, z);
 	}
 	
