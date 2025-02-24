@@ -309,7 +309,18 @@ public class Player extends Entity implements CommandIssuer{
 			pkk.posZ = player.posZ;
 			this.dataPacket(pkk);
 		}else {
-			
+			if(Server.enableEntitySpawning) {
+				this.registerEntity(entity);
+				
+				AddPlayerPacket pkk = new AddPlayerPacket();
+				pkk.clientID = 0xdedbeef;
+				pkk.eid = entity.eid;
+				pkk.nickname = entity.getClass().getName();
+				pkk.posX = entity.posX;
+				pkk.posY = entity.posY;
+				pkk.posZ = entity.posZ;
+				this.dataPacket(pkk);
+			}
 		}
 	}
 	public float getDestroySpeed() {

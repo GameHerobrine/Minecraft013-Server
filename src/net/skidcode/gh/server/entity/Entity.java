@@ -3,6 +3,8 @@ package net.skidcode.gh.server.entity;
 import java.util.ArrayList;
 
 import net.skidcode.gh.server.Server;
+import net.skidcode.gh.server.network.protocol.RemoveEntityPacket;
+import net.skidcode.gh.server.player.Player;
 import net.skidcode.gh.server.utils.AABB;
 import net.skidcode.gh.server.world.World;
 
@@ -70,6 +72,13 @@ public abstract class Entity {
 	
 	public void remove() {
 		this.removed = true;
+		if(Server.enableEntitySpawning) {
+			for(Player p : this.world.players.values()) {
+				RemoveEntityPacket pk = new RemoveEntityPacket();
+				pk.eid = this.eid;
+				p.dataPacket(pk);
+			}
+		}
 	}
 	
 	public void tick() {
@@ -81,5 +90,12 @@ public abstract class Entity {
 		this.posY = y;
 		this.posZ = z;
 		this.boundingBox.set(x - this.radius, y, z - this.radius, x + this.radius, y + this.height, z + this.radius);
+	}
+
+	public float distanceTo(float x, float y, float z) {
+		float dx = this.posX - x;
+		float dy = this.posY - y;
+		float dz = this.posZ - z;
+		return (float)Math.sqrt(dx*dx + dy*dy + dz*dz);
 	}
 }

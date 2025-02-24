@@ -354,6 +354,12 @@ public class World {
 					Logger.warn("Entity with EID "+e.eid+" already exisists!");
 				}else {
 					this.entities.put(e.eid, e);
+					
+					if(Server.enableEntitySpawning) {
+						for(Player p : this.players.values()) {
+							p.spawnEntity(e);
+						}
+					}
 				}
 			}
 			
@@ -655,6 +661,17 @@ public class World {
 		}
 		
 		//TODO also check entities
+		return list;
+	}
+
+	public ArrayList<Entity> getEntities(Entity e, AABB aabb) {
+		ArrayList<Entity> list = new ArrayList<Entity>();
+		for(Entity entity : this.entities.values()) {
+			if(e != entity && entity.boundingBox.intersects(aabb)){
+				list.add(entity);
+			}
+		}
+		
 		return list;
 	}
 	

@@ -41,6 +41,9 @@ public final class Server {
 	
 	public static final int PLUGIN_API_VERSION = 2;
 	
+	public static boolean enableEntitySpawning = false;
+	
+	
 	public static boolean enableEntityTicking = false;
 	public static boolean enableTNTEntity = false;
 	public static volatile boolean running = true;
