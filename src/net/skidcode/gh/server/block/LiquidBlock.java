@@ -1,6 +1,7 @@
 package net.skidcode.gh.server.block;
 
 import net.skidcode.gh.server.block.material.Material;
+import net.skidcode.gh.server.utils.AABB;
 import net.skidcode.gh.server.world.World;
 
 public class LiquidBlock extends Block{
@@ -35,6 +36,11 @@ public class LiquidBlock extends Block{
 			}
 			
 		}
+	}
+	
+	@Override
+	public AABB getAABB(World world, int x, int y, int z) {
+		return null;
 	}
 	
 	@Override

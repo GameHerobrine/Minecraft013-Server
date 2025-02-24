@@ -2,6 +2,7 @@ package net.skidcode.gh.server.block;
 
 import net.skidcode.gh.server.block.material.Material;
 import net.skidcode.gh.server.player.Player;
+import net.skidcode.gh.server.utils.AABB;
 import net.skidcode.gh.server.world.World;
 
 public class DoorBlock extends Block{
@@ -12,6 +13,32 @@ public class DoorBlock extends Block{
 	}
 	
 	//TODO methods
+	
+	public static int getDir(int data) {
+		if((data & 4) != 0) return data & 3;
+		return (data - 1) & 3;
+	}
+	
+	@Override
+	public void updateShape(World world, int x, int y, int z) {
+		int data = world.getBlockMetaAt(x, y, z);
+		int dir = DoorBlock.getDir(data);
+		this.setShape(dir);
+	}
+	
+	public void setShape(int dir) {
+		if(dir == 0) this.setShape(0, 0, 0, 1, 1, 0.1875f);
+		else if(dir == 1) this.setShape(1 - 0.1875f, 0, 0, 1, 1, 1);
+		else if(dir == 2) this.setShape(1, 0, 1 - 0.1875f, 1, 1, 1);
+		else if(dir == 3) this.setShape(0, 0, 0, 0.1875f, 1, 1);
+		else this.setShape(0, 0, 0, 1, 2, 1);
+	}
+	
+	@Override
+	public AABB getAABB(World world, int x, int y, int z) {
+		this.updateShape(world, x, y, z);
+		return super.getAABB(world, x, y, z);
+	}
 	
 	@Override
 	public boolean use(World world, int x, int y, int z, Player player) {

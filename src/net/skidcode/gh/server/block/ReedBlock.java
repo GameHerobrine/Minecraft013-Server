@@ -1,6 +1,7 @@
 package net.skidcode.gh.server.block;
 
 import net.skidcode.gh.server.block.material.Material;
+import net.skidcode.gh.server.utils.AABB;
 import net.skidcode.gh.server.utils.random.BedrockRandom;
 import net.skidcode.gh.server.world.World;
 
@@ -41,7 +42,11 @@ public class ReedBlock extends Block{
 			}
 		}
 	}
-	//TODO getAABB -> null
+	
+	@Override
+	public AABB getAABB(World world, int x, int y, int z) {
+		return null;
+	}
 	
 	public void checkAlive(World world, int x, int y, int z) {
 		if(!this.canSurvive(world, x, y, z)) world.setBlock(x, y, z, (byte)0, (byte)0, 3);

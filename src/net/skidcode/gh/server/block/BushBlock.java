@@ -1,6 +1,7 @@
 package net.skidcode.gh.server.block;
 
 import net.skidcode.gh.server.block.material.Material;
+import net.skidcode.gh.server.utils.AABB;
 import net.skidcode.gh.server.utils.random.BedrockRandom;
 import net.skidcode.gh.server.world.World;
 
@@ -16,7 +17,11 @@ public class BushBlock extends Block{
 		return false;
 	}
 	//TODO isCubeShaped -> return false (is it even needed?)
-	//TODO getAABB -> return null;
+	
+	@Override
+	public AABB getAABB(World world, int x, int y, int z) {
+		return null;
+	}
 	
 	public boolean mayPlaceOn(int id) {
 		return id == Block.grass.blockID || id == Block.dirt.blockID || id == Block.farmland.blockID;

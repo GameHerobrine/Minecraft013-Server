@@ -3,19 +3,17 @@ package net.skidcode.gh.server.world;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Random;
 import java.util.TreeSet;
-
 import net.skidcode.gh.server.Server;
 import net.skidcode.gh.server.block.Block;
 import net.skidcode.gh.server.block.material.Material;
 import net.skidcode.gh.server.entity.Entity;
 import net.skidcode.gh.server.entity.PrimedTnt;
 import net.skidcode.gh.server.network.MinecraftDataPacket;
-import net.skidcode.gh.server.network.protocol.PlaceBlockPacket;
 import net.skidcode.gh.server.network.protocol.RemoveEntityPacket;
 import net.skidcode.gh.server.network.protocol.UpdateBlockPacket;
 import net.skidcode.gh.server.player.Player;
+import net.skidcode.gh.server.utils.AABB;
 import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.utils.MathUtils;
 import net.skidcode.gh.server.utils.TickNextTickData;
@@ -543,6 +541,9 @@ public class World {
 		
 		
 	}
+	public boolean hasChunkAtBlock(int x, int y, int z) {
+		return this.hasChunkAt(x >> 4, z >> 4);
+	}
 	public boolean hasChunkAt(int x, int z) {
 		return x >= 0 && x < 16 && z >= 0 && z < 16; //TODO do not hardcode
 	}
@@ -633,6 +634,31 @@ public class World {
 		e.explode();
 		e.addParticles();
 		return e;
+	}
+
+	public ArrayList<AABB> getCubes(Entity entity, AABB aabb) {
+		ArrayList<AABB> list = new ArrayList<>();
+		
+		int minX = MathUtils.ffloor(aabb.minX);
+		int maxX = MathUtils.ffloor(aabb.maxX + 1);
+		int minY = MathUtils.ffloor(aabb.minY);
+		int maxY = MathUtils.ffloor(aabb.maxY + 1);
+		int minZ = MathUtils.ffloor(aabb.minZ);
+		int maxZ = MathUtils.ffloor(aabb.maxZ + 1);
+		
+		for(int x = minX; x < maxX; ++x) {
+			for(int z = minZ; z < maxZ; ++z) {
+				if(this.hasChunkAtBlock(x, 64, z)) {
+					for(int y = minY-1; y < maxY; ++y) {
+						Block block = Block.blocks[this.getBlockIDAt(x, y, z)];
+						if(block != null) block.addAABBs(this, x, y, z, aabb, list);
+					}
+				}
+			}
+		}
+		
+		//TODO also check entities
+		return list;
 	}
 	
 }

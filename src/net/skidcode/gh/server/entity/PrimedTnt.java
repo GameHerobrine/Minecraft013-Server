@@ -34,8 +34,12 @@ public class PrimedTnt extends Entity{
 		this.motionX *= 0.98f;
 		this.motionY *= 0.98f;
 		this.motionZ *= 0.98f;
-
-
+		if(this.onGround) {
+			this.motionX *= 0.7;
+			this.motionZ *= 0.7;
+			this.motionY *= -0.5;
+		}
+		System.out.println(this.posX+" "+this.posY+" "+this.posZ+" "+this.onGround);
 		--this.ticksUntilExplosion;
 		if(this.ticksUntilExplosion > 0) {
 			

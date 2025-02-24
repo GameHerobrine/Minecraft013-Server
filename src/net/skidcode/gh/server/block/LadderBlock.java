@@ -2,12 +2,25 @@ package net.skidcode.gh.server.block;
 
 import net.skidcode.gh.server.block.material.Material;
 import net.skidcode.gh.server.player.Player;
+import net.skidcode.gh.server.utils.AABB;
 import net.skidcode.gh.server.world.World;
 
 public class LadderBlock extends Block{
 
 	public LadderBlock(int id) {
 		super(id, Material.decoration);
+	}
+	
+	@Override
+	public AABB getAABB(World world, int x, int y, int z) {
+		int d = world.getBlockMetaAt(x, y, z);
+		
+		if(d == 2) this.setShape(0, 0, 1 - 0.125f, 1, 1, 1);
+		else if(d == 3) this.setShape(0, 0, 0, 1, 1, 0.125f);
+		else if(d == 4) this.setShape(1 - 0.125f, 0, 0, 1, 1, 1);
+		else if(d == 5) this.setShape(0, 0, 0, 0.125f, 1, 1);
+		
+		return super.getAABB(world, x, y, z);
 	}
 	
 	@Override

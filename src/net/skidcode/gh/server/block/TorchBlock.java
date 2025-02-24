@@ -2,6 +2,7 @@ package net.skidcode.gh.server.block;
 
 import net.skidcode.gh.server.block.material.Material;
 import net.skidcode.gh.server.player.Player;
+import net.skidcode.gh.server.utils.AABB;
 import net.skidcode.gh.server.utils.BlockFace;
 import net.skidcode.gh.server.world.World;
 
@@ -16,6 +17,11 @@ public class TorchBlock extends Block{
 		if(this.mayPlace(world, x, y, z)) return true;
 		world.setBlock(x, y, z, 0, 0, 3);
 		return false;
+	}
+	
+	@Override
+	public AABB getAABB(World world, int x, int y, int z) {
+		return null;
 	}
 	
 	@Override

@@ -1,6 +1,8 @@
 package net.skidcode.gh.server.block;
 
 import net.skidcode.gh.server.block.material.Material;
+import net.skidcode.gh.server.utils.AABB;
+import net.skidcode.gh.server.world.World;
 
 public class FireBlock extends Block{
 	
@@ -18,6 +20,11 @@ public class FireBlock extends Block{
 		
 	}
 
+	@Override
+	public AABB getAABB(World world, int x, int y, int z) {
+		return null;
+	}
+	
 	public void setFlammable(int id, int igniteOdd, int burnOdd) {
 		this.burnOdds[id] = burnOdd;
 		this.igniteOdds[id] = igniteOdd;

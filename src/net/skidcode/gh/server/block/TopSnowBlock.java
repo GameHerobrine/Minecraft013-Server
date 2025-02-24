@@ -1,6 +1,7 @@
 package net.skidcode.gh.server.block;
 
 import net.skidcode.gh.server.block.material.Material;
+import net.skidcode.gh.server.utils.AABB;
 import net.skidcode.gh.server.utils.random.BedrockRandom;
 import net.skidcode.gh.server.world.LightLayer;
 import net.skidcode.gh.server.world.World;
@@ -25,6 +26,11 @@ public class TopSnowBlock extends Block {
 	@Override
 	public void neighborChanged(World world, int x, int y, int z, int meta) {
 		this.checkCanSurvive(world, x, y, z);
+	}
+	
+	@Override
+	public AABB getAABB(World world, int x, int y, int z) {
+		return null;
 	}
 	
 	@Override

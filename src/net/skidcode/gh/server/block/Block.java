@@ -1,5 +1,6 @@
 package net.skidcode.gh.server.block;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import net.skidcode.gh.server.block.material.Material;
@@ -32,7 +33,6 @@ public class Block {
 	public AABB boundingBox;
 	
 	public float minX = 0, minY = 0, minZ = 0, maxX = 1, maxY = 1, maxZ = 1;
-	
 	public static Block stone = new StoneBlock(1).setExplodeable(10).setDestroyTime(1.5f).setDescription("stone");
 	public static Block grass = new GrassBlock(2).setDestroyTime(0.6f).setDescription("grass");
 	public static Block dirt = new DirtBlock(3).setDestroyTime(0.5f).setDescription("dirt");
@@ -123,6 +123,14 @@ public class Block {
 		pk.id = 0;
 		pk.metadata = 0;
 		world.broadcastPacket(pk);
+	}
+	
+	public void addAABBs(World world, int x, int y, int z, AABB collide, ArrayList<AABB> addInto) {
+		AABB aabb = this.getAABB(world, x, y, z);
+		if(aabb == null || !collide.intersects(aabb)) {
+			return;
+		}
+		addInto.add(aabb);
 	}
 	
 	public Block setExplodeable(float f) {
@@ -226,6 +234,14 @@ public class Block {
 		if(Block.blocks[id] instanceof Block) Logger.critical("ID "+id+" is occupied already!");
 		else Block.blocks[id] = this;
 		this.init(); //TODO call outside of constructor?
+	}
+	
+	public AABB getAABB(World world, int x, int y, int z) {
+		return this.boundingBox.set(this.minX + x, this.minY + y, this.minZ + z, this.maxX + x, this.maxY + y, this.maxZ + z);
+	}
+	
+	public void updateShape(World world, int x, int y, int z) {
+		
 	}
 	
 	public int getTickDelay() {

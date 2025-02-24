@@ -1,6 +1,7 @@
 package net.skidcode.gh.server.block;
 
 import net.skidcode.gh.server.block.material.Material;
+import net.skidcode.gh.server.utils.AABB;
 import net.skidcode.gh.server.utils.random.BedrockRandom;
 import net.skidcode.gh.server.world.World;
 
@@ -14,6 +15,11 @@ public class CactusBlock extends Block{
 	@Override
 	public boolean isSolidRender() {
 		return false;
+	}
+	
+	@Override
+	public AABB getAABB(World world, int x, int y, int z) {
+		return this.boundingBox.set(x+0.0625f, y, z+0.0625f, x+1-0.0625f, y+1-0.0625f, z+1-0.0625f);
 	}
 	
 	@Override
