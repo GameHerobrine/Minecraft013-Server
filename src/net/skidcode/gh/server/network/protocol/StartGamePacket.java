@@ -1,9 +1,10 @@
 package net.skidcode.gh.server.network.protocol;
 
 import net.skidcode.gh.server.network.MinecraftDataPacket;
+import net.skidcode.gh.server.network.PacketWithEID;
 import net.skidcode.gh.server.network.ProtocolInfo;
 
-public class StartGamePacket extends MinecraftDataPacket{
+public class StartGamePacket extends MinecraftDataPacket implements PacketWithEID{
 	
 	public float posX, posY, posZ;
 	public int eid;
@@ -17,7 +18,17 @@ public class StartGamePacket extends MinecraftDataPacket{
 	public void decode() {
 		
 	}
+	
+	@Override
+	public int getEID() {
+		return this.eid;
+	}
 
+	@Override
+	public void setEID(int eid) {
+		this.eid = eid;
+	}
+	
 	@Override
 	public void encode() {
 		this.putByte(pid());

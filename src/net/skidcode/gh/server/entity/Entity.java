@@ -10,7 +10,7 @@ public abstract class Entity {
 	
 	public float posX = 0, posY = 0, posZ = 0;
 	public float yaw, pitch;
-	public int eid;
+	public final int eid;
 	public World world;
 	public AABB boundingBox = new AABB(-0.5f, 0, -0.5f, 0.5f, 1, 0.5f);
 	public float width = 1, height = 1, radius = 0.5f;
@@ -21,7 +21,7 @@ public abstract class Entity {
 	
 	public Entity() {
 		this.setPosition(Server.world.spawnX, Server.world.spawnY, Server.world.spawnZ, 0, 0);
-		this.eid = World.incrementAndGetNextFreeEID(); //TODO move to entity?
+		this.eid = Server.incrementAndGetNextFreeEID();
 	}
 	
 	public void setSize(float width, float height) {

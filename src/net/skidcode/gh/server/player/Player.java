@@ -1,6 +1,7 @@
 package net.skidcode.gh.server.player;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import net.skidcode.gh.server.Server;
 import net.skidcode.gh.server.block.Block;
@@ -8,9 +9,9 @@ import net.skidcode.gh.server.console.command.CommandIssuer;
 import net.skidcode.gh.server.entity.Entity;
 import net.skidcode.gh.server.event.EventRegistry;
 import net.skidcode.gh.server.event.packet.DataPacketReceive;
-import net.skidcode.gh.server.event.player.PlayerSendChatMessage;
 import net.skidcode.gh.server.item.ItemInstance;
 import net.skidcode.gh.server.network.MinecraftDataPacket;
+import net.skidcode.gh.server.network.PacketWithEID;
 import net.skidcode.gh.server.network.ProtocolInfo;
 import net.skidcode.gh.server.network.protocol.AddPlayerPacket;
 import net.skidcode.gh.server.network.protocol.ChunkDataPacket;
@@ -28,6 +29,14 @@ import net.skidcode.gh.server.world.chunk.Chunk;
 import net.skidcode.gh.server.world.format.PlayerData;
 
 public class Player extends Entity implements CommandIssuer{
+	/**
+	 * Used for spawning entities on client side. 0 should always be a player.
+	 */
+	private int localFreeEID = 0;
+	public int getNextLocalFreeEID() {
+		return this.localFreeEID++;
+	}
+	
 	public long clientID;
 	public int port;
 	public int mtuSize;
@@ -38,6 +47,23 @@ public class Player extends Entity implements CommandIssuer{
 	public boolean chunkDataSend[] = new boolean[256];
 	public GameMode gamemode;
 	public boolean closed = false;
+	
+	private HashMap<Integer, Integer> eidServer2Local = new HashMap<Integer, Integer>();
+	private HashMap<Integer, Integer> eidLocal2Server = new HashMap<Integer, Integer>();
+	
+	public int getLocalEID(int global) {
+		return this.eidServer2Local.getOrDefault(global, -1);
+	}
+	public int getGlobalEID(int local) {
+		return this.eidLocal2Server.getOrDefault(local, -1);
+	}
+	
+	public void registerEntity(Entity entity) {
+		int local = this.getNextLocalFreeEID();
+		int global = entity.eid;
+		this.eidLocal2Server.put(local, global);
+		this.eidServer2Local.put(global, local);
+	}
 	
 	public Player(String identifier, long clientID, String ip, int port) {
 		super();
@@ -55,7 +81,18 @@ public class Player extends Entity implements CommandIssuer{
 		this.dataPacket(pk);
 	}
 	
+	/**
+	 * Sends a packet to client. 
+	 */
 	public void dataPacket(MinecraftDataPacket pk) {
+		if(pk instanceof PacketWithEID) {
+			PacketWithEID ei = (PacketWithEID) pk;
+			int prev = ei.getEID();
+			ei.setEID(this.getLocalEID(ei.getEID()));
+			int current = ei.getEID();
+			System.out.println(prev+" "+current);
+		}
+		
 		Server.handler.sendPacket(this, pk);
 	}
 	
@@ -75,6 +112,12 @@ public class Player extends Entity implements CommandIssuer{
 	public void handlePacket(MinecraftDataPacket dp) {
 		if(this.closed) return;
 		EventRegistry.handleEvent(new DataPacketReceive(this, dp));
+		
+		if(dp instanceof PacketWithEID) {
+			PacketWithEID ei = (PacketWithEID) dp;
+			ei.setEID(this.getGlobalEID(ei.getEID()));
+		}
+		
 		packethandling:
 		switch(dp.pid()) {
 			case ProtocolInfo.MESSAGE_PACKET:
@@ -102,8 +145,11 @@ public class Player extends Entity implements CommandIssuer{
 					e.printStackTrace();
 					Logger.error("Failed to parse playerdata!");
 				}
-				Server.world.addEntity(this);
+				
+				this.world = Server.world;
+				
 				this.world.addPlayer(this);
+				this.registerEntity(this);
 				
 				StartGamePacket pk = new StartGamePacket();
 				pk.seed = this.world.worldSeed;
@@ -115,16 +161,10 @@ public class Player extends Entity implements CommandIssuer{
 				
 				for(Player player : this.world.players.values()) {
 					if(player.eid != this.eid) { //TODO move to World::addPlayer ?
-						AddPlayerPacket pkk = new AddPlayerPacket();
-						pkk.clientID = player.clientID;
-						pkk.eid = player.eid;
-						pkk.nickname = player.nickname;
-						pkk.posX = player.posX;
-						pkk.posY = player.posY;
-						pkk.posZ = player.posZ;
-						this.dataPacket(pkk);
+						this.spawnEntity(player);
 					}
 				}
+				
 				Logger.info("Player "+this.nickname+" joined the game. Position: "+this.posX+", "+this.posY+", "+this.posZ);
 				break;
 			case ProtocolInfo.REMOVE_BLOCK_PACKET:
@@ -241,6 +281,23 @@ public class Player extends Entity implements CommandIssuer{
 		}
 	}
 	
+	public void spawnEntity(Entity entity) {
+		if(entity instanceof Player) {
+			this.registerEntity(entity);
+			Player player = (Player) entity;
+			
+			AddPlayerPacket pkk = new AddPlayerPacket();
+			pkk.clientID = player.clientID;
+			pkk.eid = player.eid;
+			pkk.nickname = player.nickname;
+			pkk.posX = player.posX;
+			pkk.posY = player.posY;
+			pkk.posZ = player.posZ;
+			this.dataPacket(pkk);
+		}else {
+			
+		}
+	}
 	public float getDestroySpeed() {
 		return 0.5f;
 	}
@@ -257,14 +314,7 @@ public class Player extends Entity implements CommandIssuer{
 				pep.itemID = p.itemID;
 				this.dataPacket(pep);
 				
-				AddPlayerPacket pkk2 = new AddPlayerPacket();
-				pkk2.clientID = this.clientID;
-				pkk2.eid = this.eid;
-				pkk2.nickname = this.nickname;
-				pkk2.posX = this.posX;
-				pkk2.posY = this.posY;
-				pkk2.posZ = this.posZ;
-				p.dataPacket(pkk2);
+				p.spawnEntity(this);
 			}
 		}
 	}
