@@ -59,8 +59,10 @@ public class Player extends Entity implements CommandIssuer{
 	}
 	
 	public void registerEntity(Entity entity) {
-		int local = this.getNextLocalFreeEID();
 		int global = entity.eid;
+		if(this.eidServer2Local.containsKey(global)) return;
+		
+		int local = this.getNextLocalFreeEID();
 		this.eidLocal2Server.put(local, global);
 		this.eidServer2Local.put(global, local);
 	}
@@ -90,7 +92,11 @@ public class Player extends Entity implements CommandIssuer{
 			int prev = ei.getEID();
 			ei.setEID(this.getLocalEID(ei.getEID()));
 			int current = ei.getEID();
-			System.out.println(prev+" "+current);
+			if(current < 0) {
+				Logger.warn(String.format("Packet(%d) has invalid local entity id(Global: %d, Local: %d, Player: %s)!", pk.pid(), prev, current, this.nickname));
+				new Exception("Player::dataPacket stacktrace").printStackTrace();
+				return;
+			}
 		}
 		
 		Server.handler.sendPacket(this, pk);
@@ -115,7 +121,14 @@ public class Player extends Entity implements CommandIssuer{
 		
 		if(dp instanceof PacketWithEID) {
 			PacketWithEID ei = (PacketWithEID) dp;
+			int prev = ei.getEID();
 			ei.setEID(this.getGlobalEID(ei.getEID()));
+			int current = ei.getEID();
+			if(current < 0) {
+				Logger.warn(String.format("Packet(%d) has invalid global entity id(Global: %d, Local: %d, Player: %s)!", dp.pid(), current, prev, this.nickname));
+				new Exception("Player::handlePacket stacktrace").printStackTrace();
+				return;
+			}
 		}
 		
 		packethandling:
@@ -284,6 +297,7 @@ public class Player extends Entity implements CommandIssuer{
 	public void spawnEntity(Entity entity) {
 		if(entity instanceof Player) {
 			this.registerEntity(entity);
+			
 			Player player = (Player) entity;
 			
 			AddPlayerPacket pkk = new AddPlayerPacket();
