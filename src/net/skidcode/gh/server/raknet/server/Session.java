@@ -464,8 +464,16 @@ public class Session {
 		this.lastUpdate = System.currentTimeMillis();
 		if (this.state == STATE_CONNECTED || this.state == STATE_CONNECTING_2) {
 			if (((packet.buffer[0] & 0xff) >= 0x80 || (packet.buffer[0] & 0xff) <= 0x8f) && packet instanceof DataPacket) {
-				DataPacket dp = (DataPacket) packet;
-				dp.decode();
+				DataPacket dp;
+				try {
+					dp = (DataPacket) packet;
+					dp.decode();
+				}catch(Exception e) {
+					Logger.warn("Exception when decoding packet!");
+					e.printStackTrace();
+					return;
+				}
+				
 
 				if (dp.seqNumber < this.windowStart || dp.seqNumber > this.windowEnd || this.receivedWindow.containsKey(dp.seqNumber)) {
 					return;

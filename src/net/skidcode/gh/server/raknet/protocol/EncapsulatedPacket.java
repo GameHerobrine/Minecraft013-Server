@@ -66,7 +66,7 @@ public class EncapsulatedPacket implements Cloneable {
 			}
 		}
 
-		if (packet.hasSplit) {
+		if (packet.hasSplit) { //TODO may cause a crash if buffer is too small somehow
 			packet.splitCount = Binary.readInt(Binary.subBytes(binary, offset, 4));
 			offset += 4;
 			packet.splitID = Binary.readShort(Binary.subBytes(binary, offset, 2));
