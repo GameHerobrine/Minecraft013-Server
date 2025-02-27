@@ -3,6 +3,8 @@ package net.skidcode.gh.server.entity;
 import java.util.ArrayList;
 
 import net.skidcode.gh.server.Server;
+import net.skidcode.gh.server.network.protocol.RemoveEntityPacket;
+import net.skidcode.gh.server.player.Player;
 import net.skidcode.gh.server.utils.AABB;
 import net.skidcode.gh.server.world.World;
 
@@ -10,7 +12,7 @@ public abstract class Entity {
 	
 	public float posX = 0, posY = 0, posZ = 0;
 	public float yaw, pitch;
-	public int eid;
+	public final int eid;
 	public World world;
 	public AABB boundingBox = new AABB(-0.5f, 0, -0.5f, 0.5f, 1, 0.5f);
 	public float width = 1, height = 1, radius = 0.5f;
@@ -21,7 +23,7 @@ public abstract class Entity {
 	
 	public Entity() {
 		this.setPosition(Server.world.spawnX, Server.world.spawnY, Server.world.spawnZ, 0, 0);
-		this.eid = World.incrementAndGetNextFreeEID(); //TODO move to entity?
+		this.eid = Server.incrementAndGetNextFreeEID();
 	}
 	
 	public void setSize(float width, float height) {
@@ -70,6 +72,13 @@ public abstract class Entity {
 	
 	public void remove() {
 		this.removed = true;
+		if(Server.enableEntitySpawning) {
+			for(Player p : this.world.players.values()) {
+				RemoveEntityPacket pk = new RemoveEntityPacket();
+				pk.eid = this.eid;
+				p.dataPacket(pk);
+			}
+		}
 	}
 	
 	public void tick() {
@@ -81,5 +90,12 @@ public abstract class Entity {
 		this.posY = y;
 		this.posZ = z;
 		this.boundingBox.set(x - this.radius, y, z - this.radius, x + this.radius, y + this.height, z + this.radius);
+	}
+
+	public float distanceTo(float x, float y, float z) {
+		float dx = this.posX - x;
+		float dy = this.posY - y;
+		float dz = this.posZ - z;
+		return (float)Math.sqrt(dx*dx + dy*dy + dz*dz);
 	}
 }

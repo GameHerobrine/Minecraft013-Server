@@ -41,7 +41,10 @@ public final class Server {
 	
 	public static final int PLUGIN_API_VERSION = 2;
 	
-	public static boolean superSecretSettings = false;
+	public static boolean enableEntitySpawning = false;
+	
+	
+	public static boolean enableEntityTicking = false;
 	public static boolean enableTNTEntity = false;
 	public static volatile boolean running = true;
 	public static RakNetHandler handler;
@@ -68,7 +71,12 @@ public final class Server {
 		running = false;
 		handler.notifyShutdown();
 	}
-
+	
+	private static int freeEID = 1;
+	public static int incrementAndGetNextFreeEID() {
+		return ++freeEID;
+	}
+	
 	public static void main(String[] args) throws IOException {
 		Logger.info("Starting Server...");
 		Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -105,7 +113,7 @@ public final class Server {
 			{"allow-from-different-port", String.valueOf(Server.allowFromDifferentPort)},
 			{"enable-terminal-colors", String.valueOf(Server.enableColors)},
 			{"send-full-chunks", String.valueOf(Server.sendFullChunks)},
-			{"enable-entity-ticking", String.valueOf(Server.superSecretSettings)},
+			{"enable-entity-ticking", String.valueOf(Server.enableEntityTicking)},
 			{"enable-tnt-entity", String.valueOf(Server.enableTNTEntity)},
 		});
 		Server.enableColors = properties.getBoolean("enable-terminal-colors", Server.enableColors);
@@ -117,10 +125,10 @@ public final class Server {
 		Server.allowFromDifferentPort = properties.getBoolean("allow-from-different-port", Server.allowFromDifferentPort);
 		Server.sendFullChunks = properties.getBoolean("send-full-chunks", (Server.sendFullChunks));
 		Server.enableTNTEntity = properties.getBoolean("enable-tnt-entity", Server.enableTNTEntity);
-		Server.superSecretSettings = properties.getBoolean("enable-entity-ticking", Server.superSecretSettings);
+		Server.enableEntityTicking = properties.getBoolean("enable-entity-ticking", Server.enableEntityTicking);
 		
 		Logger.info("Running server on port "+Server.port);
-		if(Server.enableTNTEntity && !Server.superSecretSettings) {
+		if(Server.enableTNTEntity && !Server.enableEntityTicking) {
 			Logger.warn("TNT Entity is enabled but entity ticking is not enabled!");
 		}
 		

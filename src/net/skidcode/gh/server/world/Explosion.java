@@ -1,9 +1,11 @@
 package net.skidcode.gh.server.world;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import net.skidcode.gh.server.block.Block;
 import net.skidcode.gh.server.entity.Entity;
+import net.skidcode.gh.server.utils.AABB;
 import net.skidcode.gh.server.utils.BlockPos;
 import net.skidcode.gh.server.utils.MathUtils;
 import net.skidcode.gh.server.utils.random.BedrockRandom;
@@ -68,6 +70,32 @@ public class Explosion {
 		}
 		float saved = this.power;
 		this.power *= 2.0f;
+		int minX = MathUtils.ffloor((this.xCenter - this.power) - 1);
+		int maxX = MathUtils.ffloor((this.xCenter + this.power) + 1);
+		int minY = MathUtils.ffloor((this.yCenter - this.power) - 1);
+		int maxY = MathUtils.ffloor((this.yCenter + this.power) + 1);
+		int minZ = MathUtils.ffloor((this.zCenter - this.power) - 1);
+		int maxZ = MathUtils.ffloor((this.zCenter + this.power) + 1);
+		
+		ArrayList<Entity> entities = this.world.getEntities(this.source, new AABB(minX, minY, minZ, maxX, maxY, maxZ));
+		for(Entity e : entities) {
+			float dist = e.distanceTo(this.xCenter, this.yCenter, this.zCenter) / this.power;
+			if(dist <= 1) {
+				float xd = e.posX - this.xCenter;
+				float yd = e.posY - this.yCenter;
+				float zd = e.posZ - this.zCenter;
+				float di = (float)Math.sqrt(xd*xd + yd*yd + zd*zd);
+				xd /= di;
+				yd /= di;
+				zd /= di;
+				float seen = (1 - di) * 1; //TODO getSeenPercent
+				//entity.hurt
+				e.motionX += xd*seen;
+				e.motionY += yd*seen;
+				e.motionZ += zd*seen;
+			}
+		}
+		
 		//TODO damage entities here
 		this.power = saved;
 		

@@ -1,9 +1,10 @@
 package net.skidcode.gh.server.network.protocol;
 
 import net.skidcode.gh.server.network.MinecraftDataPacket;
+import net.skidcode.gh.server.network.PacketWithEID;
 import net.skidcode.gh.server.network.ProtocolInfo;
 
-public class AddPlayerPacket extends MinecraftDataPacket{
+public class AddPlayerPacket extends MinecraftDataPacket implements PacketWithEID{
 	
 	public long clientID;
 	public String nickname;
@@ -22,6 +23,16 @@ public class AddPlayerPacket extends MinecraftDataPacket{
 	}
 	
 	@Override
+	public int getEID() {
+		return this.eid;
+	}
+
+	@Override
+	public void setEID(int eid) {
+		this.eid = eid;
+	}
+	
+	@Override
 	public void encode() {
 		this.putByte(pid());
 		this.putLong(this.clientID);
@@ -36,5 +47,4 @@ public class AddPlayerPacket extends MinecraftDataPacket{
 	public int getSize() {
 		return 1 + 8 + 2+this.nickname.length() + 4 + 4 + 4 + 4;
 	}
-
 }

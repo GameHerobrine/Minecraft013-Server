@@ -30,7 +30,7 @@ public class World {
 	public HashMap<Integer, Entity> entities = new HashMap<>();
 	public ArrayList<Entity> entitiesToAdd = new ArrayList<>();
 	public ArrayList<Entity> entitiesToRemove = new ArrayList<>();
-	private static int freeEID = 1;
+	
 	public int worldSeed = 0x256512;
 	public BedrockRandom random;
 	public Chunk[][] chunks = new Chunk[16][16];
@@ -148,6 +148,7 @@ public class World {
 	
 	public void addPlayer(Player player) {
 		this.players.put(player.eid, player);
+		this.addEntity(player);
 	}
 	
 	public void removePlayer(int eid) {
@@ -312,10 +313,6 @@ public class World {
 			}
 		}
 	}
-	
-	public static int incrementAndGetNextFreeEID() {
-		return ++freeEID;
-	}
 
 	public Material getMaterial(int x, int y, int z) {
 		int id = this.getBlockIDAt(x, y, z);
@@ -350,13 +347,19 @@ public class World {
 		
 		/*Timer*/
 		this.worldTime++;
-		if(Server.superSecretSettings) {
+		if(Server.enableEntityTicking) {
 			for(int i = this.entitiesToAdd.size(); --i >= 0;) {
 				Entity e = this.entitiesToAdd.remove(i);
 				if(this.entities.containsKey(e.eid)) {
 					Logger.warn("Entity with EID "+e.eid+" already exisists!");
 				}else {
 					this.entities.put(e.eid, e);
+					
+					if(Server.enableEntitySpawning) {
+						for(Player p : this.players.values()) {
+							p.spawnEntity(e);
+						}
+					}
 				}
 			}
 			
@@ -658,6 +661,17 @@ public class World {
 		}
 		
 		//TODO also check entities
+		return list;
+	}
+
+	public ArrayList<Entity> getEntities(Entity e, AABB aabb) {
+		ArrayList<Entity> list = new ArrayList<Entity>();
+		for(Entity entity : this.entities.values()) {
+			if(e != entity && entity.boundingBox.intersects(aabb)){
+				list.add(entity);
+			}
+		}
+		
 		return list;
 	}
 	

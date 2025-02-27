@@ -1,5 +1,8 @@
 package net.skidcode.gh.server.entity;
 
+import net.skidcode.gh.server.Server;
+import net.skidcode.gh.server.network.protocol.MovePlayerPacket;
+import net.skidcode.gh.server.player.Player;
 import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.utils.MathUtils;
 import net.skidcode.gh.server.world.World;
@@ -39,7 +42,20 @@ public class PrimedTnt extends Entity{
 			this.motionZ *= 0.7;
 			this.motionY *= -0.5;
 		}
-		System.out.println(this.posX+" "+this.posY+" "+this.posZ+" "+this.onGround);
+		
+		if(Server.enableEntitySpawning) {
+			for(Player p : this.world.players.values()) {
+				MovePlayerPacket pk = new MovePlayerPacket();
+				pk.eid = this.eid;
+				pk.posX = this.posX;
+				pk.posY = this.posY;
+				pk.posZ = this.posZ;
+				pk.yaw = this.yaw;
+				pk.pitch = this.pitch;
+				p.dataPacket(pk);
+			}
+		}
+		
 		--this.ticksUntilExplosion;
 		if(this.ticksUntilExplosion > 0) {
 			
