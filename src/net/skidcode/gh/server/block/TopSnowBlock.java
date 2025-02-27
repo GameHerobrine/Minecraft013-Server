@@ -53,6 +53,16 @@ public class TopSnowBlock extends Block {
 	}
 	
 	@Override
+	public int getResource(int meta, BedrockRandom random) {
+		return 0;
+	}
+	
+	@Override
+	public int getResourceCount(BedrockRandom random) {
+		return 0;
+	}
+	
+	@Override
 	public boolean isSolidRender() {
 		return false;
 	}

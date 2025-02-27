@@ -12,11 +12,10 @@ public class BushBlock extends Block{
 		this.setTicking(true);
 		this.setShape(0.5f - 0.2f, 0.0f, 0.5f - 0.2f, 0.2f + 0.5f, 0.2f*3.0f, 0.2f+0.5f);
 	}
-	//TODO more methods
+	
 	public boolean isSolidRender() {
 		return false;
 	}
-	//TODO isCubeShaped -> return false (is it even needed?)
 	
 	@Override
 	public AABB getAABB(World world, int x, int y, int z) {

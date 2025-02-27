@@ -36,4 +36,9 @@ public class GrassBlock extends Block{
 			
 		}
 	}
+	
+	@Override
+	public int getResource(int meta, BedrockRandom random) {
+		return Block.dirt.getResource(0, random);
+	}
 }

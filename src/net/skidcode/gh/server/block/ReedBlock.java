@@ -68,6 +68,11 @@ public class ReedBlock extends Block{
 	}
 	
 	@Override
+	public int getResource(int meta, BedrockRandom random) {
+		return 0;
+	}
+	
+	@Override
 	public boolean canSurvive(World world, int x, int y, int z) {
 		return this.mayPlace(world, x, y, z);
 	}

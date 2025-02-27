@@ -1,6 +1,7 @@
 package net.skidcode.gh.server.block;
 
 import net.skidcode.gh.server.block.material.Material;
+import net.skidcode.gh.server.utils.random.BedrockRandom;
 import net.skidcode.gh.server.world.World;
 
 public class TreeBlock extends Block{
@@ -32,4 +33,17 @@ public class TreeBlock extends Block{
 		}
 	}
 	
+	@Override
+	public int getResourceCount(BedrockRandom random) {
+		return 1;
+	}
+	@Override
+	public int getSpawnResourcesAuxValue(int meta) {
+		return meta;
+	}
+	
+	@Override
+	public int getResource(int meta, BedrockRandom random) {
+		return Block.log.blockID;
+	}
 }

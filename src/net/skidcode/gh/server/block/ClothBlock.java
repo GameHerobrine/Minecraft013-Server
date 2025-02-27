@@ -9,4 +9,9 @@ public class ClothBlock extends Block{
 		this.color = color;
 	}
 
+	@Override
+	public int getSpawnResourcesAuxValue(int meta) {
+		return meta;
+	}
+	
 }

@@ -2,6 +2,7 @@ package net.skidcode.gh.server.block;
 
 import net.skidcode.gh.server.block.material.Material;
 import net.skidcode.gh.server.player.Player;
+import net.skidcode.gh.server.utils.random.BedrockRandom;
 import net.skidcode.gh.server.world.World;
 
 public class StoneSlabBlock extends Block{
@@ -26,7 +27,21 @@ public class StoneSlabBlock extends Block{
 		}
 	}
 	
+	@Override
+	public int getResource(int meta, BedrockRandom random) {
+		return Block.stoneSlab.blockID;
+	}
+	@Override
+	public int getResourceCount(BedrockRandom random) {
+		return this.isFullTile ? 2 : 1;
+	}
+	@Override
+	public int getSpawnResourcesAuxValue(int meta) {
+		return meta;
+	}
+	
+	@Override
 	public boolean isSolidRender() {
-		return this.isFullTile; //TODO check
+		return this.isFullTile;
 	}
 }

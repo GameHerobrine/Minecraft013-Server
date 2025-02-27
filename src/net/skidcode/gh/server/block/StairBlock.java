@@ -3,6 +3,7 @@ package net.skidcode.gh.server.block;
 import net.skidcode.gh.server.entity.Entity;
 import net.skidcode.gh.server.player.Player;
 import net.skidcode.gh.server.utils.Utils;
+import net.skidcode.gh.server.utils.random.BedrockRandom;
 import net.skidcode.gh.server.world.World;
 
 public class StairBlock extends Block{
@@ -25,6 +26,15 @@ public class StairBlock extends Block{
 	public void wasExploded(World world, int x, int y, int z)
 	{	
 		this.base.wasExploded(world, x, y, z);
+	}
+	
+	@Override
+	public int getResource(int meta, BedrockRandom random) {
+		return this.base.getResource(meta, random);
+	}
+	@Override
+	public int getResourceCount(BedrockRandom random) {
+		return this.base.getResourceCount(random);
 	}
 	
 	//TODO more methods

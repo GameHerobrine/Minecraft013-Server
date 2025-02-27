@@ -113,6 +113,27 @@ public class Block {
 		}
 	}
 	
+	/**
+	 * Returns id the block should drop.
+	 */
+	public int getResource(int meta, BedrockRandom random) {
+		return this.blockID;
+	}
+	/**
+	 * Returns amount of item the block should drop
+	 */
+	public int getResourceCount(BedrockRandom random) {
+		return 1;
+	}
+	/**
+	 * Returns dropped item metadata
+	 */
+	public int getSpawnResourcesAuxValue(int meta) {
+		return 0;
+	}
+	
+	
+	public void entityInside(World world, int x, int y, int z, Entity entity) {}
 	public void neighborChanged(World world, int x, int y, int z, int meta) {}
 	public void onBlockRemoved(World world, int x, int y, int z) {
 		world.placeBlock(x, y, z, (byte)0, (byte)0);

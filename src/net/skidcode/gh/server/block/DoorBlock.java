@@ -3,6 +3,7 @@ package net.skidcode.gh.server.block;
 import net.skidcode.gh.server.block.material.Material;
 import net.skidcode.gh.server.player.Player;
 import net.skidcode.gh.server.utils.AABB;
+import net.skidcode.gh.server.utils.random.BedrockRandom;
 import net.skidcode.gh.server.world.World;
 
 public class DoorBlock extends Block{
@@ -75,5 +76,12 @@ public class DoorBlock extends Block{
 	@Override
 	public boolean isSolidRender() {
 		return false;
+	}
+	
+	@Override
+	public int getResource(int meta, BedrockRandom random) {
+		if((meta & 8) != 0) return 0;
+		if(this.material == Material.metal) return 0; //TODO Item.door_iron items
+		return 0; //TODO Item.door_wood items
 	}
 }

@@ -1,6 +1,7 @@
 package net.skidcode.gh.server.block;
 
 import net.skidcode.gh.server.block.material.Material;
+import net.skidcode.gh.server.entity.Entity;
 import net.skidcode.gh.server.utils.AABB;
 import net.skidcode.gh.server.utils.random.BedrockRandom;
 import net.skidcode.gh.server.world.World;
@@ -15,6 +16,10 @@ public class CactusBlock extends Block{
 	@Override
 	public boolean isSolidRender() {
 		return false;
+	}
+	
+	public void entityInside(World world, int x, int y, int z, Entity entity) {
+		//TODO entity.hurt - 0.2+? entity.hurt(null, 1);
 	}
 	
 	@Override

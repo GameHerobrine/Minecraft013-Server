@@ -3,6 +3,7 @@ package net.skidcode.gh.server.block;
 import net.skidcode.gh.server.block.material.Material;
 import net.skidcode.gh.server.player.Player;
 import net.skidcode.gh.server.utils.AABB;
+import net.skidcode.gh.server.utils.random.BedrockRandom;
 import net.skidcode.gh.server.world.World;
 
 public class LadderBlock extends Block{
@@ -21,6 +22,11 @@ public class LadderBlock extends Block{
 		else if(d == 5) this.setShape(0, 0, 0, 0.125f, 1, 1);
 		
 		return super.getAABB(world, x, y, z);
+	}
+	
+	@Override
+	public int getResourceCount(BedrockRandom random) {
+		return 1;
 	}
 	
 	@Override

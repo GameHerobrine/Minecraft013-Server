@@ -2,6 +2,7 @@ package net.skidcode.gh.server.block;
 
 import net.skidcode.gh.server.block.material.Material;
 import net.skidcode.gh.server.utils.AABB;
+import net.skidcode.gh.server.utils.random.BedrockRandom;
 import net.skidcode.gh.server.world.World;
 
 public class LiquidBlock extends Block{
@@ -36,6 +37,16 @@ public class LiquidBlock extends Block{
 			}
 			
 		}
+	}
+	
+	@Override
+	public int getResource(int meta, BedrockRandom random) {
+		return 0;
+	}
+	
+	@Override
+	public int getResourceCount(BedrockRandom random) {
+		return 0;
 	}
 	
 	@Override

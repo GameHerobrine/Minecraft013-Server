@@ -2,6 +2,7 @@ package net.skidcode.gh.server.block;
 
 import net.skidcode.gh.server.block.material.Material;
 import net.skidcode.gh.server.utils.AABB;
+import net.skidcode.gh.server.utils.random.BedrockRandom;
 import net.skidcode.gh.server.world.World;
 
 public class FarmBlock extends Block{
@@ -19,7 +20,13 @@ public class FarmBlock extends Block{
 		return this.boundingBox.set(x, y, z, x+1, y+1, z+1);
 	}
 	
+	@Override
 	public boolean isSolidRender() {
 		return false;
+	}
+	
+	@Override
+	public int getResource(int meta, BedrockRandom random) {
+		return Block.dirt.getResource(0, random);
 	}
 }

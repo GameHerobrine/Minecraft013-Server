@@ -25,4 +25,12 @@ public class RedstoneOreBlock extends Block{
 	}
 	
 	//TODO methods
+	@Override
+	public int getResource(int meta, BedrockRandom random) {
+		return 0;
+	}
+	@Override
+	public int getResourceCount(BedrockRandom random) {
+		return random.nextInt(2) + 4;
+	}
 }

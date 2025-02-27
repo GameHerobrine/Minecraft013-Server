@@ -17,6 +17,11 @@ public class LeafBlock extends TransparentBlock{
 	}
 	
 	@Override
+	public int getResourceCount(BedrockRandom random) {
+		return random.nextInt(16) == 0 ? 1 : 0;
+	}
+	
+	@Override
 	public boolean isSolidRender() {
 		return false;
 	}
@@ -37,4 +42,8 @@ public class LeafBlock extends TransparentBlock{
 		}
 	}
 	
+	@Override
+	public int getResource(int meta, BedrockRandom random) {
+		return 0;
+	}
 }

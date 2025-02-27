@@ -469,7 +469,7 @@ public class Session {
 					dp = (DataPacket) packet;
 					dp.decode();
 				}catch(Exception e) {
-					Logger.warn("Exception when decoding packet!");
+					Logger.warn("Exception when decoding a packet!");
 					e.printStackTrace();
 					return;
 				}

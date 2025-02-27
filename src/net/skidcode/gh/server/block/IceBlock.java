@@ -14,6 +14,11 @@ public class IceBlock extends HalfTransparentBlock{
 	}
 	
 	@Override
+	public int getResourceCount(BedrockRandom random) {
+		return 0;
+	}
+	
+	@Override
 	public void onRemove(World world, int x, int y, int z) {
 		Material mat = world.getMaterial(x, y-1, z);
 		if(mat.blocksMotion || mat.isLiquid) {
