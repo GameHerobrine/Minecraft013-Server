@@ -40,6 +40,7 @@ import net.skidcode.gh.server.world.parser.vanilla.VanillaParser;
 public final class Server {
 	
 	public static final int PLUGIN_API_VERSION = 2;
+	public static boolean orderChunksOnServerSide = false;
 	public static boolean enableEntitySpawning = false;
 	public static boolean enableEntityTicking = false;
 	public static boolean enableFireSpread = true;
@@ -113,7 +114,8 @@ public final class Server {
 			{"send-full-chunks", String.valueOf(Server.sendFullChunks)},
 			{"enable-entity-ticking", String.valueOf(Server.enableEntityTicking)},
 			{"enable-tnt-entity", String.valueOf(Server.enableTNTEntity)},
-			{"enable-fire-spread", String.valueOf(Server.enableFireSpread)}
+			{"enable-fire-spread", String.valueOf(Server.enableFireSpread)},
+			{"order-chunks-on-serverside", String.valueOf(Server.orderChunksOnServerSide)}
 		});
 		Server.enableColors = properties.getBoolean("enable-terminal-colors", Server.enableColors);
 		Server.serverName = properties.getString("server-name", Server.serverName);
@@ -126,6 +128,7 @@ public final class Server {
 		Server.enableTNTEntity = properties.getBoolean("enable-tnt-entity", Server.enableTNTEntity);
 		Server.enableEntityTicking = properties.getBoolean("enable-entity-ticking", Server.enableEntityTicking);
 		Server.enableFireSpread = properties.getBoolean("enable-fire-spread", Server.enableFireSpread);
+		Server.orderChunksOnServerSide = properties.getBoolean("order-chunks-on-serverside", Server.orderChunksOnServerSide);
 		
 		Logger.info("Running server on port "+Server.port);
 		if(Server.enableTNTEntity && !Server.enableEntityTicking) {

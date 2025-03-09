@@ -1,6 +1,8 @@
 package net.skidcode.gh.server.player;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 
 import net.skidcode.gh.server.Server;
@@ -24,6 +26,7 @@ import net.skidcode.gh.server.network.protocol.RemoveBlockPacket;
 import net.skidcode.gh.server.network.protocol.RequestChunkPacket;
 import net.skidcode.gh.server.network.protocol.StartGamePacket;
 import net.skidcode.gh.server.network.protocol.UpdateBlockPacket;
+import net.skidcode.gh.server.utils.ChunkPosSorter;
 import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.world.chunk.Chunk;
 import net.skidcode.gh.server.world.format.PlayerData;
@@ -45,6 +48,8 @@ public class Player extends Entity implements CommandIssuer{
 	public boolean firstChunkData = true;
 	public PlayerData playerdata;
 	public boolean chunkDataSend[] = new boolean[256];
+	public ArrayList<Integer> orderedChunks = new ArrayList<Integer>();
+	public HashMap<Integer, Integer> mappedChunks = new HashMap<>();
 	public GameMode gamemode;
 	public boolean closed = false;
 	
@@ -255,10 +260,26 @@ public class Player extends Entity implements CommandIssuer{
 					this.firstChunkData = false;
 				}
 				RequestChunkPacket rcp = (RequestChunkPacket) dp;
+				
 				if(rcp.chunkX > 15 || rcp.chunkX < 0 || rcp.chunkZ > 15 || rcp.chunkZ < 0) {
 					Logger.warn("Player "+this.nickname+" tried to get invalid chunk! ("+rcp.chunkX+" ,"+rcp.chunkZ+")");
 					break;
 				}
+				
+				if(Server.orderChunksOnServerSide) {
+					int clientChunkPos = (rcp.chunkZ) | (rcp.chunkX << 4);
+					int serverChunkPos;
+					if(this.mappedChunks.containsKey(clientChunkPos)) { //not sure is it needed, i suppose it might be useful if some packet is lost~
+						serverChunkPos = this.mappedChunks.get(clientChunkPos);
+					}else {
+						serverChunkPos = this.orderedChunks.remove(this.orderedChunks.size()-1);
+						this.mappedChunks.put(clientChunkPos, serverChunkPos);
+					}
+					
+					rcp.chunkX = serverChunkPos & 0xf;
+					rcp.chunkZ = (serverChunkPos & 0xf0) >> 4;
+				}
+				
 				ChunkDataPacket cdp = new ChunkDataPacket();
 				cdp.chunkX = rcp.chunkX;
 				cdp.chunkZ = rcp.chunkZ;
@@ -341,6 +362,11 @@ public class Player extends Entity implements CommandIssuer{
 				
 				p.spawnEntity(this);
 			}
+		}
+		
+		if(Server.orderChunksOnServerSide) {
+			for(int i = 0; i < 256; ++i) this.orderedChunks.add(i);
+			this.orderedChunks.sort(new ChunkPosSorter(this));
 		}
 	}
 	
