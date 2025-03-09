@@ -3,6 +3,7 @@ package net.skidcode.gh.server.block;
 import net.skidcode.gh.server.Server;
 import net.skidcode.gh.server.block.material.Material;
 import net.skidcode.gh.server.utils.AABB;
+import net.skidcode.gh.server.utils.Logger;
 import net.skidcode.gh.server.utils.random.BedrockRandom;
 import net.skidcode.gh.server.world.World;
 
@@ -116,7 +117,6 @@ public class FireBlock extends Block{
 	@Override
 	public void tick(World world, int x, int y, int z, BedrockRandom random) {
 		if(!Server.enableFireSpread) return;
-		
 		int data = world.getBlockMetaAt(x, y, z);
 		if(data <= 14) {
 			world.placeBlockMetaAndNotifyNearby(x, y, z, (byte)(data+1));
@@ -165,6 +165,7 @@ public class FireBlock extends Block{
 		}
 	}
 	
+	@Override
 	public int getTickDelay() {
 		return 10; //10 in 0.1.3 - fast fire spread like in old betas?
 	}

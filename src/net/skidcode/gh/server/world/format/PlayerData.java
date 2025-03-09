@@ -30,7 +30,10 @@ public class PlayerData extends RawBytesFile{
 		if(!Server.savePlayerData) return;
 		this.fileVersion = this.getByte();
 		if(this.fileVersion == PLAYER_DATA_VERSION) {
-			this.player.setPosition(this.getFloat(), this.getFloat(), this.getFloat());
+			float x = this.getFloat();
+			float y = this.getFloat();
+			float z = this.getFloat();
+			this.player.setPosition(x, y, z);
 		}else {
 			Logger.warn(player.nickname+"'s data has different version, aborting reading...");
 		}

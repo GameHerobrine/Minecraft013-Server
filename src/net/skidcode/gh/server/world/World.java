@@ -134,13 +134,16 @@ public class World {
 	public boolean hasChunksAt(int x, int y, int z, int radius) {
 		return this.hasChunksAt(x - radius, y - radius, z - radius, x + radius, y + radius, radius + z);
 	}
+	
 	public boolean hasChunksAt(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
 		
 		if(maxY < 0 || minY > 127) return false;
 		
 		for(int chunkX = minX >> 4; chunkX <= maxX >> 4; ++chunkX) {
 			for(int chunkZ = minZ >> 4; chunkZ <= maxZ >> 4; ++chunkZ) {
-				if(chunkX < 0 || chunkZ < 0 || chunkX > 15 || chunkZ > 15 || this.chunks[chunkX][chunkZ] == null) return false;
+				if(chunkX < 0 || chunkZ < 0 || chunkX > 15 || chunkZ > 15 || this.chunks[chunkX][chunkZ] == null) {
+					return false;
+				}
 			}
 		}
 		return true;
@@ -382,12 +385,13 @@ public class World {
 		if(ticksAmount > 1000) ticksAmount = 1000;
 		for(int i = 0; i < ticksAmount; ++i) {
 			TickNextTickData tick = scheduledTickTreeSet.first();
+			
 			if(tick.scheduledTime > this.worldTime) {
 				break;
 			}
 			scheduledTickTreeSet.remove(tick);
 			scheduledTickSet.remove(tick);
-			if(this.hasChunksAt(tick.posX - 8, tick.posY - 8, tick.posY - 8, tick.posX + 8, tick.posY + 8, tick.posY + 8)) {
+			if(this.hasChunksAt(tick.posX - 8, tick.posY - 8, tick.posZ - 8, tick.posX + 8, tick.posY + 8, tick.posZ + 8)) {
 				int id = this.getBlockIDAt(tick.posX, tick.posY, tick.posZ);
 				if(id > 0 && id == tick.blockID) {
 					Block.blocks[id].tick(this, tick.posX, tick.posY, tick.posZ, random);
