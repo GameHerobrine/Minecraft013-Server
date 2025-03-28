@@ -16,7 +16,6 @@ public class Logger {
 		}else {
 			System.out.println(msgg);
 		}
-		
 	}
 	
 	public static void raw(Object msg) {

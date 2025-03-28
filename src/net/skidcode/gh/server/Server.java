@@ -38,7 +38,6 @@ import net.skidcode.gh.server.world.generator.NormalWorldGenerator;
 import net.skidcode.gh.server.world.parser.vanilla.VanillaParser;
 
 public final class Server {
-	
 	public static final int PLUGIN_API_VERSION = 2;
 	public static boolean orderChunksOnServerSide = false;
 	public static boolean enableEntitySpawning = false;
@@ -208,7 +207,6 @@ public final class Server {
 	}
 	
 	private static void loadPlugins(ServerClassLoader classLoader) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException, ClassNotFoundException, InstantiationException {
-		
 		if(classLoader instanceof URLClassLoader) {
 			File[] fs = Server.pluginsPath.listFiles();
 			for(File f : fs) {

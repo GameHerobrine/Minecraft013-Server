@@ -141,7 +141,10 @@ public class World {
 		
 		for(int chunkX = minX >> 4; chunkX <= maxX >> 4; ++chunkX) {
 			for(int chunkZ = minZ >> 4; chunkZ <= maxZ >> 4; ++chunkZ) {
-				if(chunkX < 0 || chunkZ < 0 || chunkX > 15 || chunkZ > 15 || this.chunks[chunkX][chunkZ] == null) {
+				if(chunkX < 0 || chunkZ < 0 || chunkX > 15 || chunkZ > 15) {
+					continue;
+				}
+				if(this.chunks[chunkX][chunkZ] == null) {
 					return false;
 				}
 			}
