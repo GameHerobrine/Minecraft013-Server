@@ -54,12 +54,15 @@ public class EncapsulatedPacket implements Cloneable {
 		}
 
 		if (packet.reliability > 0) {
-			if (packet.reliability >= 2 && packet.reliability != 5) {
+			
+			//reliable reliable_ordered, reliable_sequenced reliablle_ack reliable_ordered_ack
+			if(packet.reliability == 2 || packet.reliability == 3 || packet.reliability == 4 || packet.reliability == 6 || packet.reliability == 7) {
 				packet.messageIndex = Binary.readLTriad(Binary.subBytes(binary, offset, 3));
 				offset += 3;
 			}
-
-			if (packet.reliability <= 4 && packet.reliability != 2) {
+			
+			//unreliable_sequenced, reliable_ordered, reliable_sequenced, reliable_ordered_ack
+			if(packet.reliability == 1 || packet.reliability == 3 || packet.reliability == 4 || packet.reliability == 7) {
 				packet.orderIndex = Binary.readLTriad(Binary.subBytes(binary, offset, 3));
 				offset += 3;
 				packet.orderChannel = binary[offset++] & 0xff;
