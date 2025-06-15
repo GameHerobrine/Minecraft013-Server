@@ -209,10 +209,14 @@ public class World {
 	}
 	
 	public int getBlockIDAt(int x, int y, int z) {
+		if(y < 0 || y > 127) return 0;
+		
 		return this.getChunk(x >> 4, z >> 4).getBlockID(x & 0xf, y, z & 0xf) & 0xff;
 	}
 	
 	public int getBlockMetaAt(int x, int y, int z) {
+		if(y < 0 || y > 127) return 0;
+		
 		return this.getChunk(x >> 4, z >> 4).getBlockMetadata(x & 0xf, y, z & 0xf) & 0xf;
 	}
 	
