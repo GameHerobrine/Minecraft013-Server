@@ -39,6 +39,7 @@ import net.skidcode.gh.server.world.parser.vanilla.VanillaParser;
 
 public final class Server {
 	public static final int PLUGIN_API_VERSION = 2;
+	public static int autoSaveIntervalSeconds = 60;
 	public static boolean orderChunksOnServerSide = false;
 	public static boolean enableEntitySpawning = false;
 	public static boolean enableEntityTicking = false;
@@ -82,8 +83,10 @@ public final class Server {
 				if(Server.saveWorld && Server.world != null) {
 					Logger.info("Saving world...");
 					try {
+						long l = System.nanoTime();
 						VanillaParser.saveVanillaWorld();
-						Logger.info("Done saving");
+						l = System.nanoTime() - l;
+						Logger.info("Done saving (Took "+l+"ns)");
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -114,7 +117,8 @@ public final class Server {
 			{"enable-entity-ticking", String.valueOf(Server.enableEntityTicking)},
 			{"enable-tnt-entity", String.valueOf(Server.enableTNTEntity)},
 			{"enable-fire-spread", String.valueOf(Server.enableFireSpread)},
-			{"order-chunks-on-serverside", String.valueOf(Server.orderChunksOnServerSide)}
+			{"order-chunks-on-serverside", String.valueOf(Server.orderChunksOnServerSide)},
+			{"auto-save-interval-seconds", String.valueOf(Server.autoSaveIntervalSeconds)}
 		});
 		Server.enableColors = properties.getBoolean("enable-terminal-colors", Server.enableColors);
 		Server.serverName = properties.getString("server-name", Server.serverName);
@@ -128,8 +132,14 @@ public final class Server {
 		Server.enableEntityTicking = properties.getBoolean("enable-entity-ticking", Server.enableEntityTicking);
 		Server.enableFireSpread = properties.getBoolean("enable-fire-spread", Server.enableFireSpread);
 		Server.orderChunksOnServerSide = properties.getBoolean("order-chunks-on-serverside", Server.orderChunksOnServerSide);
+		Server.autoSaveIntervalSeconds = properties.getInteger("auto-save-interval-seconds", Server.autoSaveIntervalSeconds);
 		
 		Logger.info("Running server on port "+Server.port);
+		
+		if(Server.autoSaveIntervalSeconds <= 0) {
+			Logger.notice("Autosave interval is less or equal to 0: autosaving is disabled");
+		}
+		
 		if(Server.enableTNTEntity && !Server.enableEntityTicking) {
 			Logger.warn("TNT Entity is enabled but entity ticking is not enabled!");
 		}
@@ -173,7 +183,11 @@ public final class Server {
 		boolean generateWorld = properties.getBoolean("generate-world", false);
 		if(Files.exists(Paths.get("world/level.dat"))){
 			Logger.info("Loading world...");
+			long l = System.nanoTime();
 			Server.world = VanillaParser.parseVanillaWorld();
+			l = System.nanoTime() - l;
+			Logger.info("Loading done! (Took "+l+"ns)");
+			
 		}else if(generateWorld) {
 			String type = properties.getString("world-generator", "");
 			if(type.equalsIgnoreCase("flat")) {
@@ -309,9 +323,11 @@ public final class Server {
 		id2Player.put(id, player);
 	}
 	
+	public static long lastTimeSaved = 0;
 	public static void run(){
 		ThreadConsole tc = new ThreadConsole();
 		tc.start();
+		lastTimeSaved = System.nanoTime();
 		while(Server.running) {
 			long tickTime = System.currentTimeMillis();
 			if(Server.nextTick - tickTime <= 0) {
@@ -340,6 +356,20 @@ public final class Server {
 				}
 				
 				Server.world.tick();
+				
+				if(Server.autoSaveIntervalSeconds > 0) {
+					long now = System.nanoTime();
+					if(now - lastTimeSaved > (long)Server.autoSaveIntervalSeconds*1000000000) {
+						try {
+							VanillaParser.saveVanillaWorld();
+						} catch (IOException e) {
+							Logger.error("Autosave failed!");
+							e.printStackTrace();
+						}
+						lastTimeSaved = System.nanoTime();
+					}
+				}
+				
 				while(Server.world.updateLights()); //TODO check
 				++Server.tps;
 				if(tickTime - lastSecondRecorded >= 1000) { //maybe make it better?
