@@ -12,6 +12,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.skidcode.gh.server.Server;
 import net.skidcode.gh.server.raknet.RakNet;
+import net.skidcode.gh.server.raknet.exception.NotEnoughBytesException;
+import net.skidcode.gh.server.raknet.exception.RakNetException;
 import net.skidcode.gh.server.raknet.protocol.EncapsulatedPacket;
 import net.skidcode.gh.server.raknet.protocol.Packet;
 import net.skidcode.gh.server.raknet.protocol.packet.*;
@@ -155,7 +157,12 @@ public class SessionManager {
 				} else if (pid == UNCONNECTED_PING.ID || pid == UNCONNECTED_PING_OPEN_CONNECTIONS.ID) {
 					packet = new UNCONNECTED_PING();
 					packet.buffer = buffer;
-					packet.decode();
+					try {
+						packet.decode();
+					}catch(RakNetException ex) {
+						return false;
+					}
+					
 
 					UNCONNECTED_PONG pk = new UNCONNECTED_PONG();
 					pk.serverID = this.getID();

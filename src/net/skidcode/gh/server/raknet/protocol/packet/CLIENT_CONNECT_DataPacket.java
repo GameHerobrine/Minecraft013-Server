@@ -1,5 +1,7 @@
 package net.skidcode.gh.server.raknet.protocol.packet;
 
+import net.skidcode.gh.server.raknet.exception.NotEnoughBytesException;
+import net.skidcode.gh.server.raknet.exception.RakNetException;
 import net.skidcode.gh.server.raknet.protocol.Packet;
 
 /**
@@ -27,7 +29,7 @@ public class CLIENT_CONNECT_DataPacket extends Packet {
 	}
 
 	@Override
-	public void decode() {
+	public void decode() throws RakNetException{
 		super.decode();
 		this.clientID = this.getLong();
 		this.sendPing = this.getLong();

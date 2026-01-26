@@ -1,6 +1,7 @@
 package net.skidcode.gh.server.raknet.protocol.packet;
 
 import net.skidcode.gh.server.raknet.RakNet;
+import net.skidcode.gh.server.raknet.exception.RakNetException;
 import net.skidcode.gh.server.raknet.protocol.Packet;
 
 /**
@@ -29,7 +30,7 @@ public class UNCONNECTED_PONG extends Packet {
 	}
 
 	@Override
-	public void decode() {
+	public void decode() throws RakNetException{
 		super.decode();
 		this.pingID = this.getLong();
 		this.serverID = this.getLong();

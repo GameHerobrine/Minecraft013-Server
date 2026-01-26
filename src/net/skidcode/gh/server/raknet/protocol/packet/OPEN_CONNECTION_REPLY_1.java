@@ -1,6 +1,7 @@
 package net.skidcode.gh.server.raknet.protocol.packet;
 
 import net.skidcode.gh.server.raknet.RakNet;
+import net.skidcode.gh.server.raknet.exception.RakNetException;
 import net.skidcode.gh.server.raknet.protocol.Packet;
 
 /**
@@ -28,7 +29,7 @@ public class OPEN_CONNECTION_REPLY_1 extends Packet {
 	}
 
 	@Override
-	public void decode() {
+	public void decode() throws RakNetException{
 		super.decode();
 		this.offset += 16; //skip magic bytes
 		this.serverID = this.getLong();

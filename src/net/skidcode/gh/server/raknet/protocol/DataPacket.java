@@ -3,6 +3,7 @@ package net.skidcode.gh.server.raknet.protocol;
 
 import java.util.ArrayList;
 
+import net.skidcode.gh.server.raknet.exception.RakNetException;
 import net.skidcode.gh.server.utils.Binary;
 
 /**
@@ -34,7 +35,7 @@ public abstract class DataPacket extends Packet {
 	}
 
 	@Override
-	public void decode() {
+	public void decode() throws RakNetException{
 		super.decode();
 		this.seqNumber = this.getLTriad();
 

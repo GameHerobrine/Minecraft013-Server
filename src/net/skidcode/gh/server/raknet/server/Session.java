@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.skidcode.gh.server.Server;
 import net.skidcode.gh.server.raknet.RakNet;
+import net.skidcode.gh.server.raknet.exception.RakNetException;
 import net.skidcode.gh.server.raknet.protocol.DataPacket;
 import net.skidcode.gh.server.raknet.protocol.EncapsulatedPacket;
 import net.skidcode.gh.server.raknet.protocol.Packet;
@@ -411,7 +412,12 @@ public class Session {
 				if (id == CLIENT_CONNECT_DataPacket.ID) {
 					CLIENT_CONNECT_DataPacket dataPacket = new CLIENT_CONNECT_DataPacket();
 					dataPacket.buffer = packet.buffer;
-					dataPacket.decode();
+					try {
+						dataPacket.decode();
+					}catch(RakNetException ex) {
+						this.disconnect(ex.getMessage());
+					}
+					
 					SERVER_HANDSHAKE_DataPacket pk = new SERVER_HANDSHAKE_DataPacket();
 					pk.address = this.address;
 					pk.port = this.port;
@@ -426,7 +432,11 @@ public class Session {
 				} else if (id == CLIENT_HANDSHAKE_DataPacket.ID) {
 					CLIENT_HANDSHAKE_DataPacket dataPacket = new CLIENT_HANDSHAKE_DataPacket();
 					dataPacket.buffer = packet.buffer;
-					dataPacket.decode();
+					try {
+						dataPacket.decode();
+					}catch(RakNetException ex) {
+						this.disconnect(ex.getMessage());
+					}
 
 					if (Server.allowFromDifferentPort || dataPacket.port == this.sessionManager.getPort()) {
 						this.state = STATE_CONNECTED; //FINALLY!
@@ -439,7 +449,11 @@ public class Session {
 			} else if (id == PING_DataPacket.ID) {
 				PING_DataPacket dataPacket = new PING_DataPacket();
 				dataPacket.buffer = packet.buffer;
-				dataPacket.decode();
+				try {
+					dataPacket.decode();
+				}catch(RakNetException ex) {
+					this.disconnect(ex.getMessage());
+				}
 				PONG_DataPacket pk = new PONG_DataPacket();
 				pk.pingTime = dataPacket.pingTime;
 				pk.pongTime = dataPacket.pingTime + 200; //TODO other way?
@@ -467,7 +481,11 @@ public class Session {
 				DataPacket dp;
 				try {
 					dp = (DataPacket) packet;
-					dp.decode();
+					try {
+						dp.decode();
+					}catch(RakNetException ex) {
+						this.disconnect(ex.getMessage());
+					}
 				}catch(Exception e) {
 					Logger.warn("Exception when decoding a packet!");
 					e.printStackTrace();
@@ -506,7 +524,11 @@ public class Session {
 				}
 			} else {
 				if (packet instanceof ACK) {
-					packet.decode();
+					try {
+						packet.decode();
+					}catch(RakNetException ex) {
+						this.disconnect(ex.getMessage());
+					}
 					for (int seq : new ArrayList<>(((ACK) packet).packets.values())) {
 						if (this.recoveryQueue.containsKey(seq)) {
 							for (Object pk : this.recoveryQueue.get(seq).packets) {
@@ -520,7 +542,12 @@ public class Session {
 						}
 					}
 				} else if (packet instanceof NACK) {
-					packet.decode();
+					try {
+						packet.decode();
+					}catch(RakNetException ex) {
+						this.disconnect(ex.getMessage());
+					}
+					
 					for (int seq : new ArrayList<>(((NACK) packet).packets.values())) {
 						if (this.recoveryQueue.containsKey(seq)) {
 							DataPacket pk = this.recoveryQueue.get(seq);
@@ -540,7 +567,11 @@ public class Session {
 				}
 			}
 		} else if ((packet.buffer[0] & 0xff) > 0x00 || (packet.buffer[0] & 0xff) < (byte) 0x80) { //Not Data packet :)
-			packet.decode();
+			try {
+				packet.decode();
+			}catch(RakNetException ex) {
+				this.disconnect(ex.getMessage());
+			}
 			if (packet instanceof UNCONNECTED_PING) {
 				UNCONNECTED_PONG pk = new UNCONNECTED_PONG();
 				pk.serverID = this.sessionManager.getID();

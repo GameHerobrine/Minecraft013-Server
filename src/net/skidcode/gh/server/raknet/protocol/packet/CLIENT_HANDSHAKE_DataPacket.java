@@ -2,6 +2,8 @@ package net.skidcode.gh.server.raknet.protocol.packet;
 
 import java.net.InetSocketAddress;
 
+import net.skidcode.gh.server.raknet.exception.NotEnoughBytesException;
+import net.skidcode.gh.server.raknet.exception.RakNetException;
 import net.skidcode.gh.server.raknet.protocol.Packet;
 
 /**
@@ -28,7 +30,7 @@ public class CLIENT_HANDSHAKE_DataPacket extends Packet {
 	}
 
 	@Override
-	public void decode() {
+	public void decode() throws RakNetException{
 		super.decode();
 		InetSocketAddress addr = this.getAddress();
 		this.address = addr.getHostString();

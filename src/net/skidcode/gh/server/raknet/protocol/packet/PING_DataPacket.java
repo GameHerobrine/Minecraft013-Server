@@ -1,5 +1,6 @@
 package net.skidcode.gh.server.raknet.protocol.packet;
 
+import net.skidcode.gh.server.raknet.exception.RakNetException;
 import net.skidcode.gh.server.raknet.protocol.Packet;
 
 /**
@@ -23,7 +24,7 @@ public class PING_DataPacket extends Packet {
 	}
 
 	@Override
-	public void decode() {
+	public void decode() throws RakNetException{
 		super.decode();
 		this.pingTime = this.getLong();
 	}

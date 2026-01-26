@@ -1,6 +1,7 @@
 package net.skidcode.gh.server.raknet.protocol.packet;
 
 import net.skidcode.gh.server.raknet.RakNet;
+import net.skidcode.gh.server.raknet.exception.RakNetException;
 import net.skidcode.gh.server.raknet.protocol.Packet;
 
 import java.net.InetSocketAddress;
@@ -32,7 +33,7 @@ public class OPEN_CONNECTION_REQUEST_2 extends Packet {
 	}
 
 	@Override
-	public void decode() {
+	public void decode() throws RakNetException{
 		super.decode();
 		this.offset += 16; //skip magic bytes
 		InetSocketAddress address = this.getAddress();

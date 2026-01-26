@@ -5,6 +5,8 @@ import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+import net.skidcode.gh.server.raknet.exception.NotEnoughBytesException;
+import net.skidcode.gh.server.raknet.exception.RakNetException;
 import net.skidcode.gh.server.utils.Binary;
 
 /**
@@ -12,26 +14,19 @@ import net.skidcode.gh.server.utils.Binary;
  * Nukkit Project
  */
 public abstract class Packet implements Cloneable {
-
+	
 	protected int offset = 0;
 	public byte[] buffer;
 	public Long sendTime;
 
 	public abstract byte getID();
-
-	protected byte[] get(int len) {
+	
+	protected byte[] get(int len) throws RakNetException {
 		if (len < 0) {
 			this.offset = this.buffer.length - 1;
 			return new byte[0];
 		}
-		if(this.offset + len > this.buffer.length) {
-			try {
-				throw new Exception("Failed to get "+len+" bytes!");
-			}catch(Exception e) {
-				e.printStackTrace();
-			}
-			return new byte[len];
-		}
+		this.require(len);
 		byte[] buffer = new byte[len];
 		for (int i = 0; i < len; i++) {
 			buffer[i] = this.buffer[this.offset++];
@@ -47,47 +42,48 @@ public abstract class Packet implements Cloneable {
 		return Arrays.copyOfRange(this.buffer, this.offset, this.buffer.length - 1);
 	}
 
-	protected long getLong() {
+	protected long getLong() throws RakNetException{
 		return Binary.readLong(this.get(8));
 	}
 
-	protected int getInt() {
+	protected int getInt() throws RakNetException{
 		return Binary.readInt(this.get(4));
 	}
 
-	protected short getSignedShort() {
+	protected short getSignedShort() throws RakNetException {
 		return (short) this.getShort();
 	}
 
-	protected int getShort() {
+	protected int getShort() throws RakNetException{
 		return Binary.readShort(this.get(2));
 	}
 
-	protected int getTriad() {
+	protected int getTriad() throws RakNetException{
 		return Binary.readTriad(this.get(3));
 	}
 
-	protected int getLTriad() {
+	protected int getLTriad() throws RakNetException{
 		return Binary.readLTriad(this.get(3));
 	}
 
-	protected byte getByte() {
+	protected byte getByte() throws RakNetException {
+		this.require(1);
 		return this.buffer[this.offset++];
 	}
 
-	protected String getString() {
+	protected String getString() throws RakNetException{
 		return new String(this.get(this.getSignedShort()), StandardCharsets.UTF_8);
 	}
 
-	protected InetSocketAddress getAddress() {
+	protected InetSocketAddress getAddress() throws RakNetException{
 		byte version = this.getByte();
 		if (version == 4) {
 			String addr = ((~this.getByte()) & 0xff) + "." + ((~this.getByte()) & 0xff) + "." + ((~this.getByte()) & 0xff) + "." + ((~this.getByte()) & 0xff);
 			int port = this.getSignedShort() & 0xffff;
 			return new InetSocketAddress(addr, port);
 		} else {
+			throw new RakNetException("unsupported address version: "+version);
 			//todo IPV6 SUPPORT
-			return null;
 		}
 	}
 
@@ -148,7 +144,7 @@ public abstract class Packet implements Cloneable {
 			}
 			this.putShort(port);
 		} else {
-			//todo ipv6
+			//TODO ipv6
 		}
 	}
 
@@ -160,7 +156,7 @@ public abstract class Packet implements Cloneable {
 		this.buffer = new byte[]{getID()};
 	}
 
-	public void decode() {
+	public void decode() throws RakNetException {
 		this.offset = 1;
 	}
 
@@ -176,5 +172,13 @@ public abstract class Packet implements Cloneable {
 		Packet packet = (Packet) super.clone();
 		packet.buffer = this.buffer.clone();
 		return packet;
+	}
+	
+	public void require(int n) throws NotEnoughBytesException{
+		int needed = (n + this.offset);
+		int got = this.buffer.length;
+		if(needed > got) {
+			throw new NotEnoughBytesException(needed, got);
+		}
 	}
 }
